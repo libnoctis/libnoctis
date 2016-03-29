@@ -18,35 +18,30 @@
  */
 package org.libnoctis.input;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
- * The Noctis Event
+ * The Event Manager
  *
  * <p>
- *     An annotation added on methods to say to Noctis that the
- *     method is an event method, by exemple :
- *
- *     <code>
- *          \@NoctisEvent
- *          public void myMouseClickedEvent(NoctisMouseClickEvent event)
- *          {
- *              // Will be executed when the mouse clicked
- *          }
- *     </code>
- *
- *     The class containing this method can be added as a mouse click listener.
+ *     The Event Manager can manage, check, and launch some
+ *     events of classes.
  * </p>
  *
  * @author Litarvan
  * @version 1.0.0
  * @since 1.0.0
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface NoctisEvent
+public class EventManager
 {
+    /**
+     * Launch an event
+     *
+     * @param obj   The class where is the event method
+     * @param event The class (ex: {@link org.libnoctis.input.mouse.NoctisMouseMoveEvent} of the event
+     *
+     * @see NoctisEvent
+     */
+    public void launchEvent(Object obj, Class<?> event)
+    {
+        // TODO: Event Manager
+    }
 }

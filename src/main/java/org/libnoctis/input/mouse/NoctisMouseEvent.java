@@ -21,23 +21,24 @@ package org.libnoctis.input.mouse;
 import org.libnoctis.util.Vector2i;
 
 /**
- * The Noctis Click Event
+ * The Noctis Mouse Event
  *
  * <p>
- *     This event is called when the mouse click somewhere.
- *     It can also call a callback that will be launched on the mouse release.
+ *     This event is the parent of all the mouse event.
+ *     It contains the click position, the clicked button, and a callback
+ *     to execute after the button release.
  * </p>
  *
  * @author Litarvan
  * @version 1.0.0
  * @since 1.0.0
  */
-public class NoctisClickEvent
+public class NoctisMouseEvent
 {
     /**
-     * The position where the mouse clicked
+     * The position where the mouse is
      */
-    private Vector2i clickPos;
+    private Vector2i pos;
 
     /**
      * The button that made the click
@@ -50,39 +51,38 @@ public class NoctisClickEvent
     private Runnable callback;
 
     /**
-     * The Noctis Click Event
+     * The Noctis Mouse Event
      *
-     * @param clickPos The position where the mouse clicked
+     * @param pos The position where the mouse is
      * @param button The button that clicked
      */
-    public NoctisClickEvent(Vector2i clickPos, MouseButton button)
+    public NoctisMouseEvent(Vector2i pos, MouseButton button)
     {
-        this(clickPos, button, null);
+        this(pos, button, null);
     }
 
     /**
-     **
-     * The Noctis Click Event
+     * The Noctis Mouse Event
      *
-     * @param clickPos The position where the mouse clicked
+     * @param pos The position where the mouse is
      * @param button The button that clicked
      * @param callback A callback to call after that the mouse was released, if it
      *                 contains a method with annotation NoctisEvent that take in param
      *                 NoctisClickEvent, it will be called.
      */
-    public NoctisClickEvent(Vector2i clickPos, MouseButton button, Runnable callback)
+    public NoctisMouseEvent(Vector2i pos, MouseButton button, Runnable callback)
     {
-        this.clickPos = clickPos;
+        this.pos = pos;
         this.button = button;
         this.callback = callback;
     }
 
     /**
-     * @return The position where the mouse clicked
+     * @return The position where the mouse is
      */
-    public Vector2i getClickPos()
+    public Vector2i getPos()
     {
-        return clickPos;
+        return pos;
     }
 
     /**

@@ -32,7 +32,18 @@ package org.libnoctis.input.mouse;
  */
 public enum MouseButton
 {
+    /**
+     * The left mouse button
+     */
     LEFT,
+
+    /**
+     * The mouse wheel button
+     */
     CENTER,
+
+    /**
+     * The right mouse button
+     */
     RIGHT
 }
