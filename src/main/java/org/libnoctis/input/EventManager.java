@@ -18,6 +18,11 @@
  */
 package org.libnoctis.input;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+
 /**
  * The Event Manager
  *
@@ -33,6 +38,32 @@ package org.libnoctis.input;
 public class EventManager
 {
     /**
+     * The list of the listeners
+     */
+    private ArrayList<Object> listeners = new ArrayList<Object>();
+
+    /**
+     * Dispatch an event to all the listeners
+     *
+     * @param event The instance of the event to call
+     */
+    public void callEvent(Class<?> event) throws Throwable
+    {
+        for (Object listener : listeners)
+            launchEvent(listener, event);
+    }
+
+    /**
+     * Register an event listener
+     *
+     * @param listener The listener containing the events
+     */
+    public void registerListener(Object listener)
+    {
+        listeners.add(listener);
+    }
+
+    /**
      * Launch an event
      *
      * @param obj   The class where is the event method
@@ -40,8 +71,33 @@ public class EventManager
      *
      * @see NoctisEvent
      */
-    public void launchEvent(Object obj, Class<?> event)
+    private void launchEvent(Object obj, Object event) throws Throwable
     {
-        // TODO: Event Manager
+        Method[] methods = obj.getClass().getDeclaredMethods();
+        for (Method method : methods)
+        {
+            if (method.getParameterTypes().length != 1)
+                return;
+
+            Annotation[] annotations = method.getDeclaredAnnotations();
+            for (Annotation annotation : annotations)
+                if (annotation.annotationType().equals(NoctisEvent.class) && method.getParameterTypes()[0].isInstance(event))
+                {
+                    method.setAccessible(true);
+
+                    try
+                    {
+                        method.invoke(obj, event);
+                    }
+                    catch (IllegalAccessException ignored)
+                    {
+                        // Can't happen
+                    }
+                    catch (InvocationTargetException e)
+                    {
+                        throw e.getTargetException();
+                    }
+                }
+        }
     }
 }

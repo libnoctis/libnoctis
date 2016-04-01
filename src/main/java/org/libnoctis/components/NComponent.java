@@ -18,6 +18,7 @@
  */
 package org.libnoctis.components;
 
+import org.libnoctis.input.EventManager;
 import org.libnoctis.layout.LayoutProperty;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.util.Vector2i;
@@ -53,6 +54,11 @@ public abstract class NComponent
     private NContainer parent;
 
     /**
+     * The event manager
+     */
+    private EventManager manager;
+
+    /**
      * @return The parent container (that contains this component)
      */
     public NContainer getParent()
@@ -66,6 +72,16 @@ public abstract class NComponent
     public Drawer getDrawer()
     {
         return parent.getDrawer();
+    }
+
+    /**
+     * Register an event listener for this component events
+     *
+     * @param listener The event listener to add
+     */
+    public void registerListener(Object listener)
+    {
+        manager.registerListener(listener);
     }
 
     /**
