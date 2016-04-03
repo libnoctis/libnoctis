@@ -36,7 +36,7 @@ import org.lwjgl.opengl.DisplayMode;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class NFrame extends NComponent
+public class NFrame extends NContainer
 {
 	/**
 	 * This frame title.
