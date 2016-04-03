@@ -9,9 +9,19 @@ archivesBaseName = 'libnoctis'
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
-compileJava.options.encoding = 'Cp1252'
+compileJava.options.encoding = 'UTF-8'
 
 jar {
     from "LICENSE"
     from "LICENSE.LESSER"
 }
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.lwjgl.lwjgl:lwjgl:2.9.3'
+    compile 'org.lwjgl.lwjgl:lwjgl_util:2.9.3'
+}
+

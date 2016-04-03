@@ -12,43 +12,35 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.libnoctis.input.mouse;
+package org.libnoctis.util.exception;
 
 
-/**
- * The Mouse Buttons
- * <p>
- * An enumeration of the different mouse buttons, used by the events.
- * </p>
- *
- * @author Litarvan
- * @version 1.0.0
- * @since 1.0.0
- */
-public enum MouseButton
+public class NoctisException extends Exception
 {
-	/**
-	 * The left mouse button
-	 */
-	LEFT,
+	private static final long serialVersionUID = -4014314214858775665L;
 
-	/**
-	 * The right mouse button
-	 */
-	RIGHT,
-	
-	/**
-	 * The mouse wheel button
-	 */
-	CENTER;
-	
-	public static MouseButton byId(int id)
+	public NoctisException()
 	{
-		if (id < 0)
-		{
-			return null;
-		}
-		
-		return values()[id];
+		super();
+	}
+
+	public NoctisException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace)
+	{
+		super(message, cause, enableSuppression, writableStackTrace);
+	}
+
+	public NoctisException(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
+
+	public NoctisException(String message)
+	{
+		super(message);
+	}
+
+	public NoctisException(Throwable cause)
+	{
+		super(cause);
 	}
 }

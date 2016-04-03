@@ -40,15 +40,6 @@ public abstract class NContainer extends NComponent
     private ArrayList<NComponent> components = new ArrayList<NComponent>();
 
     /**
-     * @return The components in this container
-     */
-    public NComponent[] components()
-    {
-        NComponent[] components = new NComponent[numberOfComponents()];
-        return this.components.toArray(components);
-    }
-
-    /**
      * @return The number of component in this container
      */
     public int numberOfComponents()
@@ -124,18 +115,4 @@ public abstract class NContainer extends NComponent
 
         return result;
     }
-
-    @Override
-    protected final void onFrame()
-    {
-        for (NComponent c : components)
-            c.onFrame();
-
-        onLoop();
-    }
-
-    /**
-     * Same as on onFrame, but currently used for other things
-     */
-    protected abstract void onLoop();
 }

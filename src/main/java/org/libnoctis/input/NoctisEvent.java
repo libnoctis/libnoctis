@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  *          \@NoctisEvent
  *          public void myMouseClickedEvent(NoctisMouseClickEvent event)
  *          {
- *              // Will be executed when the mouse clicked
+ *              // Will be executed when the mouse is clicked
  *          }
  *     </code>
  *

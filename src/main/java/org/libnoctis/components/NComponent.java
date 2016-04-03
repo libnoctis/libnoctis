@@ -1,35 +1,32 @@
 /*
  * Copyright 2015-2016 Adrien "Litarvan" Navratil & Victor "Wytrem"
- *
  * This file is part of Libnoctis.
-
  * Libnoctis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Libnoctis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Libnoctis.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.libnoctis.components;
 
+
+import org.libnoctis.input.Event;
 import org.libnoctis.input.EventManager;
 import org.libnoctis.layout.LayoutProperty;
 import org.libnoctis.render.Drawer;
-import org.libnoctis.util.Vector2i;
+
 
 /**
  * A Noctis Component
- *
  * <p>
- *     The Noctis Component represents a graphic object, by example a button
- *     is a component. It contains all the commons components things, its size,
- *     its color, etc...
+ * The Noctis Component represents a graphic object, by example a button is a
+ * component. It contains all the commons components things, its size, its
+ * color, etc...
  * </p>
  *
  * @author Litarvan
@@ -38,136 +35,257 @@ import org.libnoctis.util.Vector2i;
  */
 public abstract class NComponent
 {
-    /**
-     * The component dimension
-     */
-    private Vector2i size;
+	/**
+	 * This component width, in pixels.
+	 */
+	private int width;
 
-    /**
-     * The component position, depending of the current layout.
-     */
-    private LayoutProperty position;
+	/**
+	 * This component height, in pixels.
+	 */
+	private int height;
 
-    /**
-     * The parent container (that contains this component)
-     */
-    private NContainer parent;
+	/**
+	 * The component position, depending of the current layout.
+	 */
+	private LayoutProperty position;
 
-    /**
-     * The event manager
-     */
-    private EventManager manager;
+	/**
+	 * The parent container (that contains this component)
+	 */
+	private NContainer parent;
 
-    /**
-     * @return The parent container (that contains this component)
-     */
-    public NContainer getParent()
-    {
-        return parent;
-    }
+	/**
+	 * The event manager
+	 */
+	private EventManager manager;
+	
+	public NComponent()
+	{
+		manager = new EventManager();
+	}
 
-    /**
-     * @return The current drawer object
-     */
-    public Drawer getDrawer()
-    {
-        return parent.getDrawer();
-    }
+	/**
+	 * @return The parent container (that contains this component)
+	 */
+	public NContainer getParent()
+	{
+		return parent;
+	}
 
-    /**
-     * Register an event listener for this component events
-     *
-     * @param listener The event listener to add
-     */
-    public void registerListener(Object listener)
-    {
-        manager.registerListener(listener);
-    }
+	/**
+	 * @return The current drawer object
+	 */
+	public Drawer getDrawer()
+	{
+		return parent == null ? null : parent.getDrawer();
+	}
 
-    /**
-     * Paint the component, for the first time.
-     *
-     * @param drawer The current drawer (implemented by the used render lib)
-     */
-    public abstract void paint(Drawer drawer);
+	/**
+	 * Register an event listener for this component events
+	 *
+	 * @param listener The event listener to add
+	 */
+	public void registerListener(Object listener)
+	{
+		manager.registerListener(listener);
+	}
 
-    /**
-     * Update the component (when some of its properties had changed, or something)
-     *
-     * @param drawer The current drawer (implemented by the used render lib)
-     */
-    protected abstract void repaint(Drawer drawer);
+	/**
+	 * Called every frame from the parent frame's render Thread to render this
+	 * component and its children to the screen.
+	 */
+	public final void render()
+	{
+		render(getDrawer());
+	}
 
-    /**
-     * Executed on each frame (ex: executed 60 times per second if there is currently
-     * 60 fps)
-     */
-    protected abstract void onFrame();
+	/**
+	 * Called every frame from the parent frame's render Thread to render this
+	 * component and its children to the screen.
+	 */
+	protected final void render(Drawer drawer)
+	{
+		renderComponent(drawer);
+		renderChildren(drawer);
+	}
 
-    /**
-     * Repaints this component (update it)
-     */
-    public void repaint()
-    {
-        repaint(getDrawer());
-    }
+	/**
+	 * Called every frame from the parent frame's render Thread to render this
+	 * component's children to the screen.
+	 */
+	protected void renderChildren(Drawer drawer)
+	{
 
-    /**
-     * Executed when this component is added to a container, to setup things
-     *
-     * @param parent The container where this component was added
-     */
-    final void onAdded(NContainer parent)
-    {
-        this.parent = parent;
+	}
 
-        onComponentAdded(parent);
-    }
+	/**
+	 * Called every frame from the parent frame's render Thread to render this
+	 * component to the screen.
+	 */
+	protected void renderComponent(Drawer drawer)
+	{
 
-    /**
-     * Executed when this component is added to a container
-     *
-     * @param parent The container where this component was added
-     */
-    protected void onComponentAdded(NContainer parent)
-    {
-    }
+	}
 
-    /**
-     * @return The size of the component
-     */
-    public Vector2i getSize()
-    {
-        return size;
-    }
+	/**
+	 * Paint the component, for the first time.
+	 *
+	 * @param drawer The current drawer (implemented by the used render lib)
+	 */
+	protected void paintComponent(Drawer drawer)
+	{
 
-    /**
-     * Set the size of the component, and repaint it
-     *
-     * @param size The new component size
-     */
-    public void setSize(Vector2i size)
-    {
-        this.size = size;
-        repaint();
-    }
+	}
 
-    /**
-     * @return The component position, corresponding to the current layout
-     */
-    public LayoutProperty getPosition()
-    {
-        return position;
-    }
+	/**
+	 * Update the component (when some of its properties had changed, or
+	 * something)
+	 *
+	 * @param drawer The current drawer (implemented by the used render lib)
+	 */
+	protected void repaint(Drawer drawer)
+	{
 
-    /**
-     * Set the component position
-     *
-     * @param position The position, depending to the current layout
-     */
-    public void setPosition(LayoutProperty position)
-    {
-        this.position = position;
-        repaint();
-    }
+	}
+
+	/**
+	 * Repaints this component (update it)
+	 */
+	public void repaint()
+	{
+		repaint(getDrawer());
+	}
+
+	/**
+	 * Executed when this component is added to a container, to setup things
+	 *
+	 * @param parent The container where this component was added
+	 */
+	final void onAdded(NContainer parent)
+	{
+		this.parent = parent;
+
+		onComponentAdded(parent);
+	}
+
+	/**
+	 * Executed when this component is added to a container
+	 *
+	 * @param parent The container where this component was added
+	 */
+	protected void onComponentAdded(NContainer parent)
+	{
+	}
+
+	/**
+	 * Gets the width.
+	 *
+	 * @return the width
+	 */
+	public int getWidth()
+	{
+		return width;
+	}
+
+	/**
+	 * Sets the width.
+	 *
+	 * @param width the new width
+	 */
+	public void setWidth(int width)
+	{
+		this.width = width;
+		invalidate();
+	}
+
+	/**
+	 * Gets the height.
+	 *
+	 * @return the height
+	 */
+	public int getHeight()
+	{
+		return height;
+	}
+
+	/**
+	 * Sets the height.
+	 *
+	 * @param height the new height
+	 */
+	public void setHeight(int height)
+	{
+		this.height = height;
+		invalidate();
+	}
+
+	/**
+	 * Invalidates this component. An not valid component needs to be laid out
+	 * again.
+	 */
+	public void invalidate()
+	{
+		// TODO : implement
+		
+		repaint();
+	}
+
+	/**
+	 * @return The component position, corresponding to the current layout
+	 */
+	public LayoutProperty getPosition()
+	{
+		return position;
+	}
+
+	/**
+	 * Set the component position
+	 *
+	 * @param position The position, depending to the current layout
+	 */
+	public void setPosition(LayoutProperty position)
+	{
+		this.position = position;
+		repaint();
+	}
+
+	/**
+	 * Schedule the given task to be executed in the render Thread.
+	 * 
+	 * @param runnable The task to be executed in the render Thread.
+	 */
+	protected void schedulRenderTask(Runnable runnable)
+	{
+		getFrame().getFrameThread().runLater(runnable);
+	}
+
+	/**
+	 * Gets the frame that contains this component.
+	 * 
+	 * @return The frame that contains this component.
+	 */
+	public NFrame getFrame()
+	{
+		NComponent parent = this;
+
+		while (parent != null)
+		{
+			if (parent instanceof NFrame)
+			{
+				return (NFrame) parent;
+			}
+			else
+			{
+				parent = parent.getParent();
+			}
+		}
+
+		return null;
+	}
+	
+	public void dispatchEvent(Event event)
+	{
+		manager.callEvent(event);
+	}
 }

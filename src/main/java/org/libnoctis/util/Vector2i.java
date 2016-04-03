@@ -88,4 +88,10 @@ public class Vector2i
     {
         this.y = y;
     }
+
+	@Override
+	public String toString()
+	{
+		return "Vector2i [x=" + x + ", y=" + y + "]";
+	}
 }

@@ -40,7 +40,8 @@ public abstract class NLayout
     /**
      * The parent that is using this layout instance
      */
-    private NContainer parent;
+    @SuppressWarnings("unused")
+	private NContainer parent;
 
     /**
      * A method executed when the layout is set to a container

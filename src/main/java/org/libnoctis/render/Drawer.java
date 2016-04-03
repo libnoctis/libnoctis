@@ -18,7 +18,6 @@
  */
 package org.libnoctis.render;
 
-import org.libnoctis.util.Vector4i;
 
 /**
  * The Drawer
