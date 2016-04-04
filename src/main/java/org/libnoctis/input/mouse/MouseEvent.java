@@ -15,10 +15,9 @@
 package org.libnoctis.input.mouse;
 
 
+import org.jetbrains.annotations.Nullable;
 import org.libnoctis.input.Event;
 import org.libnoctis.util.Vector2i;
-
-import com.sun.istack.internal.Nullable;
 
 
 /**

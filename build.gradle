@@ -23,5 +23,6 @@ repositories {
 dependencies {
     compile 'org.lwjgl.lwjgl:lwjgl:2.9.3'
     compile 'org.lwjgl.lwjgl:lwjgl_util:2.9.3'
+    compile 'org.jetbrains:annotations:15.0'
 }
 

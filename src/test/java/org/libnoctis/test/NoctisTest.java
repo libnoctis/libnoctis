@@ -1,71 +1,91 @@
 package org.libnoctis.test;
 
+
 import java.io.File;
 import java.io.IOException;
 
 import org.libnoctis.components.NFrame;
 import org.libnoctis.input.NoctisEvent;
-import org.libnoctis.input.mouse.MouseDraggedEvent;
 import org.libnoctis.input.mouse.MouseMoveEvent;
-import org.libnoctis.input.mouse.MousePressedEvent;
-import org.libnoctis.input.mouse.MouseReleasedEvent;
+import org.libnoctis.render.Color;
+import org.libnoctis.render.Drawer;
 import org.lwjgl.LWJGLUtil;
+
 
 public class NoctisTest
 {
-	static class Listener
-	{
-		@NoctisEvent
-		public void mouseMoved(MouseMoveEvent event)
-		{
-			System.out.println("MouseMoveEvent @ " + event.getPos());
-		}
-		
-		@NoctisEvent
-		public void mouseDragged(MouseDraggedEvent event)
-		{
-			System.out.println("MouseDraggedEvent @ " + event.getPos());
-		}
-		
-		@NoctisEvent
-		public void mousePressed(MousePressedEvent event)
-		{
-			System.out.println("MousePressedEvent @ " + event.getPos());
-		}
-		
-		@NoctisEvent
-		public void mouseReleased(MouseReleasedEvent event)
-		{
-			System.out.println("MouseReleasedEvent @ " + event.getPos());
-		}
-	}
-	
 	/**
 	 * Starts the game.
 	 */
 	public static void main(String[] args)
 	{
-		init();
-		
-		NFrame frame = new NFrame("Salut");
-		
+		if (!init())
+		{
+			System.err.println("Couldn't load LWJGL, aborting.");
+			return;
+		}
+
+		NFrame frame = new NFrame("Salut") {
+			{
+				registerListener(new Listener());
+			}
+			
+			private boolean hovered;
+
+			class Listener
+			{
+				@NoctisEvent
+				public void mouseMoved(MouseMoveEvent event)
+				{
+					if (!hovered && event.getPos().length() < 50)
+					{
+						hovered = true;
+						repaint();
+					}
+					else if (hovered && event.getPos().length() >= 50)
+					{
+						hovered = false;
+						repaint();
+					}
+				}
+			}
+			
+			
+			@Override
+			protected void paintComponent(Drawer drawer)
+			{
+				if (hovered)
+				{
+					drawer.setColor(Color.RED);
+				}
+				else
+				{
+					drawer.setColor(Color.WHITE);
+				}
+				drawer.drawRect(0, 0, 100, 100);
+				
+				System.out.println("paint");
+			}
+		};
+
 		frame.setWidth(100);
 		frame.setHeight(200);
 		frame.show();
-		
-		frame.registerListener(new Listener());
 	}
 
-	private static void init()
+	private static boolean init()
 	{
 		try
 		{
 			LWJGLSetup.load(getBaseWorkingDirectory());
+			return true;
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
-		}		
+		}
+
+		return false;
 	}
 
 	private static File getBaseWorkingDirectory()

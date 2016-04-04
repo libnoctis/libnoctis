@@ -62,6 +62,16 @@ public class NoctisFrameThread extends Thread
 		{
 			callRunnables();
 			
+			if (Display.wasResized())
+			{
+				frame.resize();
+			}
+			
+			if (Display.isCloseRequested())
+			{
+				frame.requestClose();
+			}
+			
 			// Listen to user input
 			frame.input();
 

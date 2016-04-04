@@ -15,6 +15,9 @@
 package org.libnoctis.components;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.libnoctis.input.Event;
 import org.libnoctis.input.EventManager;
 import org.libnoctis.layout.LayoutProperty;
@@ -60,9 +63,18 @@ public abstract class NComponent
 	 */
 	private EventManager manager;
 	
+	private Map<String, Object> properties;
+	public int displayList = -1;
+
 	public NComponent()
 	{
 		manager = new EventManager();
+		properties = new HashMap<String, Object>();
+	}
+	
+	public Map<String, Object> getProperties()
+	{
+		return properties;
 	}
 
 	/**
@@ -97,7 +109,14 @@ public abstract class NComponent
 	 */
 	public final void render()
 	{
-		render(getDrawer());
+		Drawer drawer = getDrawer();
+
+		if (drawer != null)
+		{
+			if (drawer.paintEveryFrame())
+				paintComponent(drawer);
+			render(drawer);
+		}
 	}
 
 	/**
@@ -125,7 +144,7 @@ public abstract class NComponent
 	 */
 	protected void renderComponent(Drawer drawer)
 	{
-
+		drawer.render(this);
 	}
 
 	/**
@@ -144,17 +163,25 @@ public abstract class NComponent
 	 *
 	 * @param drawer The current drawer (implemented by the used render lib)
 	 */
-	protected void repaint(Drawer drawer)
+	protected final void repaint(Drawer drawer)
 	{
-
+		drawer.prePaint(this);
+		paintComponent(drawer);
+		drawer.postPaint(this);
 	}
 
 	/**
 	 * Repaints this component (update it)
 	 */
-	public void repaint()
+	public final void repaint()
 	{
-		repaint(getDrawer());
+		schedulRenderTask(new Runnable() {
+			@Override
+			public void run()
+			{
+				repaint(getDrawer());
+			}
+		});
 	}
 
 	/**
@@ -227,7 +254,7 @@ public abstract class NComponent
 	public void invalidate()
 	{
 		// TODO : implement
-		
+
 		repaint();
 	}
 
@@ -283,7 +310,7 @@ public abstract class NComponent
 
 		return null;
 	}
-	
+
 	public void dispatchEvent(Event event)
 	{
 		manager.callEvent(event);

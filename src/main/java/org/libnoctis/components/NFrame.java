@@ -15,11 +15,19 @@
 package org.libnoctis.components;
 
 
+import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
+import static org.lwjgl.opengl.GL11.GL_PROJECTION;
+import static org.lwjgl.opengl.GL11.glLoadIdentity;
+import static org.lwjgl.opengl.GL11.glMatrixMode;
+import static org.lwjgl.opengl.GL11.glOrtho;
+
 import org.libnoctis.input.mouse.MouseButton;
 import org.libnoctis.input.mouse.MouseDraggedEvent;
 import org.libnoctis.input.mouse.MouseMoveEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
 import org.libnoctis.input.mouse.MouseReleasedEvent;
+import org.libnoctis.render.DisplayListDrawer;
+import org.libnoctis.render.Drawer;
 import org.libnoctis.render.NoctisFrameThread;
 import org.libnoctis.util.Vector2i;
 import org.lwjgl.LWJGLException;
@@ -38,6 +46,11 @@ import org.lwjgl.opengl.DisplayMode;
  */
 public class NFrame extends NContainer
 {
+	public static enum CloseOperation
+	{
+		EXIT_ON_CLOSE;
+	}
+
 	/**
 	 * This frame title.
 	 */
@@ -63,10 +76,59 @@ public class NFrame extends NContainer
 	 */
 	private boolean isResizable;
 
+	/**
+	 * The drawer object for this frame, and all its children.
+	 */
+	private Drawer drawer;
+
+	/**
+	 * Creates a new NFrame.
+	 * 
+	 * @param title The frame title.
+	 */
 	public NFrame(String title)
+	{
+		this(title, new DisplayListDrawer());
+	}
+
+	/**
+	 * Creates a new NFrame.
+	 * 
+	 * @param title The frame title.
+	 * @param drawer This frame drawer.
+	 */
+	public NFrame(String title, Drawer drawer)
 	{
 		this.title = title;
 		this.frameThread = new NoctisFrameThread(this);
+		this.drawer = drawer;
+		getFrameThread().runLater(new Runnable() {
+			@Override
+			public void run()
+			{
+				try
+				{
+					displayUpdateTitle();
+					displayUpdateDisplayMode();
+					displayCreate();
+					mouseCreate();
+					keyboardCreate();
+					resize();
+					isVisible = true;
+				}
+				catch (LWJGLException e)
+				{
+					isVisible = false;
+					getFrameThread().setRunning(false);
+				}
+			}
+		});
+	}
+
+	@Override
+	public Drawer getDrawer()
+	{
+		return drawer;
 	}
 
 	/**
@@ -142,31 +204,9 @@ public class NFrame extends NContainer
 	/**
 	 * Adds this frame to the desktop, and starts render Thread.
 	 */
-	public boolean show()
+	public void show()
 	{
-		getFrameThread().runLater(new Runnable() {
-			@Override
-			public void run()
-			{
-				try
-				{
-					displayUpdateTitle();
-					displayUpdateDisplayMode();
-					displayCreate();
-					mouseCreate();
-					keyboardCreate();
-					isVisible = true;
-				}
-				catch (LWJGLException e)
-				{
-					isVisible = false;
-					getFrameThread().setRunning(false);
-				}
-			}
-		});
-
 		getFrameThread().start();
-		return false;
 	}
 
 	/**
@@ -184,7 +224,18 @@ public class NFrame extends NContainer
 		}
 	}
 
-	public void input()
+	/**
+	 * Called from render Thread when frame close is requested.
+	 */
+	public final void requestClose()
+	{
+		System.exit(0);
+	}
+
+	/**
+	 * Called from render Thread to listen to user input.
+	 */
+	public final void input()
 	{
 		lwjglInput();
 	}
@@ -233,14 +284,13 @@ public class NFrame extends NContainer
 		{
 			if (button != null)
 			{
-				dispatchEvent(new MouseReleasedEvent(mousePos, button));;
+				dispatchEvent(new MouseReleasedEvent(mousePos, button));
 				eventButton = null;
 				lastMouseClickTime = System.currentTimeMillis();
 			}
 			else if (eventButton != null && lastMouseClickTime > 0L)
 			{
-				dispatchEvent(new MouseDraggedEvent(mousePos, button, mouseDynamicPos, new Vector2i(lastClickMoveHandledX, lastClickMoveHandledY), System.currentTimeMillis() - lastMouseClickTime));;
-
+				dispatchEvent(new MouseDraggedEvent(mousePos, button, mouseDynamicPos, new Vector2i(lastClickMoveHandledX, lastClickMoveHandledY), System.currentTimeMillis() - lastMouseClickTime));
 				lastClickMoveHandledX = mousePos.getX();
 				lastClickMoveHandledY = mousePos.getY();
 			}
@@ -279,5 +329,13 @@ public class NFrame extends NContainer
 	private void keyboardCreate() throws LWJGLException
 	{
 		Keyboard.create();
+	}
+
+	public void resize()
+	{
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho(0, getWidth(), getHeight(), 0, 1, -1);
+		glMatrixMode(GL_MODELVIEW);
 	}
 }
