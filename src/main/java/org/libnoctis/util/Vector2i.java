@@ -14,6 +14,7 @@
  */
 package org.libnoctis.util;
 
+
 /**
  * The 2 Int Vector
  * <p>

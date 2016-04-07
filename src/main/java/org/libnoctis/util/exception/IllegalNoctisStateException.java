@@ -14,6 +14,7 @@
  */
 package org.libnoctis.util.exception;
 
+
 public class IllegalNoctisStateException extends NoctisException
 {
 	private static final long serialVersionUID = -1111479383577938294L;

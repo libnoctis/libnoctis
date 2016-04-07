@@ -1,4 +1,4 @@
-package org.libnoctis.render;
+package org.libnoctis.render.gl;
 
 
 import static org.lwjgl.opengl.GL11.GL_QUADS;
@@ -6,6 +6,9 @@ import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glColor4f;
 import static org.lwjgl.opengl.GL11.glEnd;
 import static org.lwjgl.opengl.GL11.glVertex2i;
+
+import org.libnoctis.render.Color;
+import org.libnoctis.render.Drawer;
 
 
 public class DirectDrawer extends Drawer

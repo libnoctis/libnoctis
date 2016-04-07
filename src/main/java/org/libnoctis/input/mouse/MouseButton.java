@@ -36,19 +36,19 @@ public enum MouseButton
 	 * The right mouse button
 	 */
 	RIGHT,
-	
+
 	/**
 	 * The mouse wheel button
 	 */
 	CENTER;
-	
+
 	public static MouseButton byId(int id)
 	{
 		if (id < 0)
 		{
 			return null;
 		}
-		
+
 		return values()[id];
 	}
 }

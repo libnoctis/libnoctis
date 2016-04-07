@@ -49,7 +49,7 @@ public class MouseEvent extends Event
 	{
 		this(pos, null);
 	}
-	
+
 	/**
 	 * The Noctis Mouse Event
 	 *

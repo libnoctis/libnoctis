@@ -39,7 +39,7 @@ public abstract class Drawer
 
 	public void postPaint(NComponent component)
 	{
-		
+
 	}
 
 	public void prePaint(NComponent component)
@@ -49,6 +49,6 @@ public abstract class Drawer
 
 	public void render(NComponent nComponent)
 	{
-		
+
 	}
 }
