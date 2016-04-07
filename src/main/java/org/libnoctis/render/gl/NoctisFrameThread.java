@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.libnoctis.render;
+package org.libnoctis.render.gl;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -68,17 +68,17 @@ public class NoctisFrameThread extends Thread
 		while (isRunning)
 		{
 			callRunnables();
-			
+
 			if (Display.wasResized())
 			{
 				frame.resize();
 			}
-			
+
 			if (Display.isCloseRequested())
 			{
 				frame.requestClose();
 			}
-			
+
 			// Listen to user input
 			frame.input();
 

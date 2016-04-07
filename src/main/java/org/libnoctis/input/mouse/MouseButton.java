@@ -18,7 +18,6 @@
  */
 package org.libnoctis.input.mouse;
 
-
 /**
  * The Mouse Buttons
  *
@@ -41,7 +40,7 @@ public enum MouseButton
 	 * The right mouse button
 	 */
 	RIGHT,
-	
+
 	/**
 	 * The mouse wheel button
 	 */
@@ -60,7 +59,7 @@ public enum MouseButton
 		{
 			return null;
 		}
-		
+
 		return values()[id];
 	}
 }

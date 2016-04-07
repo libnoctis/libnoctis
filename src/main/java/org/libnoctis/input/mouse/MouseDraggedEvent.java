@@ -75,7 +75,10 @@ public class MouseDraggedEvent extends MouseMoveEvent
 	{
 		return timeSinceClick;
 	}
-	
+
+    /**
+     * @inheritDoc
+     */
 	public boolean shouldPassForSuperclassEvent()
 	{
 		return false;

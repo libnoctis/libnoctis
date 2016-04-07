@@ -39,7 +39,10 @@ public class Texture
 	 * This texture ID for OpenGL.
 	 */
 	private int textureId;
-	
+
+	/**
+	 * Bind the texture
+	 */
 	public void bind()
 	{
 		glBindTexture(GL_TARGET, textureId);

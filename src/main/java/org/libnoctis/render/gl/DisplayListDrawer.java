@@ -1,4 +1,5 @@
-package org.libnoctis.render;
+package org.libnoctis.render.gl;
+
 
 import static org.lwjgl.opengl.GL11.GL_COMPILE;
 import static org.lwjgl.opengl.GL11.glCallList;
@@ -9,6 +10,7 @@ import static org.lwjgl.opengl.GL11.glNewList;
 
 import org.libnoctis.components.NComponent;
 
+
 public class DisplayListDrawer extends DirectDrawer
 {
 	@Override
@@ -16,7 +18,7 @@ public class DisplayListDrawer extends DirectDrawer
 	{
 		glCallList(component.displayList);
 	}
-	
+
 	@Override
 	public void prePaint(NComponent component)
 	{
@@ -26,7 +28,7 @@ public class DisplayListDrawer extends DirectDrawer
 		}
 
 		component.displayList = glGenLists(1);
-		
+
 		glNewList(component.displayList, GL_COMPILE);
 	}
 
@@ -35,7 +37,7 @@ public class DisplayListDrawer extends DirectDrawer
 	{
 		glEndList();
 	}
-	
+
 	@Override
 	public boolean paintEveryFrame()
 	{

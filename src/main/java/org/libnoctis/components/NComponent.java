@@ -62,7 +62,7 @@ public abstract class NComponent
 	 * The event manager
 	 */
 	private EventManager manager;
-	
+
 	private Map<String, Object> properties;
 	public int displayList = -1;
 
@@ -71,7 +71,7 @@ public abstract class NComponent
 		manager = new EventManager();
 		properties = new HashMap<String, Object>();
 	}
-	
+
 	public Map<String, Object> getProperties()
 	{
 		return properties;

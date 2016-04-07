@@ -29,7 +29,7 @@ public class NoctisTest
 			{
 				registerListener(new Listener());
 			}
-			
+
 			private boolean hovered;
 
 			class Listener
@@ -49,8 +49,7 @@ public class NoctisTest
 					}
 				}
 			}
-			
-			
+
 			@Override
 			protected void paintComponent(Drawer drawer)
 			{
@@ -63,7 +62,7 @@ public class NoctisTest
 					drawer.setColor(Color.WHITE);
 				}
 				drawer.drawRect(0, 0, 100, 100);
-				
+
 				System.out.println("paint");
 			}
 		};
@@ -71,6 +70,8 @@ public class NoctisTest
 		frame.setWidth(100);
 		frame.setHeight(200);
 		frame.show();
+
+		frame.add(new Button());
 	}
 
 	private static boolean init()
