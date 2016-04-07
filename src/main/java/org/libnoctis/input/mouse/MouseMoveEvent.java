@@ -18,9 +18,7 @@
  */
 package org.libnoctis.input.mouse;
 
-
 import org.libnoctis.util.Vector2i;
-
 
 /**
  * The Noctis Mouse Move Event

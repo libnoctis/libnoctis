@@ -21,9 +21,29 @@ package org.libnoctis.render;
 
 public class Color
 {
+	/**
+	 * The color mask (to signed and unsigned byte)
+	 */
 	private static final int MASK = 0xff;
 
+	/**
+	 * The red Color
+	 */
 	public static final Color RED = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+
+	/**
+	 * The green color
+	 */
+	public static final Color GREEN = new Color(0.0f, 1.0f, 0.0f);
+
+	/**
+	 * The blue color
+	 */
+	public static final Color BLUE = new Color(0.0f, 0.0f, 1.0f);
+
+	/**
+	 * The white color
+	 */
 	public static final Color WHITE = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
 	/**
@@ -46,11 +66,51 @@ public class Color
 	 */
 	private final byte alpha;
 
+	/**
+	 * A color (opaque)
+	 *
+	 * @param red The red of the color
+	 * @param green The green of the color
+	 * @param blue The blue of the color
+     */
+	public Color(float red, float green, float blue)
+	{
+		this (red, green, blue, 1.0f);
+	}
+
+	/**
+	 * A color
+	 *
+	 * @param red The red of the color
+	 * @param green The green of the color
+	 * @param blue The blue of the color
+	 * @param alpha The transparency of the color
+	 */
 	public Color(float red, float green, float blue, float alpha)
 	{
 		this((byte) (red * 255.0f), (byte) (green * 255.0f), (byte) (blue * 255.0f), (byte) (alpha * 255.0f));
 	}
 
+	/**
+	 * A color (opaque)
+	 *
+	 * @param red The red of the color
+	 * @param green The green of the color
+	 * @param blue The blue of the color
+	 */
+	public Color(byte red, byte green, byte blue)
+	{
+		this(red, green, blue, Byte.MAX_VALUE);
+	}
+
+	/**
+	 * A color
+	 *
+	 * @param red The red of the color
+	 * @param green The green of the color
+	 * @param blue The blue of the color
+	 * @param alpha The transparency of the color
+	 */
 	public Color(byte red, byte green, byte blue, byte alpha)
 	{
 		this.red = red;
@@ -99,21 +159,41 @@ public class Color
 		return (byte) (alpha & MASK);
 	}
 
+	/**
+	 * Gets the red as a float
+	 *
+	 * @return The red
+     */
 	public float getRedFloat()
 	{
 		return (red & MASK) / 255.0f;
 	}
 
+	/**
+	 * Gets the green as a float
+	 *
+	 * @return The green
+	 */
 	public float getGreenFloat()
 	{
 		return (green & MASK) / 255.0f;
 	}
 
+	/**
+	 * Gets the blue as a float
+	 *
+	 * @return The blue
+	 */
 	public float getBlueFloat()
 	{
 		return (blue & MASK) / 255.0f;
 	}
 
+	/**
+	 * Gets the alpha as a float
+	 *
+	 * @return The alpha
+	 */
 	public float getAlphaFloat()
 	{
 		return (alpha & MASK) / 255.0f;
