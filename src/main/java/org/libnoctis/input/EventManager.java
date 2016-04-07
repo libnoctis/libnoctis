@@ -43,7 +43,7 @@ public class EventManager
 	 *
 	 * @param event The instance of the event to call
 	 */
-	public void callEvent(Event event)
+	public void callEvent(NEvent event)
 	{
 		try
 		{
@@ -75,7 +75,7 @@ public class EventManager
 	 *        event
 	 * @see NoctisEvent
 	 */
-	private void launchEvent(Object listener, Event event) throws Throwable
+	private void launchEvent(Object listener, NEvent event) throws Throwable
 	{
 		Method[] methods = listener.getClass().getDeclaredMethods();
 		for (Method method : methods)

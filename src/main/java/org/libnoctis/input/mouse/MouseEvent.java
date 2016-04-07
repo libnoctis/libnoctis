@@ -16,7 +16,7 @@ package org.libnoctis.input.mouse;
 
 
 import org.jetbrains.annotations.Nullable;
-import org.libnoctis.input.Event;
+import org.libnoctis.input.NEvent;
 import org.libnoctis.util.Vector2i;
 
 
@@ -32,7 +32,7 @@ import org.libnoctis.util.Vector2i;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class MouseEvent extends Event
+public class MouseEvent extends NEvent
 {
 	/**
 	 * The mouse position.

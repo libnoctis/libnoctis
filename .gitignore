@@ -136,4 +136,5 @@ fabric.properties
 ### Intellij Patch ###
 *.iml
 
-
+# Intellij:
+.idea/

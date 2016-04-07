@@ -1,19 +1,22 @@
 /*
  * Copyright 2015-2016 Adrien "Litarvan" Navratil & Victor "Wytrem"
+ *
  * This file is part of Libnoctis.
+
  * Libnoctis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
  * Libnoctis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
+ *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
+ * along with Libnoctis.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.libnoctis.components;
-
 
 import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
 import static org.lwjgl.opengl.GL11.GL_PROJECTION;
@@ -36,17 +39,16 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
-
 /**
  * Base class for Noctis frames.
- * 
+ *
  * @author Wytrem
  * @version 1.0.0
  * @since 1.0.0
  */
 public class NFrame extends NContainer
 {
-	public static enum CloseOperation
+	public enum CloseOperation
 	{
 		EXIT_ON_CLOSE;
 	}
@@ -83,7 +85,7 @@ public class NFrame extends NContainer
 
 	/**
 	 * Creates a new NFrame.
-	 * 
+	 *
 	 * @param title The frame title.
 	 */
 	public NFrame(String title)
@@ -93,7 +95,7 @@ public class NFrame extends NContainer
 
 	/**
 	 * Creates a new NFrame.
-	 * 
+	 *
 	 * @param title The frame title.
 	 * @param drawer This frame drawer.
 	 */
@@ -158,7 +160,7 @@ public class NFrame extends NContainer
 
 	/**
 	 * Gets the frame title.
-	 * 
+	 *
 	 * @return This frame title.
 	 */
 	public String getTitle()
@@ -168,7 +170,7 @@ public class NFrame extends NContainer
 
 	/**
 	 * Checks if this frame is undecorated.
-	 * 
+	 *
 	 * @return {@code true} if this frame is undecorated;
 	 */
 	public boolean isUndecorated()
@@ -179,7 +181,7 @@ public class NFrame extends NContainer
 	/**
 	 * Defines if this frame is undecorated. This operation will throw an
 	 * IllegalStateException is the window is already shown.
-	 * 
+	 *
 	 * @param undecorated {@code true} if the frame should appears undecorated.
 	 */
 	public void setUndecorated(boolean undecorated)
@@ -193,7 +195,7 @@ public class NFrame extends NContainer
 
 	/**
 	 * Gets this frame render Thread.
-	 * 
+	 *
 	 * @return This frame render Thread.
 	 */
 	public NoctisFrameThread getFrameThread()
@@ -211,7 +213,7 @@ public class NFrame extends NContainer
 
 	/**
 	 * Sets the frame title.
-	 * 
+	 *
 	 * @param title The new title value.
 	 */
 	public void setTitle(String title)

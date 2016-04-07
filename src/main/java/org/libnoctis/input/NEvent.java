@@ -16,28 +16,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.libnoctis.input.mouse;
-
-import org.libnoctis.util.Vector2i;
+package org.libnoctis.input;
 
 /**
- * The Mouse Pressed Event
+ * The Noctis Event
  *
  * <p>
- *     An event called when the mouse pressed a component
+ *     An event of Libnoctis
  * </p>
+ *
+ * @see EventManager
+ * @see NoctisEvent
  *
  * @author Wytrem
  * @version 1.0.0
  * @since 1.0.0
  */
-public class MousePressedEvent extends MouseEvent
+public abstract class NEvent
 {
 	/**
-	 * @inheritDoc
+	 * @return If the event should be passed to the superclasses of
+	 * this current event
      */
-	public MousePressedEvent(Vector2i pos, MouseButton button)
+	public boolean shouldPassForSuperclassEvent()
 	{
-		super(pos, button);
+		return true;
 	}
 }

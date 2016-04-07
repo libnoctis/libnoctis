@@ -18,7 +18,7 @@ package org.libnoctis.components;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.libnoctis.input.Event;
+import org.libnoctis.input.NEvent;
 import org.libnoctis.input.EventManager;
 import org.libnoctis.layout.LayoutProperty;
 import org.libnoctis.render.Drawer;
@@ -311,7 +311,7 @@ public abstract class NComponent
 		return null;
 	}
 
-	public void dispatchEvent(Event event)
+	public void dispatchEvent(NEvent event)
 	{
 		manager.callEvent(event);
 	}

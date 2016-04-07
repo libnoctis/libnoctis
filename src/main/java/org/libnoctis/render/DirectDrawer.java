@@ -1,12 +1,10 @@
 package org.libnoctis.render;
 
-
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glColor4f;
 import static org.lwjgl.opengl.GL11.glEnd;
 import static org.lwjgl.opengl.GL11.glVertex2i;
-
 
 public class DirectDrawer extends Drawer
 {
@@ -20,10 +18,12 @@ public class DirectDrawer extends Drawer
 	public void drawRect(int x, int y, int width, int height)
 	{
 		glBegin(GL_QUADS);
-		glVertex2i(x, y);
-		glVertex2i(x, y + height);
-		glVertex2i(x + width, y + height);
-		glVertex2i(x + width, y);
+		{
+			glVertex2i(x, y);
+			glVertex2i(x, y + height);
+			glVertex2i(x + width, y + height);
+			glVertex2i(x + width, y);
+		}
 		glEnd();
 	}
 
