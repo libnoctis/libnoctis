@@ -16,17 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.libnoctis.render.gl;
-
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glGenTextures;
+package org.libnoctis.render;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-
 import javax.imageio.ImageIO;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * An OpenGL Texture
@@ -35,7 +32,7 @@ import javax.imageio.ImageIO;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class GlTexture
+public class NTexture
 {
 	/**
 	 * The target GL code
@@ -53,8 +50,8 @@ public class GlTexture
 	 * @param stream The image input stream
 	 *
 	 * @throws IOException If it failed to read the image
-     */
-	public GlTexture(InputStream stream) throws IOException
+	 */
+	public NTexture(InputStream stream) throws IOException
 	{
 		this(ImageIO.read(stream));
 	}
@@ -63,8 +60,8 @@ public class GlTexture
 	 * The OpenGL Texture
 	 *
 	 * @param image The image to load
-     */
-	public GlTexture(BufferedImage image)
+	 */
+	public NTexture(BufferedImage image)
 	{
 		textureId = glGenTextures();
 		//		update(image);

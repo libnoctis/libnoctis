@@ -26,6 +26,7 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.imageio.ImageIO;
+import org.libnoctis.render.NTexture;
 
 /**
  * A Noctis Theme
@@ -87,6 +88,28 @@ public class NoctisTheme
     }
 
     /**
+     * Read a file from the zip and throws a ThemeRequiredException (RuntimeException)
+     * if it can't find it
+     *
+     * @param path The path of the file (in the zip)
+     *
+     * @return An input stream of the file
+     *
+     * @throws ThemeRequiredException If it failed to read the file
+     */
+    public InputStream require(String path) throws ThemeRequiredException
+    {
+        try
+        {
+            return get(path);
+        }
+        catch (IOException e)
+        {
+            throw new ThemeRequiredException("Can't find the required file " + path + " in the current theme", e);
+        }
+    }
+
+    /**
      * Read an image from the zip
      *
      * @param path The path of the image (in the textures folder of the zip)
@@ -98,6 +121,64 @@ public class NoctisTheme
     public BufferedImage image(String path) throws IOException
     {
         return ImageIO.read(get(TEXTURE_FOLDER + path));
+    }
+
+    /**
+     * Read an image from the zip and throws a ThemeRequiredException (RuntimeException)
+     * if it can't find it
+     *
+     * @param path The path of the image (in the textures folder of the zip)
+     *
+     * @return The read buffered image
+     *
+     * @throws ThemeRequiredException If it failed to read the image
+     */
+    public BufferedImage requireImage(String path) throws ThemeRequiredException
+    {
+        try
+        {
+            return image(path);
+        }
+        catch (IOException e)
+        {
+            throw new ThemeRequiredException("Can't find the required image " + path + " in the current theme", e);
+        }
+    }
+
+    /**
+     * Read a texture from the zip
+     *
+     * @param path The path of the texture (in the textures folder of the zip)
+     *
+     * @return The read texture
+     *
+     * @throws IOException If it failed to read the texture
+     */
+    public NTexture texture(String path) throws IOException
+    {
+        return new NTexture(image(path));
+    }
+
+    /**
+     * Read a texture from the zip and throws a ThemeRequiredException (RuntimeException)
+     * if it can't find it
+     *
+     * @param path The path of the texture (in the textures folder of the zip)
+     *
+     * @return The read texture
+     *
+     * @throws ThemeRequiredException If it failed to read the texture
+     */
+    public NTexture requireTexture(String path) throws ThemeRequiredException
+    {
+        try
+        {
+            return texture(path);
+        }
+        catch (IOException e)
+        {
+            throw new ThemeRequiredException("Can't find the required texture " + path + " in the current theme", e);
+        }
     }
 
     /**
@@ -122,5 +203,22 @@ public class NoctisTheme
     public Object prop(String key)
     {
         return properties.getProperty(key);
+    }
+
+    /**
+     * Get the theme property of the given key and throws a ThemeRequiredException
+     * (RuntimeException) if it can't find it
+     *
+     * @param key The key of the value to get
+     *
+     * @return The read value
+     */
+    public Object requireProp(String key)
+    {
+        Object prop = properties.getProperty(key);
+        if (prop == null)
+            throw new ThemeRequiredException("Can't find the required property " + key + " in the current theme");
+
+        return prop;
     }
 }
