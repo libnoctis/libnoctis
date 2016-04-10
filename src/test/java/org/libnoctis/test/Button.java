@@ -1,14 +1,12 @@
 package org.libnoctis.test;
 
-
 import java.awt.image.BufferedImage;
 
 import org.libnoctis.components.NComponent;
-import org.libnoctis.render.gl.GlTexture;
-
+import org.libnoctis.render.NTexture;
 
 public class Button extends NComponent
 {
-	protected GlTexture tex = new GlTexture((BufferedImage) null);
+	protected NTexture tex = new NTexture((BufferedImage) null);
 
 }

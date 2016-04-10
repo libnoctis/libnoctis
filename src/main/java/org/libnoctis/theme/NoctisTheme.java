@@ -213,9 +213,9 @@ public class NoctisTheme
      *
      * @return The read value
      */
-    public Object requireProp(String key)
+    public String requireProp(String key)
     {
-        Object prop = properties.getProperty(key);
+        String prop = properties.getProperty(key);
         if (prop == null)
             throw new ThemeRequiredException("Can't find the required property " + key + " in the current theme");
 

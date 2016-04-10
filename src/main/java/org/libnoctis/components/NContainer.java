@@ -19,6 +19,8 @@
 package org.libnoctis.components;
 
 import java.util.ArrayList;
+import org.libnoctis.layout.NLayout;
+import org.libnoctis.util.Vector2i;
 
 /**
  * The Noctis Container
@@ -38,6 +40,16 @@ public abstract class NContainer extends NComponent
 	 * The components in this container
 	 */
 	private ArrayList<NComponent> components = new ArrayList<NComponent>();
+
+    /**
+     * The components positions
+     */
+    private Vector2i[] positions = new Vector2i[0];
+
+    /**
+     * The container layout
+     */
+    private NLayout layout;
 
 	/**
 	 * @return The number of component in this container
@@ -67,7 +79,11 @@ public abstract class NContainer extends NComponent
 	public NContainer add(NComponent component)
 	{
 		this.components.add(component);
-		repaint();
+        this.positions = layout.getElementsPosition(this.components.toArray(new NComponent[this.components.size()]));
+
+        component.setGeneratedPosition(this.positions[this.components.size() - 1]);
+
+        repaint();
 
 		return this;
 	}
@@ -97,7 +113,15 @@ public abstract class NContainer extends NComponent
 		return component;
 	}
 
-	/**
+    /**
+     * @return The components position, in order.
+     */
+    public Vector2i[] getPositions()
+    {
+        return positions;
+    }
+
+    /**
 	 * Remove a given component
 	 *
 	 * @param component The component to remove
@@ -110,4 +134,22 @@ public abstract class NContainer extends NComponent
 
 		return result;
 	}
+
+    /**
+     * @return This container layout
+     */
+    public NLayout getLayout()
+    {
+        return layout;
+    }
+
+    /**
+     * Set the layout of this container
+     *
+     * @param layout The new layout
+     */
+    public void setLayout(NLayout layout)
+    {
+        this.layout = layout;
+    }
 }

@@ -37,12 +37,12 @@ public class NoctisTest
 				@NoctisEvent
 				public void mouseMoved(MouseMoveEvent event)
 				{
-					if (!hovered && event.getPos().length() < 50)
+					if (!hovered && event.getPos().length() < 200 && event.getPos().length() > 50)
 					{
 						hovered = true;
 						repaint();
 					}
-					else if (hovered && event.getPos().length() >= 50)
+					else if (hovered && event.getPos().length() >= 200 || event.getPos().length() <= 50)
 					{
 						hovered = false;
 						repaint();
@@ -61,14 +61,14 @@ public class NoctisTest
 				{
 					drawer.setColor(Color.WHITE);
 				}
-				drawer.drawRect(0, 0, 100, 100);
+				drawer.drawRect(50, 50, 150, 150);
 
 				System.out.println("paint");
 			}
 		};
 
-		frame.setWidth(100);
-		frame.setHeight(200);
+		frame.setWidth(350);
+		frame.setHeight(350);
 		frame.show();
 
 		frame.add(new Button());
