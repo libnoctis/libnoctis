@@ -26,6 +26,7 @@ import org.libnoctis.input.NEvent;
 import org.libnoctis.input.EventManager;
 import org.libnoctis.layout.LayoutProperty;
 import org.libnoctis.render.Drawer;
+import org.libnoctis.theme.NoctisTheme;
 
 
 /**
@@ -87,6 +88,14 @@ public abstract class NComponent
 	public NContainer getParent()
 	{
 		return parent;
+	}
+
+	/**
+	 * @return The current theme
+     */
+	public NoctisTheme theme()
+	{
+		return parent.theme();
 	}
 
 	/**

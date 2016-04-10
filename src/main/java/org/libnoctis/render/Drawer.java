@@ -51,6 +51,9 @@ public abstract class Drawer
      */
 	public abstract void drawRect(int x, int y, int width, int height);
 
+	/**
+	 * @return If the drawer should be called at every frame
+     */
 	public abstract boolean paintEveryFrame();
 
 	/**

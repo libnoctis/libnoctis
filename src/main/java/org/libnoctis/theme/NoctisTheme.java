@@ -1,0 +1,126 @@
+/*
+ * Copyright 2015-2016 Adrien "Litarvan" Navratil & Victor "Wytrem"
+ *
+ * This file is part of Libnoctis.
+
+ * Libnoctis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Libnoctis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Libnoctis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.libnoctis.theme;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import javax.imageio.ImageIO;
+
+/**
+ * A Noctis Theme
+ *
+ * <p>
+ *     A Noctis Theme is a zip containing some properties (in a json)
+ *     and some images.
+ * </p>
+ *
+ * @author Litarvan
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+public class NoctisTheme
+{
+    /**
+     * The folder where the textures are in the zip file
+     */
+    public static final String TEXTURE_FOLDER = "textures/";
+
+    /**
+     * The zip file of the theme
+     */
+    private ZipFile zip;
+
+    /**
+     * The theme properties
+     */
+    private Properties     properties = new Properties();
+
+    /**
+     * The Noctis Theme
+     *
+     * @param zip The zip file of the theme
+     *
+     * @throws IOException If it failed to read the zip
+     */
+    NoctisTheme(File zip) throws IOException
+    {
+        this.zip = new ZipFile(zip);
+
+        // Read the properties from the theme.properties file of the zip
+        properties.load(get("theme.properties"));
+    }
+
+    /**
+     * Read a file from the zip
+     *
+     * @param path The path of the file (in the zip)
+     *
+     * @return An input stream of the file
+     *
+     * @throws IOException If it failed to read the file
+     */
+    public InputStream get(String path) throws IOException
+    {
+        ZipEntry entry = zip.getEntry(path);
+        return zip.getInputStream(entry);
+    }
+
+    /**
+     * Read an image from the zip
+     *
+     * @param path The path of the image (in the textures folder of the zip)
+     *
+     * @return The read buffered image
+     *
+     * @throws IOException If it failed to read the image
+     */
+    public BufferedImage image(String path) throws IOException
+    {
+        return ImageIO.read(get(TEXTURE_FOLDER + path));
+    }
+
+    /**
+     * Check if the theme has the given property
+     *
+     * @param key The property of the value to check
+     *
+     * @return If the theme has the given property
+     */
+    public boolean hasProperty(String key)
+    {
+        return properties.containsKey(key);
+    }
+
+    /**
+     * Get the theme property of the given key
+     *
+     * @param key The key of the value to get
+     *
+     * @return The read value
+     */
+    public Object prop(String key)
+    {
+        return properties.getProperty(key);
+    }
+}

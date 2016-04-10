@@ -32,6 +32,7 @@ import org.libnoctis.input.mouse.MouseReleasedEvent;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.DisplayListDrawer;
 import org.libnoctis.render.gl.NoctisFrameThread;
+import org.libnoctis.theme.NoctisTheme;
 import org.libnoctis.util.Vector2i;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -48,15 +49,15 @@ import org.lwjgl.opengl.DisplayMode;
  */
 public class NFrame extends NContainer
 {
-	public enum CloseOperation
-	{
-		EXIT_ON_CLOSE;
-	}
-
 	/**
 	 * This frame title.
 	 */
 	private String title;
+
+    /**
+     * The frame current theme
+     */
+	private NoctisTheme theme;
 
 	/**
 	 * {@code true} is the display was created.
@@ -133,7 +134,13 @@ public class NFrame extends NContainer
 		return drawer;
 	}
 
-	/**
+    @Override
+    public NoctisTheme theme()
+    {
+        return theme;
+    }
+
+    /**
 	 * Checks if is resizable.
 	 *
 	 * @return true, if is resizable.
