@@ -18,15 +18,14 @@
  */
 package org.libnoctis.components;
 
-
 import java.util.ArrayList;
-
 
 /**
  * The Noctis Container
+ *
  * <p>
- * The Noctis Container is a component that can contains other components.
- * By example, NPanel is a NContainer
+ *     The Noctis Container is a component that can contains other components.
+ *     By example, NPanel is a NContainer
  * </p>
  *
  * @author Litarvan

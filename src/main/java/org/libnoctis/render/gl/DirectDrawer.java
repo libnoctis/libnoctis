@@ -60,6 +60,12 @@ public class DirectDrawer extends Drawer
 	}
 
 	@Override
+	public void drawTexturedRect(int x, int y, int width, int height, int u, int v)
+	{
+		// TODO: Implement this
+	}
+
+	@Override
 	public boolean paintEveryFrame()
 	{
 		return true;

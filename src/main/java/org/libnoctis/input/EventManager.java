@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import org.libnoctis.input.mouse.MousePressedEvent;
 
 
 /**

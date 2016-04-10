@@ -51,6 +51,31 @@ public abstract class Drawer
      */
 	public abstract void drawRect(int x, int y, int width, int height);
 
+    /**
+     * Draw a rectangle with the bound texture
+     *
+     * @param x The x position of the rectangle
+     * @param y The y position of the rectangle
+     * @param width The width of the rectangle
+     * @param height The height of the rectangle
+     */
+    public void drawTexturedRect(int x, int y, int width, int height)
+    {
+        drawTexturedRect(x, y, width, height, 0, 0);
+    }
+
+    /**
+     * Draw a rectangle with the texture at the given x, y of the bound sprite
+     *
+     * @param x The x position of the rectangle
+     * @param y The y position of the rectangle
+     * @param width The width of the rectangle
+     * @param height The height of the rectangle
+     * @param u The x of the texture of the sprite
+     * @param v The y of the texture of the sprite
+     */
+    public abstract void drawTexturedRect(int x, int y, int width, int height, int u, int v);
+
 	/**
 	 * @return If the drawer should be called at every frame
      */
