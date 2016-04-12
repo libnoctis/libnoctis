@@ -36,7 +36,7 @@ public class EventManager
 	/**
 	 * The list of the listeners
 	 */
-	private ArrayList<Object> listeners = new ArrayList<Object>();
+	private ArrayList<NListener> listeners = new ArrayList<NListener>();
 
 	/**
 	 * Dispatch an event to all the listeners
@@ -47,7 +47,7 @@ public class EventManager
 	{
 		try
 		{
-			for (Object listener : listeners)
+			for (NListener listener : listeners)
 			{
 				launchEvent(listener, event);
 			}
@@ -61,7 +61,7 @@ public class EventManager
 	 *
 	 * @param listener The listener containing the events
 	 */
-	public void registerListener(Object listener)
+	public void registerListener(NListener listener)
 	{
 		listeners.add(listener);
 	}
@@ -75,7 +75,7 @@ public class EventManager
 	 *        event
 	 * @see NoctisEvent
 	 */
-	private void launchEvent(Object listener, NEvent event) throws Throwable
+	private void launchEvent(NListener listener, NEvent event) throws Throwable
 	{
 		Method[] methods = listener.getClass().getDeclaredMethods();
 		for (Method method : methods)

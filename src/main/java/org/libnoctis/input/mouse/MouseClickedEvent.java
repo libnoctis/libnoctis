@@ -28,7 +28,7 @@ import org.libnoctis.util.Vector2i;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class NoctisMouseClickEvent extends MouseEvent
+public class MouseClickedEvent extends MouseEvent
 {
 	/**
 	 * The Noctis Mouse Click Event
@@ -36,7 +36,7 @@ public class NoctisMouseClickEvent extends MouseEvent
 	 * @param clickPos The position where the mouse clicked
 	 * @param button The button that clicked
 	 */
-	public NoctisMouseClickEvent(Vector2i clickPos, MouseButton button)
+	public MouseClickedEvent(Vector2i clickPos, MouseButton button)
 	{
 		super(clickPos, button);
 	}

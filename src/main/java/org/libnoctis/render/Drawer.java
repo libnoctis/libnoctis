@@ -19,6 +19,8 @@
 package org.libnoctis.render;
 
 import org.libnoctis.components.NComponent;
+import org.libnoctis.render.gl.GlTexture;
+import org.libnoctis.render.gl.Icon;
 
 /**
  * The Drawer
@@ -35,23 +37,30 @@ import org.libnoctis.components.NComponent;
 public abstract class Drawer
 {
 	/**
-	 * Set the current color of the drawer
+	 * Sets the current color of the drawer.
 	 *
 	 * @param color The drawing color
      */
 	public abstract void setColor(Color color);
 
 	/**
-	 * Draw a rectangle
+	 * Draws a plain color rectangle.
 	 *
-	 * @param x The x position of the rectangle
-	 * @param y The y position of the rectangle
-	 * @param width The width of the rectangle
-     * @param height The height of the rectangle
+	 * @param x The x position of the rectangle.
+	 * @param y The y position of the rectangle.
+	 * @param width The width of the rectangle.
+     * @param height The height of the rectangle.
      */
 	public abstract void drawRect(int x, int y, int width, int height);
 
-	public abstract boolean paintEveryFrame();
+	public abstract void drawTexture(int x, int y, int width, int height, GlTexture texture, Icon icon);
+	
+	public void drawTexture(int x, int y, int width, int height, GlTexture texture)
+	{
+		drawTexture(x, y, width, height, texture, Icon.WHOLE_TEXTURE);
+	}
+	
+	public abstract boolean shouldPaintEveryFrame();
 
 	/**
 	 * Event called after the painting of the given component

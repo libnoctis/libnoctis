@@ -30,7 +30,7 @@ import org.libnoctis.input.mouse.MouseMoveEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
 import org.libnoctis.input.mouse.MouseReleasedEvent;
 import org.libnoctis.render.Drawer;
-import org.libnoctis.render.gl.DisplayListDrawer;
+import org.libnoctis.render.gl.DirectDrawer;
 import org.libnoctis.render.gl.NoctisFrameThread;
 import org.libnoctis.util.Vector2i;
 import org.lwjgl.LWJGLException;
@@ -90,7 +90,7 @@ public class NFrame extends NContainer
 	 */
 	public NFrame(String title)
 	{
-		this(title, new DisplayListDrawer());
+		this(title, new DirectDrawer());
 	}
 
 	/**
@@ -224,6 +224,15 @@ public class NFrame extends NContainer
 		{
 			displayUpdateTitle();
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public NFrame getFrame()
+	{
+		return this;
 	}
 
 	/**

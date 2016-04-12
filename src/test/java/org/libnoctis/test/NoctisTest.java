@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.libnoctis.components.NFrame;
-import org.libnoctis.input.NoctisEvent;
-import org.libnoctis.input.mouse.MouseMoveEvent;
 import org.libnoctis.render.Color;
 import org.libnoctis.render.Drawer;
 import org.lwjgl.LWJGLUtil;
@@ -24,51 +22,18 @@ public class NoctisTest
 			System.err.println("Couldn't load LWJGL, aborting.");
 			return;
 		}
+		
+		System.out.println(Color.BLUE.toString());
 
 		NFrame frame = new NFrame("Salut") {
-			{
-				registerListener(new Listener());
-			}
-
-			private boolean hovered;
-
-			class Listener
-			{
-				@NoctisEvent
-				public void mouseMoved(MouseMoveEvent event)
-				{
-					if (!hovered && event.getPos().length() < 50)
-					{
-						hovered = true;
-						repaint();
-					}
-					else if (hovered && event.getPos().length() >= 50)
-					{
-						hovered = false;
-						repaint();
-					}
-				}
-			}
-
 			@Override
 			protected void paintComponent(Drawer drawer)
 			{
-				if (hovered)
-				{
-					drawer.setColor(Color.RED);
-				}
-				else
-				{
-					drawer.setColor(Color.WHITE);
-				}
-				drawer.drawRect(0, 0, 100, 100);
-
-				System.out.println("paint");
 			}
 		};
 
-		frame.setWidth(100);
-		frame.setHeight(200);
+		frame.setWidth(640);
+		frame.setHeight(480);
 		frame.show();
 
 		frame.add(new Button());

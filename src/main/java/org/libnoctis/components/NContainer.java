@@ -1,32 +1,31 @@
 /*
  * Copyright 2015-2016 Adrien "Litarvan" Navratil & Victor "Wytrem"
- *
  * This file is part of Libnoctis.
-
  * Libnoctis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Libnoctis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Libnoctis.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.libnoctis.components;
 
 
 import java.util.ArrayList;
+import java.util.Iterator;
+
+import org.libnoctis.render.Drawer;
 
 
 /**
  * The Noctis Container
  * <p>
  * The Noctis Container is a component that can contains other components.
- * By example, NPanel is a NContainer
+ * For example, NPanel is a NContainer.
  * </p>
  *
  * @author Litarvan
@@ -49,10 +48,10 @@ public abstract class NContainer extends NComponent
 	}
 
 	/**
-	 * Check if a component is in this container
+	 * Checks if a component is in this container.
 	 *
-	 * @param component The component to check if it is in this container
-	 * @return True if it is, false if not
+	 * @param component The component to check if it is in this container.
+	 * @return {@code true} if it is, {@code false} if not.
 	 */
 	public boolean contains(NComponent component)
 	{
@@ -60,14 +59,17 @@ public abstract class NContainer extends NComponent
 	}
 
 	/**
-	 * Add a component to this container
+	 * Adds a component to this container.
 	 *
-	 * @param component The component to add
-	 * @return This
+	 * @param component The component to be added.
+	 * @return This for chaining.
 	 */
 	public NContainer add(NComponent component)
 	{
 		this.components.add(component);
+
+		component.onAdded(this);
+
 		repaint();
 
 		return this;
@@ -110,5 +112,28 @@ public abstract class NContainer extends NComponent
 		repaint();
 
 		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	protected void repaintChildren()
+	{
+		for (Iterator<NComponent> iterator = components.iterator(); iterator.hasNext();)
+		{
+			iterator.next().repaint();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void renderChildren(Drawer drawer)
+	{
+		for (Iterator<NComponent> iterator = components.iterator(); iterator.hasNext();)
+		{
+			iterator.next().render();
+		}
 	}
 }

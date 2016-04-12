@@ -198,4 +198,13 @@ public class Color
 	{
 		return (alpha & MASK) / 255.0f;
 	}
+
+	@Override
+	public String toString()
+	{
+		return "Color [red=" + red + ", green=" + green + ", blue=" + blue + ", alpha=" + alpha + ", getRed()=" + getRed() + ", getGreen()=" + getGreen() + ", getBlue()=" + getBlue() + ", getAlpha()=" + getAlpha() + ", getRedFloat()=" + getRedFloat() + ", getGreenFloat()=" + getGreenFloat() + ", getBlueFloat()=" + getBlueFloat() + ", getAlphaFloat()=" + getAlphaFloat() + "]";
+	}
+	
+	
+	
 }

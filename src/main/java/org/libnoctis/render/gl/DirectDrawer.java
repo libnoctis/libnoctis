@@ -22,6 +22,7 @@ import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glColor4f;
 import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glTexCoord2f;
 import static org.lwjgl.opengl.GL11.glVertex2i;
 
 import org.libnoctis.render.Color;
@@ -60,8 +61,26 @@ public class DirectDrawer extends Drawer
 	}
 
 	@Override
-	public boolean paintEveryFrame()
+	public boolean shouldPaintEveryFrame()
 	{
 		return true;
+	}
+
+	@Override
+	public void drawTexture(int x, int y, int width, int height, GlTexture texture, Icon icon)
+	{
+		texture.bind();
+		glBegin(GL_QUADS);
+		{
+			glTexCoord2f(icon.getMinU(), icon.getMinV());
+			glVertex2i(x, y);
+			glTexCoord2f(icon.getMinU(), icon.getMaxV());
+			glVertex2i(x, y + height);
+			glTexCoord2f(icon.getMaxU(), icon.getMaxV());
+			glVertex2i(x + width, y + height);
+			glTexCoord2f(icon.getMaxU(), icon.getMinV());
+			glVertex2i(x + width, y);
+		}
+		GlTexture.bindNone();
 	}
 }

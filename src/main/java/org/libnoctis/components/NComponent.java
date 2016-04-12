@@ -1,20 +1,16 @@
 /*
  * Copyright 2015-2016 Adrien "Litarvan" Navratil & Victor "Wytrem"
- *
  * This file is part of Libnoctis.
-
  * Libnoctis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Libnoctis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Libnoctis.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.libnoctis.components;
 
@@ -22,8 +18,9 @@ package org.libnoctis.components;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.libnoctis.input.NEvent;
 import org.libnoctis.input.EventManager;
+import org.libnoctis.input.NEvent;
+import org.libnoctis.input.NListener;
 import org.libnoctis.layout.LayoutProperty;
 import org.libnoctis.render.Drawer;
 
@@ -53,6 +50,16 @@ public abstract class NComponent
 	private int height;
 
 	/**
+	 * This component X coordinate, in pixels, relative to parent orthonormal.
+	 */
+	private int x;
+
+	/**
+	 * This component Y coordinate, in pixels, relative to parent orthonormal.
+	 */
+	private int y;
+
+	/**
 	 * The component position, depending of the current layout.
 	 */
 	private LayoutProperty position;
@@ -63,17 +70,38 @@ public abstract class NComponent
 	private NContainer parent;
 
 	/**
-	 * The event manager
+	 * The event manager.
 	 */
 	private EventManager manager;
 
 	private Map<String, Object> properties;
+
+	/**
+	 * Display list id, used for rendering.
+	 */
 	public int displayList = -1;
 
+	/**
+	 * This component parent frame.
+	 */
+	private NFrame frame;
+
+	private boolean isHovered;
+	
 	public NComponent()
 	{
 		manager = new EventManager();
 		properties = new HashMap<String, Object>();
+	}
+	
+	public void setHovered(boolean isHovered)
+	{
+		this.isHovered = isHovered;
+	}
+	
+	public boolean isHovered()
+	{
+		return isHovered;
 	}
 
 	public Map<String, Object> getProperties()
@@ -102,7 +130,7 @@ public abstract class NComponent
 	 *
 	 * @param listener The event listener to add
 	 */
-	public void registerListener(Object listener)
+	public void registerListener(NListener listener)
 	{
 		manager.registerListener(listener);
 	}
@@ -117,7 +145,7 @@ public abstract class NComponent
 
 		if (drawer != null)
 		{
-			if (drawer.paintEveryFrame())
+			if (drawer.shouldPaintEveryFrame())
 				paintComponent(drawer);
 			render(drawer);
 		}
@@ -186,6 +214,16 @@ public abstract class NComponent
 				repaint(getDrawer());
 			}
 		});
+
+		repaintChildren();
+	}
+
+	/**
+	 * Called by repaint to repaint children.
+	 */
+	protected void repaintChildren()
+	{
+
 	}
 
 	/**
@@ -197,6 +235,31 @@ public abstract class NComponent
 	{
 		this.parent = parent;
 
+		NContainer parent2 = parent;
+
+		while (parent2 != null)
+		{
+			if (parent2 instanceof NFrame)
+			{
+				frame = (NFrame) parent2;
+				break;
+			}
+			else
+			{
+				parent2 = parent2.getParent();
+			}
+		}
+
+		schedulRenderTask(new Runnable() {
+			@Override
+			public void run()
+			{
+				init();
+			}
+		});
+
+		repaint();
+
 		onComponentAdded(parent);
 	}
 
@@ -207,6 +270,27 @@ public abstract class NComponent
 	 */
 	protected void onComponentAdded(NContainer parent)
 	{
+
+	}
+
+	public int getX()
+	{
+		return x;
+	}
+
+	public int getY()
+	{
+		return y;
+	}
+
+	public void setX(int x)
+	{
+		this.x = x;
+	}
+
+	public void setY(int y)
+	{
+		this.y = y;
 	}
 
 	/**
@@ -298,21 +382,16 @@ public abstract class NComponent
 	 */
 	public NFrame getFrame()
 	{
-		NComponent parent = this;
+		return frame;
+	}
 
-		while (parent != null)
-		{
-			if (parent instanceof NFrame)
-			{
-				return (NFrame) parent;
-			}
-			else
-			{
-				parent = parent.getParent();
-			}
-		}
+	/**
+	 * Called when added to a container from the render Thread to init the
+	 * component (load textures, fonts, etc.).
+	 */
+	protected void init()
+	{
 
-		return null;
 	}
 
 	public void dispatchEvent(NEvent event)

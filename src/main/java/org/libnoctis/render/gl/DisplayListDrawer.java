@@ -67,7 +67,7 @@ public class DisplayListDrawer extends DirectDrawer
 	}
 
 	@Override
-	public boolean paintEveryFrame()
+	public boolean shouldPaintEveryFrame()
 	{
 		return false;
 	}
