@@ -80,7 +80,7 @@ public enum Key
     KEY_APOSTROPHE(0x28, '\''),
     KEY_GRAVE(0x29, '`'),
     KEY_LSHIFT(0x2A),
-    KEY_BACKSLASH(0x2B),
+    KEY_BACKSLASH(0x2B, '\\'),
     KEY_Z(0x2C, 'z', 'Z'),
     KEY_X(0x2D, 'x', 'X'),
     KEY_C(0x2E, 'c', 'C'),
