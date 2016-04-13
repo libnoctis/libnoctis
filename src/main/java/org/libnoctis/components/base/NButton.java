@@ -20,6 +20,7 @@ package org.libnoctis.components.base;
 
 import org.jetbrains.annotations.Nullable;
 import org.libnoctis.components.NComponent;
+import org.libnoctis.components.NContainer;
 import org.libnoctis.input.NoctisEvent;
 import org.libnoctis.input.mouse.MouseMoveEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
@@ -96,6 +97,13 @@ public class NButton extends NComponent
     public NButton(String text)
     {
         this.text = text;
+        this.registerListener(this);
+    }
+
+    @Override
+    protected void onComponentAdded(NContainer parent)
+    {
+        super.onComponentAdded(parent);
 
         this.fixed = Boolean.parseBoolean(theme().requireProp("button.size.fixed"));
         this.texture = theme().requireTexture(theme().requireProp("button.texture.normal"));
@@ -108,8 +116,6 @@ public class NButton extends NComponent
             this.setWidth(Integer.parseInt(theme().requireProp("button.size.width")));
             this.setHeight(Integer.parseInt(theme().requireProp("button.size.height")));
         }
-
-        this.registerListener(this);
     }
 
     @Override
