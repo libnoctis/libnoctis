@@ -16,42 +16,44 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.libnoctis.theme;
+package org.libnoctis.input.keyboard;
+
+import org.libnoctis.input.NEvent;
 
 /**
- * The Theme Required Exception
+ * The Keyboard Event
  *
  * <p>
- *     An exception thrown when a component or something, can't
- *     find a needed object in the current theme.
+ *     Basic class for the keyboard events, containing
+ *     just the key of the event.
  * </p>
  *
  * @author Litarvan
  * @version 1.0.0
  * @since 1.0.0
  */
-public class ThemeRequiredException extends RuntimeException
+public abstract class KeyboardEvent extends NEvent
 {
-	private static final long serialVersionUID = -6354309819719404838L;
-
-	/**
-     * The ThemeRequiredException
-     *
-     * @param message The exception message
+    /**
+     * The key of the event
      */
-    public ThemeRequiredException(String message)
+    private Key key;
+
+    /**
+     * The Keyboard event
+     *
+     * @param key The key of the event
+     */
+    public KeyboardEvent(Key key)
     {
-        super(message);
+        this.key = key;
     }
 
     /**
-     * The ThemeRequiredException
-     *
-     * @param message The exception message
-     * @param cause The exception cause
+     * @return The key of the event
      */
-    public ThemeRequiredException(String message, Throwable cause)
+    public Key getKey()
     {
-        super(message, cause);
+        return key;
     }
 }

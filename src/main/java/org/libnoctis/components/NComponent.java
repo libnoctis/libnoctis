@@ -25,7 +25,6 @@ import org.libnoctis.layout.LayoutProperty;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.theme.NoctisTheme;
 import org.libnoctis.util.Vector2i;
-import org.libnoctis.util.Vector4i;
 
 
 /**

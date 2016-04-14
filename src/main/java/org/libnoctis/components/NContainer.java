@@ -80,14 +80,18 @@ public abstract class NContainer extends NComponent
 	 * @param component The component to be added.
 	 * @return This for chaining.
 	 */
-	public NContainer add(NComponent component)
+	public NContainer add(NComponent component) throws RuntimeException
 	{
+        if (layout == null)
+            throw new RuntimeException("Layout not set ! Use setLayout !");
+
 		this.components.add(component);
 
 		component.onAdded(this);
         this.positions = layout.getElementsPosition(this.components.toArray(new NComponent[this.components.size()]));
 
         component.setGeneratedPosition(this.positions[this.components.size() - 1]);
+		component.onAdded(this);
 
         repaint();
 

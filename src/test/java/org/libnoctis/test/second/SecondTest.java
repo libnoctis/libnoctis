@@ -4,30 +4,26 @@ import java.io.File;
 import java.io.IOException;
 import org.libnoctis.components.NFrame;
 import org.libnoctis.input.NListener;
+import org.libnoctis.components.base.NButton;
 import org.libnoctis.input.NoctisEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
-import org.libnoctis.render.Drawer;
+import org.libnoctis.layout.base.YoloLayout;
 import org.libnoctis.test.LWJGLSetup;
 
 public class SecondTest extends NFrame implements NListener
 {
+    private NButton button = new NButton("Yolo !");
+
     public SecondTest(String title)
     {
         super(title);
 
         this.setWidth(750);
         this.setHeight(750);
-        //this.setUndecorated(true);
+        this.setUndecorated(true);
+        this.setLayout(new YoloLayout());
 
-        this.registerListener(this);
-    }
-
-    @Override
-    protected void paintComponent(Drawer drawer)
-    {
-        super.paintComponent(drawer);
-
-        drawer.drawRect(50, 50, 50, 50);
+        this.add(button);
     }
 
     @NoctisEvent

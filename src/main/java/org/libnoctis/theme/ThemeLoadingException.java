@@ -31,7 +31,9 @@ package org.libnoctis.theme;
  */
 public class ThemeLoadingException extends Exception
 {
-    /**
+	private static final long serialVersionUID = -8575706106944783879L;
+
+	/**
      * The ThemeLoadingException
      *
      * @param message The exception message

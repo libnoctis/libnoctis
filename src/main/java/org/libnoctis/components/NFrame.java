@@ -24,6 +24,11 @@ import static org.lwjgl.opengl.GL11.glLoadIdentity;
 import static org.lwjgl.opengl.GL11.glMatrixMode;
 import static org.lwjgl.opengl.GL11.glOrtho;
 
+
+import java.io.File;
+import org.libnoctis.input.keyboard.Key;
+import org.libnoctis.input.keyboard.KeyPressedEvent;
+import org.libnoctis.input.keyboard.KeyReleasedEvent;
 import org.libnoctis.input.mouse.MouseButton;
 import org.libnoctis.input.mouse.MouseDraggedEvent;
 import org.libnoctis.input.mouse.MouseMoveEvent;
@@ -33,6 +38,8 @@ import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.DirectDrawer;
 import org.libnoctis.render.gl.NoctisFrameThread;
 import org.libnoctis.theme.NoctisTheme;
+import org.libnoctis.theme.ThemeLoader;
+import org.libnoctis.theme.ThemeLoadingException;
 import org.libnoctis.util.Vector2i;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -135,9 +142,25 @@ public class NFrame extends NContainer
 	}
 
     @Override
-    public NoctisTheme theme()
+    public NoctisTheme theme() throws RuntimeException
     {
+        if (theme == null)
+            throw new RuntimeException("Theme not set ! Use loadTheme !");
+
         return theme;
+    }
+
+    /**
+     * Load a noctis theme for this frame from the given zip
+     *
+     * @param zipTheme The theme zip
+     */
+    public void loadTheme(File zipTheme) throws ThemeLoadingException
+    {
+        ThemeLoader loader = new ThemeLoader();
+        loader.load(zipTheme);
+
+        this.theme = loader.get();
     }
 
     /**
@@ -273,7 +296,7 @@ public class NFrame extends NContainer
 
 		while (Keyboard.next())
 		{
-
+            lwjglKeyboardInput();
 		}
 	}
 
@@ -283,6 +306,29 @@ public class NFrame extends NContainer
 	private long lastMouseClickTime;
 
 	private MouseButton eventButton;
+
+    private Key eventKey;
+    private long lastPressTime = 0;
+
+	private void lwjglKeyboardInput()
+	{
+        Key key = Key.byCode(Keyboard.getEventKey());
+
+        if (Keyboard.getEventKeyState())
+        {
+            dispatchEvent(new KeyPressedEvent(key));
+
+            lastPressTime = System.currentTimeMillis();
+            eventKey = key;
+        }
+        else if (eventKey != null)
+        {
+            dispatchEvent(new KeyReleasedEvent(key, System.currentTimeMillis() - lastPressTime));
+
+            lastPressTime = 0;
+            eventKey = null;
+        }
+	}
 
 	private void lwjglMouseInput()
 	{
