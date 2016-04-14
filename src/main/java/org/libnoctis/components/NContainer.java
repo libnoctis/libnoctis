@@ -14,18 +14,24 @@
  */
 package org.libnoctis.components;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.libnoctis.layout.NLayout;
 import org.libnoctis.render.Drawer;
-
+import org.libnoctis.util.Vector2i;
 
 /**
  * The Noctis Container
+ *
  * <p>
+<<<<<<< HEAD
  * The Noctis Container is a component that can contains other components.
  * For example, NPanel is a NContainer.
+=======
+ *     The Noctis Container is a component that can contains other components.
+ *     By example, NPanel is a NContainer
+>>>>>>> 3b25dd0f8b8aad633da27820a74d05667b2fb816
  * </p>
  *
  * @author Litarvan
@@ -38,6 +44,16 @@ public abstract class NContainer extends NComponent
 	 * The components in this container
 	 */
 	private ArrayList<NComponent> components = new ArrayList<NComponent>();
+
+    /**
+     * The components positions
+     */
+    private Vector2i[] positions = new Vector2i[0];
+
+    /**
+     * The container layout
+     */
+    private NLayout layout;
 
 	/**
 	 * @return The number of component in this container
@@ -69,8 +85,11 @@ public abstract class NContainer extends NComponent
 		this.components.add(component);
 
 		component.onAdded(this);
+        this.positions = layout.getElementsPosition(this.components.toArray(new NComponent[this.components.size()]));
 
-		repaint();
+        component.setGeneratedPosition(this.positions[this.components.size() - 1]);
+
+        repaint();
 
 		return this;
 	}
@@ -100,7 +119,15 @@ public abstract class NContainer extends NComponent
 		return component;
 	}
 
-	/**
+    /**
+     * @return The components position, in order.
+     */
+    public Vector2i[] getPositions()
+    {
+        return positions;
+    }
+
+    /**
 	 * Remove a given component
 	 *
 	 * @param component The component to remove
@@ -136,4 +163,21 @@ public abstract class NContainer extends NComponent
 			iterator.next().render();
 		}
 	}
+    /**
+     * @return This container layout
+     */
+    public NLayout getLayout()
+    {
+        return layout;
+    }
+
+    /**
+     * Set the layout of this container
+     *
+     * @param layout The new layout
+     */
+    public void setLayout(NLayout layout)
+    {
+        this.layout = layout;
+    }
 }

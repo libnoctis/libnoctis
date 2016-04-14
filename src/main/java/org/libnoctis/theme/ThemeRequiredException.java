@@ -16,35 +16,40 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.libnoctis.render;
-
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBindTexture;
+package org.libnoctis.theme;
 
 /**
- * A Texture
+ * The Theme Required Exception
  *
- * @author Wytrem
+ * <p>
+ *     An exception thrown when a component or something, can't
+ *     find a needed object in the current theme.
+ * </p>
+ *
+ * @author Litarvan
  * @version 1.0.0
  * @since 1.0.0
  */
-public class Texture
+public class ThemeRequiredException extends RuntimeException
 {
-	/**
-	 * The Target GL Code
-	 */
-	public static final int GL_TARGET = GL_TEXTURE_2D;
-	
-	/**
-	 * This texture ID for OpenGL.
-	 */
-	private int textureId;
+    /**
+     * The ThemeRequiredException
+     *
+     * @param message The exception message
+     */
+    public ThemeRequiredException(String message)
+    {
+        super(message);
+    }
 
-	/**
-	 * Bind the texture
-	 */
-	public void bind()
-	{
-		glBindTexture(GL_TARGET, textureId);
-	}
+    /**
+     * The ThemeRequiredException
+     *
+     * @param message The exception message
+     * @param cause The exception cause
+     */
+    public ThemeRequiredException(String message, Throwable cause)
+    {
+        super(message, cause);
+    }
 }

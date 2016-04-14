@@ -19,7 +19,6 @@
 package org.libnoctis.render;
 
 import org.libnoctis.components.NComponent;
-import org.libnoctis.render.gl.GlTexture;
 import org.libnoctis.render.gl.Icon;
 
 /**
@@ -53,14 +52,42 @@ public abstract class Drawer
      */
 	public abstract void drawRect(int x, int y, int width, int height);
 
-	public abstract void drawTexture(int x, int y, int width, int height, GlTexture texture, Icon icon);
+	public abstract void drawTexture(int x, int y, int width, int height, NTexture texture, Icon icon);
 	
-	public void drawTexture(int x, int y, int width, int height, GlTexture texture)
+	public void drawTexture(int x, int y, int width, int height, NTexture texture)
 	{
 		drawTexture(x, y, width, height, texture, Icon.WHOLE_TEXTURE);
 	}
 	
+	/**
+	 * @return If the drawer should be called at every frame
+     */
 	public abstract boolean shouldPaintEveryFrame();
+    /**
+     * Draw a rectangle with the bound texture
+     *
+     * @param x The x position of the rectangle
+     * @param y The y position of the rectangle
+     * @param width The width of the rectangle
+     * @param height The height of the rectangle
+     */
+    public void drawTexturedRect(int x, int y, int width, int height)
+    {
+        drawTexturedRect(x, y, width, height, 0, 0);
+    }
+
+    /**
+     * Draw a rectangle with the texture at the given x, y of the bound sprite
+     *
+     * @param x The x position of the rectangle
+     * @param y The y position of the rectangle
+     * @param width The width of the rectangle
+     * @param height The height of the rectangle
+     * @param u The x of the texture of the sprite
+     * @param v The y of the texture of the sprite
+     */
+    public abstract void drawTexturedRect(int x, int y, int width, int height, int u, int v);
+
 
 	/**
 	 * Event called after the painting of the given component

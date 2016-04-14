@@ -27,6 +27,8 @@ import static org.lwjgl.opengl.GL11.glVertex2i;
 
 import org.libnoctis.render.Color;
 import org.libnoctis.render.Drawer;
+import org.libnoctis.render.NTexture;
+
 
 /**
  * The Direct Drawer
@@ -60,6 +62,11 @@ public class DirectDrawer extends Drawer
 		glEnd();
 	}
 
+	public void drawTexturedRect(int x, int y, int width, int height, int u, int v)
+	{
+		// TODO: Implement this
+	}
+
 	@Override
 	public boolean shouldPaintEveryFrame()
 	{
@@ -67,7 +74,7 @@ public class DirectDrawer extends Drawer
 	}
 
 	@Override
-	public void drawTexture(int x, int y, int width, int height, GlTexture texture, Icon icon)
+	public void drawTexture(int x, int y, int width, int height, NTexture texture, Icon icon)
 	{
 		texture.bind();
 		glBegin(GL_QUADS);
@@ -81,6 +88,6 @@ public class DirectDrawer extends Drawer
 			glTexCoord2f(icon.getMaxU(), icon.getMinV());
 			glVertex2i(x + width, y);
 		}
-		GlTexture.bindNone();
+		NTexture.bindNone();
 	}
 }
