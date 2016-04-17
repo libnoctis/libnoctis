@@ -18,14 +18,20 @@
  */
 package org.libnoctis.components;
 
+import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_PROJECTION;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glLoadIdentity;
 import static org.lwjgl.opengl.GL11.glMatrixMode;
 import static org.lwjgl.opengl.GL11.glOrtho;
 
-
 import java.io.File;
+
 import org.libnoctis.input.keyboard.Key;
 import org.libnoctis.input.keyboard.KeyPressedEvent;
 import org.libnoctis.input.keyboard.KeyReleasedEvent;
@@ -145,7 +151,7 @@ public class NFrame extends NContainer
     public NoctisTheme theme() throws RuntimeException
     {
         if (theme == null)
-            throw new RuntimeException("Theme not set ! Use loadTheme !");
+            throw new RuntimeException("Theme not set! Use loadTheme!");
 
         return theme;
     }
@@ -401,5 +407,10 @@ public class NFrame extends NContainer
 		glLoadIdentity();
 		glOrtho(0, getWidth(), getHeight(), 0, 1, -1);
 		glMatrixMode(GL_MODELVIEW);
+		glEnable(GL_TEXTURE_2D);
+		// Enable alpha blending
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	}
 }

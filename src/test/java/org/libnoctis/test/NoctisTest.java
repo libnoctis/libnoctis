@@ -1,12 +1,13 @@
 package org.libnoctis.test;
 
 
+import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 
 import org.libnoctis.components.NFrame;
-import org.libnoctis.render.Color;
 import org.libnoctis.render.Drawer;
+import org.libnoctis.render.gl.NFont;
 import org.lwjgl.LWJGLUtil;
 
 
@@ -23,20 +24,25 @@ public class NoctisTest
 			return;
 		}
 		
-		System.out.println(Color.BLUE.toString());
-
 		NFrame frame = new NFrame("Salut") {
+			
+			NFont font;
+			
 			@Override
 			protected void paintComponent(Drawer drawer)
 			{
+				if (font == null)
+				{
+					font = NFont.fromAwt(new Font("Times New Roman", Font.PLAIN, 12));
+				}
+				
+				font.drawString("Salut, ça farte ?", 0, 0, drawer);
 			}
 		};
 
 		frame.setWidth(640);
 		frame.setHeight(480);
 		frame.show();
-
-		frame.add(new Button());
 	}
 
 	private static boolean init()

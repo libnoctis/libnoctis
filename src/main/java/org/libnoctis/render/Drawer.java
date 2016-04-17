@@ -19,7 +19,7 @@
 package org.libnoctis.render;
 
 import org.libnoctis.components.NComponent;
-import org.libnoctis.render.gl.Icon;
+import org.libnoctis.render.gl.TextureRegion;
 
 /**
  * The Drawer
@@ -52,11 +52,11 @@ public abstract class Drawer
      */
 	public abstract void drawRect(int x, int y, int width, int height);
 
-	public abstract void drawTexture(int x, int y, int width, int height, NTexture texture, Icon icon);
+	public abstract void drawTexture(int x, int y, int width, int height, NTexture texture, TextureRegion icon);
 	
 	public void drawTexture(int x, int y, int width, int height, NTexture texture)
 	{
-		drawTexture(x, y, width, height, texture, Icon.WHOLE_TEXTURE);
+		drawTexture(x, y, width, height, texture, TextureRegion.WHOLE_TEXTURE);
 	}
 	
 	/**

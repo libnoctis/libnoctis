@@ -74,7 +74,7 @@ public class DirectDrawer extends Drawer
 	}
 
 	@Override
-	public void drawTexture(int x, int y, int width, int height, NTexture texture, Icon icon)
+	public void drawTexture(int x, int y, int width, int height, NTexture texture, TextureRegion icon)
 	{
 		texture.bind();
 		glBegin(GL_QUADS);
