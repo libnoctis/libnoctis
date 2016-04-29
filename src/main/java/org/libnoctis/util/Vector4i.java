@@ -28,14 +28,14 @@ package org.libnoctis.util;
 public class Vector4i extends Vector2i
 {
 	/**
-	 * The z position
-	 */
-	private int z;
-
-	/**
 	 * The w position
 	 */
 	private int w;
+
+	/**
+	 * The z position
+	 */
+	private int z;
 
 	/**
 	 * A 4 Integers Vector
@@ -53,6 +53,24 @@ public class Vector4i extends Vector2i
 		this.z = z;
 	}
 
+    /**
+     * @return The w position
+     */
+    public int getW()
+    {
+        return w;
+    }
+
+    /**
+     * Set the w position of this vector
+     *
+     * @param w The new w position
+     */
+    public void setW(int w)
+    {
+        this.w = w;
+    }
+
 	/**
 	 * @return The z position
 	 */
@@ -69,23 +87,5 @@ public class Vector4i extends Vector2i
 	public void setZ(int z)
 	{
 		this.z = z;
-	}
-
-	/**
-	 * @return The w position
-	 */
-	public int getW()
-	{
-		return w;
-	}
-
-	/**
-	 * Set the w position of this vector
-	 *
-	 * @param w The new w position
-	 */
-	public void setW(int w)
-	{
-		this.w = w;
 	}
 }
