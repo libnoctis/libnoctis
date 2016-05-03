@@ -60,7 +60,7 @@ public class DirectDrawer extends Drawer
 	{
 		super.prePaint(component);
 
-		String fontPath = component.theme().requireProp("font." + component.theme().requireProp("font.default"));
+		String fontPath = component.theme().requireProp("font.default");
 
 		try
 		{
