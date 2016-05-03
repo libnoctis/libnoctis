@@ -93,6 +93,16 @@ public abstract class Drawer
      */
 	public abstract void setFont(NFont font);
 
+	/**
+	 * @return The current used font
+     */
+	public abstract NFont getFont();
+
+	/**
+	 * @return The current used color
+     */
+	public abstract Color getColor();
+
     /**
      * Draw a rectangle with the texture at the given x, y of the bound sprite
      *

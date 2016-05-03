@@ -29,12 +29,14 @@ import static org.lwjgl.opengl.GL11.glVertex2i;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.IOException;
+import java.nio.FloatBuffer;
 import org.libnoctis.components.NComponent;
 import org.libnoctis.render.Color;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.NTexture;
 import org.libnoctis.theme.ThemeRequiredException;
 import org.libnoctis.util.exception.IllegalNoctisStateException;
+import org.lwjgl.opengl.GL11;
 
 
 /**
@@ -81,6 +83,23 @@ public class DirectDrawer extends Drawer
 	public void setColor(Color color)
 	{
 		glColor4f(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlphaFloat());
+	}
+
+	@Override
+	public Color getColor()
+	{
+		FloatBuffer color = FloatBuffer.allocate(16);
+		GL11.glGetFloat(GL11.GL_CURRENT_COLOR, color);
+
+		float[] floats = color.array();
+
+		return new Color(floats[0], floats[1], floats[2]);
+	}
+
+	@Override
+	public NFont getFont()
+	{
+		return currentFont;
 	}
 
 	@Override
