@@ -25,9 +25,16 @@ import static org.lwjgl.opengl.GL11.glEnd;
 import static org.lwjgl.opengl.GL11.glTexCoord2f;
 import static org.lwjgl.opengl.GL11.glVertex2i;
 
+
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.io.IOException;
+import org.libnoctis.components.NComponent;
 import org.libnoctis.render.Color;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.NTexture;
+import org.libnoctis.theme.ThemeRequiredException;
+import org.libnoctis.util.exception.IllegalNoctisStateException;
 
 
 /**
@@ -43,6 +50,33 @@ import org.libnoctis.render.NTexture;
  */
 public class DirectDrawer extends Drawer
 {
+	/**
+	 * The current font to use with the drawString method
+	 */
+	private NFont currentFont;
+
+	@Override
+	public void prePaint(NComponent component)
+	{
+		super.prePaint(component);
+
+		String fontPath = component.theme().requireProp("font." + component.theme().requireProp("font.default"));
+
+		try
+		{
+			Font font = Font.createFont(Font.TRUETYPE_FONT, component.theme().require(fontPath));
+			this.currentFont = NFont.fromAwt(font);
+		}
+		catch (FontFormatException e)
+		{
+			throw new ThemeRequiredException("Can't read the default font (path is " + fontPath + " in the current theme", e);
+		}
+		catch (IOException e)
+		{
+			throw new ThemeRequiredException("Can't read the default font (path is " + fontPath + " in the current theme", e);
+		}
+	}
+
 	@Override
 	public void setColor(Color color)
 	{
@@ -89,5 +123,17 @@ public class DirectDrawer extends Drawer
 			glVertex2i(x + width, y);
 		}
 		NTexture.bindNone();
+	}
+
+	@Override
+	public void drawString(int x, int y, String string)
+	{
+		this.currentFont.drawString(string, x, y, this);
+	}
+
+	@Override
+	public void setFont(NFont font)
+	{
+		this.currentFont = font;
 	}
 }

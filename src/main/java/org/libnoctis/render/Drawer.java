@@ -19,6 +19,7 @@
 package org.libnoctis.render;
 
 import org.libnoctis.components.NComponent;
+import org.libnoctis.render.gl.NFont;
 import org.libnoctis.render.gl.TextureRegion;
 
 /**
@@ -75,6 +76,22 @@ public abstract class Drawer
     {
         drawTexturedRect(x, y, width, height, 0, 0);
     }
+
+	/**
+	 * Draw a string to the given position with the current font
+	 *
+	 * @param x The x position of the text
+	 * @param y The y position of the text
+	 * @param string The string to draw
+	 */
+	public abstract void drawString(int x, int y, String string);
+
+	/**
+	 * Set the current font
+	 *
+	 * @param font The font to set
+     */
+	public abstract void setFont(NFont font);
 
     /**
      * Draw a rectangle with the texture at the given x, y of the bound sprite
