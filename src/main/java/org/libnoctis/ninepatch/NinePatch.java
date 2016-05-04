@@ -23,15 +23,45 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * The Nine Patch
+ *
+ *
+ * This class can create a nine patch from a file or directly
+ * from a BufferedImage.
+ *
+ * @author Litarvan
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 public class NinePatch
 {
+    /**
+     * The nine patch file extension
+     */
     public static final String FILE_EXTENSION = ".9.png";
 
+    /**
+     * Create a nine patch from a file
+     *
+     * @param file The nine patch file to read
+     *
+     * @return The created nine patch
+     *
+     * @throws IOException If it failed to read the file
+     */
     public static NoctisNinePatch create(File file) throws IOException
     {
         return create(ImageIO.read(file));
     }
 
+    /**
+     * Create a nine patch from an image
+     *
+     * @param image The image to read
+     *
+     * @return The created nine patch
+     */
     public static NoctisNinePatch create(BufferedImage image)
     {
         BufferedImage compatible = CompatibleImageMaker.convert(image);
