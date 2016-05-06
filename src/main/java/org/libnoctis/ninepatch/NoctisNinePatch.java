@@ -50,6 +50,11 @@ public class NoctisNinePatch
     private NoctisNinePatchChunk chunk;
 
     /**
+     * The last generated image
+     */
+    private BufferedImage lastGenerated;
+
+    /**
      * The Noctis nine patch
      *
      * @param image The image of the patch (the real one, without the black pixels)
@@ -64,6 +69,10 @@ public class NoctisNinePatch
     /**
      * Generate a texture from this nine patch with the given
      * dimensions
+     *
+     * There is a cache image, if you ask the same dimensions two times
+     * the image will be generated only the first time. (If you choose an
+     * other dimension, the cache image will be overridden).
      *
      * @param width The width of the texture to generate
      * @param height The height of the texture to generate
@@ -85,6 +94,9 @@ public class NoctisNinePatch
      */
     public NTexture generateFor(Vector2i dimensions)
     {
+        if (lastGenerated != null && lastGenerated.getWidth() == dimensions.getX() && lastGenerated.getHeight() == dimensions.getY())
+            return new NTexture(lastGenerated);
+
         BufferedImage generated = CompatibleImageMaker.translucent(dimensions);
         Graphics2D g = (Graphics2D) generated.getGraphics();
 
@@ -198,6 +210,8 @@ public class NoctisNinePatch
         }
 
         g.dispose();
+
+        lastGenerated = generated;
 
         return new NTexture(generated);
     }
