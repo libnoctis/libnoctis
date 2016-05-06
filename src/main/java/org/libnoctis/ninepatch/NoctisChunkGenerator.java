@@ -1,3 +1,21 @@
+/*
+ * Copyright 2015-2016 Adrien "Litarvan" Navratil & Victor "Wytrem"
+ *
+ * This file is part of Libnoctis.
+
+ * Libnoctis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Libnoctis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Libnoctis.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.libnoctis.ninepatch;
 
 import org.libnoctis.util.Vector2i;
@@ -7,17 +25,43 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Noctis Chunk Generator
+ *
+ *
+ * Generate a nine patch chunk from an image.
+ *
+ * @author Litarvan
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 public class NoctisChunkGenerator
 {
+    /**
+     * The image to analyze to generate the chunk
+     */
     private BufferedImage image;
 
+    /**
+     * An empty chunk that will be filled
+     */
     private NoctisNinePatchChunk chunk = new NoctisNinePatchChunk();
 
+    /**
+     * The Noctis Chunk Generator
+     *
+     * @param image The image to analyze
+     */
     public NoctisChunkGenerator(BufferedImage image)
     {
         this.image = image;
     }
 
+    /**
+     * Generate the chunk from the given image
+     *
+     * @return The generated chunk
+     */
     public NoctisNinePatchChunk generate()
     {
         // Parsing image
@@ -142,11 +186,17 @@ public class NoctisChunkGenerator
         }
     }
 
+    /**
+     * @return The generated chunk (empty if #generate() wasn't launched)
+     */
     public NoctisNinePatchChunk getChunk()
     {
         return chunk;
     }
 
+    /**
+     * @return The given image to be analyzed
+     */
     public BufferedImage getImage()
     {
         return image;

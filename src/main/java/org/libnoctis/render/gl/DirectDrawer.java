@@ -40,12 +40,24 @@ import org.libnoctis.render.Drawer;
  */
 public class DirectDrawer extends Drawer
 {
+	/**
+	 * The current font to use with the drawString method
+	 */
 	private GlFont currentFont;
+	
+	private Color currentColor;
 
 	@Override
 	public void setColor(Color color)
 	{
+		currentColor = color;
 		glColor4f(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlphaFloat());
+	}
+
+	@Override
+	public GlFont getFont()
+	{
+		return currentFont;
 	}
 
 	@Override
@@ -89,14 +101,26 @@ public class DirectDrawer extends Drawer
 	}
 
 	@Override
-	public void setFont(GlFont font)
-	{
-		currentFont = font;
-	}
-
-	@Override
 	public void drawString(String str, int x, int y)
 	{
 		currentFont.drawString(str, x, y, this);
+	}
+
+	@Override
+	public void drawString(int x, int y, String string)
+	{
+		this.currentFont.drawString(string, x, y, this);
+	}
+
+	@Override
+	public void setFont(GlFont font)
+	{
+		this.currentFont = font;
+	}
+
+	@Override
+	public Color getColor()
+	{
+		return currentColor;
 	}
 }

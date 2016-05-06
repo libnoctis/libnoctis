@@ -201,9 +201,16 @@ public class NoctisTheme
      *
      * @return The read value
      */
-    public Object prop(String key)
+    public String prop(String key)
     {
-        return properties.getProperty(key);
+        String prop = properties.getProperty(key);
+        if (prop.startsWith("$"))
+            prop = prop(prop.substring(1));
+
+        if (prop.startsWith("\\$") || prop.startsWith("\\"))
+            prop = prop.substring(1);
+
+        return prop;
     }
 
     /**
@@ -216,7 +223,7 @@ public class NoctisTheme
      */
     public String requireProp(String key)
     {
-        String prop = properties.getProperty(key);
+        String prop = prop(key);
         if (prop == null)
             throw new ThemeRequiredException("Can't find the required property " + key + " in the current theme");
 

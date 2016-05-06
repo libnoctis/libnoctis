@@ -11,7 +11,6 @@ import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.FontCache;
 import org.libnoctis.render.gl.GlFont;
 import org.lwjgl.LWJGLUtil;
-import org.lwjgl.opengl.GL11;
 
 
 public class NoctisTest

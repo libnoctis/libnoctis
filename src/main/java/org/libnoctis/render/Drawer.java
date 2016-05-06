@@ -81,6 +81,26 @@ public abstract class Drawer
 	public abstract boolean shouldPaintEveryFrame();
 
 	/**
+	 * Draw a string to the given position with the current font
+	 *
+	 * @param x The x position of the text
+	 * @param y The y position of the text
+	 * @param string The string to draw
+	 */
+	public abstract void drawString(int x, int y, String string);
+
+	/**
+	 * @return The current used font
+     */
+	public abstract GlFont getFont();
+
+	/**
+	 * @return The current used color
+     */
+	public abstract Color getColor();
+
+
+	/**
 	 * Event called after the painting of the given component
 	 *
 	 * @param component The component that was painted
