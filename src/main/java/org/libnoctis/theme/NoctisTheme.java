@@ -26,7 +26,8 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.imageio.ImageIO;
-import org.libnoctis.render.NTexture;
+
+import org.libnoctis.render.gl.GlTexture;
 
 /**
  * A Noctis Theme
@@ -154,9 +155,9 @@ public class NoctisTheme
      *
      * @throws IOException If it failed to read the texture
      */
-    public NTexture texture(String path) throws IOException
+    public GlTexture texture(String path) throws IOException
     {
-        return new NTexture(image(path));
+        return new GlTexture(image(path));
     }
 
     /**
@@ -169,7 +170,7 @@ public class NoctisTheme
      *
      * @throws ThemeRequiredException If it failed to read the texture
      */
-    public NTexture requireTexture(String path) throws ThemeRequiredException
+    public GlTexture requireTexture(String path) throws ThemeRequiredException
     {
         try
         {

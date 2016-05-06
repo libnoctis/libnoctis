@@ -11,22 +11,22 @@ public class TextureRegion
 	/**
 	 * The top-left corner texture X coordinate (0.0 - 1.0).
 	 */
-	private final float minU;
+	private float minU;
 
 	/**
 	 * The top-left corner texture Y coordinate (0.0 - 1.0).
 	 */
-	private final float minV;
+	private float minV;
 
 	/**
 	 * The bottom-right corner texture X coordinate (0.0 - 1.0).
 	 */
-	private final float maxU;
+	private float maxU;
 
 	/**
 	 * The bottom-right corner texture Y coordinate (0.0 - 1.0).
 	 */
-	private final float maxV;
+	private float maxV;
 
 	/**
 	 * A piece of a texture.
@@ -76,6 +76,30 @@ public class TextureRegion
 		return maxV;
 	}
 	
+	
+	
+	public void setMinU(float minU)
+	{
+		this.minU = minU;
+	}
+
+	public void setMinV(float minV)
+	{
+		this.minV = minV;
+	}
+
+	public void setMaxU(float maxU)
+	{
+		this.maxU = maxU;
+	}
+
+	public void setMaxV(float maxV)
+	{
+		this.maxV = maxV;
+	}
+
+
+
 	public static class Builder
 	{
 		private int textureWidth;

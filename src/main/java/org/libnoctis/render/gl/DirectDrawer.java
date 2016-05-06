@@ -1,40 +1,37 @@
 /*
  * Copyright 2015-2016 Adrien "Litarvan" Navratil & Victor "Wytrem"
- *
  * This file is part of Libnoctis.
-
  * Libnoctis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Libnoctis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Libnoctis.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.libnoctis.render.gl;
+
 
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glColor4f;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glEnd;
 import static org.lwjgl.opengl.GL11.glTexCoord2f;
 import static org.lwjgl.opengl.GL11.glVertex2i;
 
 import org.libnoctis.render.Color;
 import org.libnoctis.render.Drawer;
-import org.libnoctis.render.NTexture;
 
 
 /**
  * The Direct Drawer
- *
  * <p>
- *     Draw things using OpenGL directly
+ * Draw things using OpenGL direct render mode.
  * </p>
  *
  * @author Wytrem
@@ -43,6 +40,8 @@ import org.libnoctis.render.NTexture;
  */
 public class DirectDrawer extends Drawer
 {
+	private GlFont currentFont;
+
 	@Override
 	public void setColor(Color color)
 	{
@@ -52,6 +51,7 @@ public class DirectDrawer extends Drawer
 	@Override
 	public void drawRect(int x, int y, int width, int height)
 	{
+		glDisable(GlTexture.TARGET);
 		glBegin(GL_QUADS);
 		{
 			glVertex2i(x, y);
@@ -60,11 +60,7 @@ public class DirectDrawer extends Drawer
 			glVertex2i(x + width, y);
 		}
 		glEnd();
-	}
-
-	public void drawTexturedRect(int x, int y, int width, int height, int u, int v)
-	{
-		// TODO: Implement this
+		glEnable(GlTexture.TARGET);
 	}
 
 	@Override
@@ -74,7 +70,7 @@ public class DirectDrawer extends Drawer
 	}
 
 	@Override
-	public void drawTexture(int x, int y, int width, int height, NTexture texture, TextureRegion icon)
+	public void drawTexture(int x, int y, int width, int height, GlTexture texture, TextureRegion icon)
 	{
 		texture.bind();
 		glBegin(GL_QUADS);
@@ -88,6 +84,19 @@ public class DirectDrawer extends Drawer
 			glTexCoord2f(icon.getMaxU(), icon.getMinV());
 			glVertex2i(x + width, y);
 		}
-		NTexture.bindNone();
+		glEnd();
+		GlTexture.bindNone();
+	}
+
+	@Override
+	public void setFont(GlFont font)
+	{
+		currentFont = font;
+	}
+
+	@Override
+	public void drawString(String str, int x, int y)
+	{
+		currentFont.drawString(str, x, y, this);
 	}
 }

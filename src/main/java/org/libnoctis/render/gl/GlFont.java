@@ -14,14 +14,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.libnoctis.render.Drawer;
-import org.libnoctis.render.NTexture;
-import org.libnoctis.render.gl.TextureRegion.Builder;
+import org.libnoctis.util.Vector2i;
 
 
 /**
  * @author Wytrem
  */
-public class NFont
+public class GlFont
 {
 	/**
 	 * A character display informations.
@@ -59,7 +58,7 @@ public class NFont
 	/**
 	 * 
 	 */
-	private transient NTexture fontTexture;
+	private transient GlTexture fontTexture;
 
 	private transient int textureWidth;
 	private transient int textureHeight;
@@ -67,10 +66,10 @@ public class NFont
 	private Map<Character, Glyph> glyphs;
 
 	private Font font;
-	
-	private boolean antiAliasing = false;
 
-	private NFont(List<Character> chars, Font font)
+	private boolean antiAliasing = true;
+
+	private GlFont(List<Character> chars, Font font)
 	{
 		this.font = font;
 		buildTexture(chars);
@@ -78,8 +77,8 @@ public class NFont
 
 	private void buildTexture(List<Character> chars)
 	{
-		glyphs = new HashMap<Character, NFont.Glyph>();
-		textureWidth = textureHeight = 512;
+		glyphs = new HashMap<Character, GlFont.Glyph>();
+		textureWidth = textureHeight = 1024;
 		int amountOfChars = chars.size();
 		fontSize = font.getSize();
 
@@ -107,7 +106,7 @@ public class NFont
 		graphics.setColor(new Color(0, 0, 0, 1));
 		graphics.fillRect(0, 0, textureWidth, textureHeight);
 
-		TextureRegion.Builder iconBuilder = new Builder(textureWidth, textureHeight);
+		TextureRegion.Builder iconBuilder = new TextureRegion.Builder(textureWidth, textureHeight);
 
 		int x = 0;
 		int y = 0;
@@ -133,7 +132,7 @@ public class NFont
 			x += w;
 		}
 
-		fontTexture = new NTexture(imgTemp);
+		fontTexture = new GlTexture(imgTemp);
 	}
 
 	private BufferedImage getFontImage(char ch)
@@ -181,27 +180,37 @@ public class NFont
 
 	public void drawString(String str, int x, int y, Drawer drawer)
 	{
-		fontTexture.bind();
-
+		Vector2i pos = new Vector2i(x, y);
+		
 		for (char ch : str.toCharArray())
 		{
-			x += drawChar(ch, x, y, drawer);
+			drawChar(ch, pos, x, y, drawer);
 		}
-
-		NTexture.bindNone();
 	}
 
-	public int drawChar(char ch, int x, int y, Drawer drawer)
+	public void drawChar(char ch, Vector2i pos, int origX, int origY, Drawer drawer)
 	{
 		if (ch == ' ')
 		{
-			return (int) (fontSize * 0.3f);
+			pos.add((int) (fontSize * 0.3f), 0);
+			return;
+		}
+		else if (ch == '\t')
+		{
+			pos.add((int) (fontSize * 1.2f), 0);
+			return;
+		}
+		else if (ch == '\n')
+		{
+			pos.setX(origX);
+			pos.add(0, fontSize);
+			return;
 		}
 
 		Glyph glyph = glyphs.get(ch);
-		drawer.drawTexture(x, y, glyph.width, glyph.height, fontTexture, glyph.icon);
-
-		return glyph.width;
+		drawer.drawTexture(pos.getX(), pos.getY(), glyph.width, glyph.height, fontTexture, glyph.icon);
+		
+		pos.add(glyph.width, 0);
 	}
 
 	public static final List<Character> CHARS = new ArrayList<Character>();
@@ -214,13 +223,13 @@ public class NFont
 		}
 	}
 
-	public static NFont fromAwt(Font font)
+	static GlFont fromAwt(Font font)
 	{
 		return fromAwt(font, CHARS);
 	}
 
-	public static NFont fromAwt(Font font, List<Character> chars)
+	static GlFont fromAwt(Font font, List<Character> chars)
 	{
-		return new NFont(chars, font);
+		return new GlFont(chars, font);
 	}
 }

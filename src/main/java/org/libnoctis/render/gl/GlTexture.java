@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.libnoctis.render;
+package org.libnoctis.render.gl;
 
 
 import static org.lwjgl.opengl.GL11.GL_LINEAR;
@@ -24,6 +24,7 @@ import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
 import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
 import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glDeleteTextures;
 import static org.lwjgl.opengl.GL11.glGenTextures;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
@@ -46,12 +47,12 @@ import org.lwjgl.BufferUtils;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class NTexture
+public class GlTexture
 {
 	/**
 	 * The target GL code
 	 */
-	public static final int GL_TARGET = GL_TEXTURE_2D;
+	public static final int TARGET = GL_TEXTURE_2D;
 
 	/**
 	 * This texture ID for OpenGL.
@@ -64,7 +65,7 @@ public class NTexture
 	 * @param stream The image input stream.
 	 * @throws IOException If it failed to read the image.
 	 */
-	public NTexture(InputStream stream) throws IOException
+	public GlTexture(InputStream stream) throws IOException
 	{
 		this(ImageIO.read(stream));
 	}
@@ -74,7 +75,7 @@ public class NTexture
 	 *
 	 * @param image The image to load data from.
 	 */
-	public NTexture(BufferedImage image)
+	public GlTexture(BufferedImage image)
 	{
 		textureId = glGenTextures();
 		upload(image);
@@ -109,13 +110,13 @@ public class NTexture
 
 		bind();
 
-		glTexImage2D(GL_TARGET, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+		glTexImage2D(TARGET, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 
-		glTexParameteri(GL_TARGET, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TARGET, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(TARGET, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(TARGET, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-		glTexParameteri(GL_TARGET, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TARGET, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(TARGET, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(TARGET, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		bindNone();
 	}
 
@@ -124,7 +125,7 @@ public class NTexture
 	 */
 	public void bind()
 	{
-		glBindTexture(GL_TARGET, textureId);
+		glBindTexture(TARGET, textureId);
 	}
 
 	/**
@@ -132,6 +133,29 @@ public class NTexture
 	 */
 	public static void bindNone()
 	{
-		glBindTexture(GL_TARGET, 0);
+		glBindTexture(TARGET, 0);
+	}
+	
+	/**
+	 * @return This texture ID for OpenGL.
+	 */
+	public int getId()
+	{
+		return textureId;
+	}
+	
+	/**
+	 * Removes this texture from the graphic memory and frees its ID.
+	 */
+	public void release()
+	{
+		glDeleteTextures(textureId);
+	}
+	
+	@Override
+	protected void finalize() throws Throwable
+	{
+		super.finalize();
+		release();
 	}
 }

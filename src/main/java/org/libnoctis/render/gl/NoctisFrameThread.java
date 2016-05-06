@@ -15,6 +15,11 @@
 package org.libnoctis.render.gl;
 
 
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL14.GL_SECONDARY_COLOR_ARRAY_SIZE;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
@@ -66,7 +71,11 @@ public class NoctisFrameThread extends Thread
 		while (isRunning)
 		{
 			callRunnables();
+			
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+			System.out.println("clear");
+			
 			if (Display.wasResized())
 			{
 				frame.resize();
@@ -83,11 +92,11 @@ public class NoctisFrameThread extends Thread
 			// Render frame and its children
 			frame.render();
 
+			// Swap buffers
+			Display.update();
+			
 			// Sync FPS as needed by the frame object
 			Display.sync(frame.getFPS());
-
-			// Swap buffer
-			Display.update();
 		}
 	}
 

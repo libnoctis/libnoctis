@@ -84,6 +84,14 @@ public class Vector2i
 	{
 		this.y = y;
 	}
+	
+	public Vector2i add(int x, int y)
+	{
+		this.x += x;
+		this.y += y;
+		
+		return this;
+	}
 
 	@Override
 	public String toString()

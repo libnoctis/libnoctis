@@ -6,9 +6,12 @@ import java.io.File;
 import java.io.IOException;
 
 import org.libnoctis.components.NFrame;
+import org.libnoctis.render.Color;
 import org.libnoctis.render.Drawer;
-import org.libnoctis.render.gl.NFont;
+import org.libnoctis.render.gl.FontCache;
+import org.libnoctis.render.gl.GlFont;
 import org.lwjgl.LWJGLUtil;
+import org.lwjgl.opengl.GL11;
 
 
 public class NoctisTest
@@ -23,20 +26,26 @@ public class NoctisTest
 			System.err.println("Couldn't load LWJGL, aborting.");
 			return;
 		}
-		
+
 		NFrame frame = new NFrame("Salut") {
-			
-			NFont font;
-			
+
+			GlFont font;
+
 			@Override
 			protected void paintComponent(Drawer drawer)
 			{
 				if (font == null)
 				{
-					font = NFont.fromAwt(new Font("Times New Roman", Font.PLAIN, 12));
+					font = FontCache.getGlFont(new Font("URW Bookman L", Font.PLAIN, 40));
+					drawer.setFont(font);
 				}
-				
-				font.drawString("Salut, ça farte ?", 0, 0, drawer);
+
+				drawer.drawRect(0, 0, 100, 100);
+				drawer.setColor(Color.RED);
+				drawer.drawString("Coucou lol", 0, 0);
+
+				drawer.setColor(Color.WHITE);
+				drawer.drawString("Coucou lol", 0, 100);
 			}
 		};
 
