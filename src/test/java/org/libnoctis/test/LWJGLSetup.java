@@ -33,95 +33,95 @@ import org.lwjgl.LWJGLUtil;
  */
 public class LWJGLSetup
 {
-	private static boolean loaded;
+    private static boolean loaded;
 
-	/**
-	 * Load LWJGL in given folder
-	 */
-	public static void load(File folder) throws IOException
-	{
-		if (!loaded)
-		{
-			if (!folder.exists())
-			{
-				folder.mkdirs();
-			}
+    /**
+     * Load LWJGL in given folder
+     */
+    public static void load(File folder) throws IOException
+    {
+        if (!loaded)
+        {
+            if (!folder.exists())
+            {
+                folder.mkdirs();
+            }
 
-			if (folder.isDirectory())
-			{
-				File nativesFolder = new File(folder, "natives");
+            if (folder.isDirectory())
+            {
+                File nativesFolder = new File(folder, "natives");
 
-				if (!nativesFolder.exists())
-				{
-					nativesFolder.mkdirs();
-				}
+                if (!nativesFolder.exists())
+                {
+                    nativesFolder.mkdirs();
+                }
 
-				int os = LWJGLUtil.getPlatform();
-				if (os == LWJGLUtil.PLATFORM_WINDOWS)
-				{
-					if (!new File(nativesFolder.getPath() + "/jinput-dx8_64.dll").exists())
-					{
-						extractFromClasspath("jinput-dx8_64.dll", nativesFolder);
-						extractFromClasspath("jinput-dx8.dll", nativesFolder);
-						extractFromClasspath("jinput-raw_64.dll", nativesFolder);
-						extractFromClasspath("jinput-raw.dll", nativesFolder);
-						extractFromClasspath("lwjgl.dll", nativesFolder);
-						extractFromClasspath("lwjgl64.dll", nativesFolder);
-						extractFromClasspath("OpenAL32.dll", nativesFolder);
-						extractFromClasspath("OpenAL64.dll", nativesFolder);
-					}
-					else
-					{
-						System.out.println("Natives already exist.");
-					}
-				}
-				else if (os == LWJGLUtil.PLATFORM_LINUX)
-				{
-					if (!new File(nativesFolder.getPath() + "/liblwjgl.so").exists())
-					{
-						extractFromClasspath("liblwjgl.so", nativesFolder);
-						extractFromClasspath("liblwjgl64.so", nativesFolder);
-						extractFromClasspath("libopenal.so", nativesFolder);
-						extractFromClasspath("libopenal64.so", nativesFolder);
-					}
-					else
-					{
-						System.out.println("Natives already exist.");
-					}
+                int os = LWJGLUtil.getPlatform();
+                if (os == LWJGLUtil.PLATFORM_WINDOWS)
+                {
+                    if (!new File(nativesFolder.getPath() + "/jinput-dx8_64.dll").exists())
+                    {
+                        extractFromClasspath("jinput-dx8_64.dll", nativesFolder);
+                        extractFromClasspath("jinput-dx8.dll", nativesFolder);
+                        extractFromClasspath("jinput-raw_64.dll", nativesFolder);
+                        extractFromClasspath("jinput-raw.dll", nativesFolder);
+                        extractFromClasspath("lwjgl.dll", nativesFolder);
+                        extractFromClasspath("lwjgl64.dll", nativesFolder);
+                        extractFromClasspath("OpenAL32.dll", nativesFolder);
+                        extractFromClasspath("OpenAL64.dll", nativesFolder);
+                    }
+                    else
+                    {
+                        System.out.println("Natives already exist.");
+                    }
+                }
+                else if (os == LWJGLUtil.PLATFORM_LINUX)
+                {
+                    if (!new File(nativesFolder.getPath() + "/liblwjgl.so").exists())
+                    {
+                        extractFromClasspath("liblwjgl.so", nativesFolder);
+                        extractFromClasspath("liblwjgl64.so", nativesFolder);
+                        extractFromClasspath("libopenal.so", nativesFolder);
+                        extractFromClasspath("libopenal64.so", nativesFolder);
+                    }
+                    else
+                    {
+                        System.out.println("Natives already exist.");
+                    }
 
-				}
-				else if (os == LWJGLUtil.PLATFORM_MACOSX)
-				{
-					if (!new File(nativesFolder.getPath() + "/openal.dylib").exists())
-					{
-						extractFromClasspath("liblwjgl.jnilib", nativesFolder);
-						extractFromClasspath("liblwjgl-osx.jnilib", nativesFolder);
-						extractFromClasspath("openal.dylib", nativesFolder);
-					}
-					else
-					{
-						System.out.println("Natives already exist.");
-					}
-				}
-				else
-				{
-					System.err.println("Operating System couldn't be iditified");
-				}
-				System.setProperty("net.java.games.input.librarypath", nativesFolder.getAbsolutePath());
-				System.setProperty("org.lwjgl.librarypath", nativesFolder.getAbsolutePath());
-			}
-			loaded = true;
-		}
-	}
+                }
+                else if (os == LWJGLUtil.PLATFORM_MACOSX)
+                {
+                    if (!new File(nativesFolder.getPath() + "/openal.dylib").exists())
+                    {
+                        extractFromClasspath("liblwjgl.jnilib", nativesFolder);
+                        extractFromClasspath("liblwjgl-osx.jnilib", nativesFolder);
+                        extractFromClasspath("openal.dylib", nativesFolder);
+                    }
+                    else
+                    {
+                        System.out.println("Natives already exist.");
+                    }
+                }
+                else
+                {
+                    System.err.println("Operating System couldn't be iditified");
+                }
+                System.setProperty("net.java.games.input.librarypath", nativesFolder.getAbsolutePath());
+                System.setProperty("org.lwjgl.librarypath", nativesFolder.getAbsolutePath());
+            }
+            loaded = true;
+        }
+    }
 
-	/**
-	 * Extract given file from classpath into given folder
-	 */
-	private static void extractFromClasspath(String fileName, File folder) throws IOException
-	{
-		FileOutputStream out = new FileOutputStream(new File(folder, fileName));
-		IOUtils.copy(LWJGLSetup.class.getResourceAsStream("/" + fileName), out);
-		out.flush();
-		out.close();
-	}
+    /**
+     * Extract given file from classpath into given folder
+     */
+    private static void extractFromClasspath(String fileName, File folder) throws IOException
+    {
+        FileOutputStream out = new FileOutputStream(new File(folder, fileName));
+        IOUtils.copy(LWJGLSetup.class.getResourceAsStream("/" + fileName), out);
+        out.flush();
+        out.close();
+    }
 }

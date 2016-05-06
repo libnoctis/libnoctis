@@ -36,75 +36,75 @@ import org.libnoctis.util.Vector2i;
  */
 public final class CompatibleImageMaker
 {
-	/**
-	 * Create an empty nine patch compatible image with the given dimensions
-	 *
-	 * @param dimensions The dimensions of the image to create
-	 * @return The created image
-	 */
-	public static BufferedImage empty(Vector2i dimensions)
-	{
-		return empty(dimensions.getX(), dimensions.getY());
-	}
+    /**
+     * Create an empty nine patch compatible image with the given dimensions
+     *
+     * @param dimensions The dimensions of the image to create
+     * @return The created image
+     */
+    public static BufferedImage empty(Vector2i dimensions)
+    {
+        return empty(dimensions.getX(), dimensions.getY());
+    }
 
-	/**
-	 * Create an empty nine patch compatible image with the given dimensions
-	 *
-	 * @param width The width of the image to create
-	 * @param height The height of the image to create
-	 * @return The created image
-	 */
-	public static BufferedImage empty(int width, int height)
-	{
-		return config().createCompatibleImage(width, height);
-	}
+    /**
+     * Create an empty nine patch compatible image with the given dimensions
+     *
+     * @param width The width of the image to create
+     * @param height The height of the image to create
+     * @return The created image
+     */
+    public static BufferedImage empty(int width, int height)
+    {
+        return config().createCompatibleImage(width, height);
+    }
 
-	/**
-	 * Create an empty translucent nine patch compatible image with the given
-	 * dimensions
-	 *
-	 * @param dimensions The dimensions of the image to create
-	 * @return The created image
-	 */
-	public static BufferedImage translucent(Vector2i dimensions)
-	{
-		return translucent(dimensions.getX(), dimensions.getY());
-	}
+    /**
+     * Create an empty translucent nine patch compatible image with the given
+     * dimensions
+     *
+     * @param dimensions The dimensions of the image to create
+     * @return The created image
+     */
+    public static BufferedImage translucent(Vector2i dimensions)
+    {
+        return translucent(dimensions.getX(), dimensions.getY());
+    }
 
-	/**
-	 * Create an empty translucent nine patch compatible image with the given
-	 * dimensions
-	 *
-	 * @param width The width of the image to create
-	 * @param height The height of the image to create
-	 * @return The created image
-	 */
-	public static BufferedImage translucent(int width, int height)
-	{
-		return config().createCompatibleImage(width, height, Transparency.TRANSLUCENT);
-	}
+    /**
+     * Create an empty translucent nine patch compatible image with the given
+     * dimensions
+     *
+     * @param width The width of the image to create
+     * @param height The height of the image to create
+     * @return The created image
+     */
+    public static BufferedImage translucent(int width, int height)
+    {
+        return config().createCompatibleImage(width, height, Transparency.TRANSLUCENT);
+    }
 
-	/**
-	 * Convert an existing image to a nine patch compatibl eimage
-	 *
-	 * @param image The image to convert
-	 * @return The converted image
-	 */
-	public static BufferedImage convert(BufferedImage image)
-	{
-		if (image.getColorModel().equals(config().getColorModel()))
-			return image;
+    /**
+     * Convert an existing image to a nine patch compatibl eimage
+     *
+     * @param image The image to convert
+     * @return The converted image
+     */
+    public static BufferedImage convert(BufferedImage image)
+    {
+        if (image.getColorModel().equals(config().getColorModel()))
+            return image;
 
-		BufferedImage compatible = config().createCompatibleImage(image.getWidth(), image.getHeight(), image.getTransparency());
-		Graphics g = compatible.getGraphics();
-		g.drawImage(image, 0, 0, null);
-		g.dispose();
+        BufferedImage compatible = config().createCompatibleImage(image.getWidth(), image.getHeight(), image.getTransparency());
+        Graphics g = compatible.getGraphics();
+        g.drawImage(image, 0, 0, null);
+        g.dispose();
 
-		return compatible;
-	}
+        return compatible;
+    }
 
-	private static GraphicsConfiguration config()
-	{
-		return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-	}
+    private static GraphicsConfiguration config()
+    {
+        return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+    }
 }

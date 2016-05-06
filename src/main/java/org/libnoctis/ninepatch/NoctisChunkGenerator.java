@@ -1,22 +1,19 @@
 /*
  * Copyright 2015-2016 Adrien "Litarvan" Navratil & Victor "Wytrem"
- *
  * This file is part of Libnoctis.
-
  * Libnoctis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Libnoctis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Libnoctis.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.libnoctis.ninepatch;
+
 
 import org.libnoctis.util.Vector2i;
 
@@ -25,10 +22,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * The Noctis Chunk Generator
- *
- *
  * Generate a nine patch chunk from an image.
  *
  * @author Litarvan
@@ -90,11 +86,10 @@ public class NoctisChunkGenerator
             this.chunk.setHorizontalPatches(getRectangles(rowsPatches.getFixed(), columnsPatches.getPatches()));
             this.chunk.setVerticalPatches(getRectangles(rowsPatches.getPatches(), columnsPatches.getFixed()));
         }
-        else
-            if (!rowsPatches.getFixed().isEmpty())
-                this.chunk.setVerticalPatches(getVerticalRectangles(rowsPatches.getFixed()));
-            else if (!columnsPatches.getFixed().isEmpty())
-                this.chunk.setHorizontalPatches(getHorizontalRectangles(columnsPatches.getFixed()));
+        else if (!rowsPatches.getFixed().isEmpty())
+            this.chunk.setVerticalPatches(getVerticalRectangles(rowsPatches.getFixed()));
+        else if (!columnsPatches.getFixed().isEmpty())
+            this.chunk.setHorizontalPatches(getHorizontalRectangles(columnsPatches.getFixed()));
 
         // New parsing
         parser.update();
@@ -137,7 +132,8 @@ public class NoctisChunkGenerator
         return rectangles;
     }
 
-    private List<Rectangle> getVerticalRectangles(List<Vector2i> tops) {
+    private List<Rectangle> getVerticalRectangles(List<Vector2i> tops)
+    {
         List<Rectangle> rectangles = new ArrayList<Rectangle>();
 
         for (Vector2i top : tops)

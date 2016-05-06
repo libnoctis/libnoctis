@@ -1,8 +1,10 @@
 package org.libnoctis.layout.base;
 
+
 import org.libnoctis.components.NComponent;
 import org.libnoctis.layout.NLayout;
 import org.libnoctis.util.Vector2i;
+
 
 public class YoloLayout extends NLayout
 {
