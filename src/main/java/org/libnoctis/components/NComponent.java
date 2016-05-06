@@ -41,40 +41,40 @@ import org.libnoctis.util.Vector2i;
  */
 public abstract class NComponent
 {
-	/**
-	 * This component width, in pixels.
-	 */
-	private int width;
+    /**
+     * This component width, in pixels.
+     */
+    private int width;
 
-	/**
-	 * This component height, in pixels.
-	 */
-	private int height;
+    /**
+     * This component height, in pixels.
+     */
+    private int height;
 
-	/**
-	 * This component X coordinate, in pixels, relative to parent orthonormal.
-	 */
-	private int x;
+    /**
+     * This component X coordinate, in pixels, relative to parent orthonormal.
+     */
+    private int x;
 
-	/**
-	 * This component Y coordinate, in pixels, relative to parent orthonormal.
-	 */
-	private int y;
+    /**
+     * This component Y coordinate, in pixels, relative to parent orthonormal.
+     */
+    private int y;
 
-	/**
-	 * The component position, depending of the current layout.
-	 */
-	private LayoutProperty position;
+    /**
+     * The component position, depending of the current layout.
+     */
+    private LayoutProperty position;
 
-	/**
-	 * The parent container (that contains this component)
-	 */
-	private NContainer parent;
+    /**
+     * The parent container (that contains this component)
+     */
+    private NContainer parent;
 
-	/**
-	 * The event manager.
-	 */
-	private EventManager manager;
+    /**
+     * The event manager.
+     */
+    private EventManager manager;
 
     /**
      * The layout generated position
@@ -84,332 +84,332 @@ public abstract class NComponent
     /**
      * The object properties
      */
-	private Map<String, Object> properties;
+    private Map<String, Object> properties;
 
-	/**
-	 * Display list id, used for rendering.
-	 */
-	public int displayList = -1;
-
-	/**
-	 * This component parent frame.
-	 */
-	private NFrame frame;
-
-	private boolean isHovered;
-	
-	public NComponent()
-	{
-		manager = new EventManager();
-		properties = new HashMap<String, Object>();
-	}
-	
-	public void setHovered(boolean isHovered)
-	{
-		this.isHovered = isHovered;
-	}
-	
-	public boolean isHovered()
-	{
-		return isHovered;
-	}
-
-	public Map<String, Object> getProperties()
-	{
-		return properties;
-	}
-
-	/**
-	 * @return The parent container (that contains this component)
-	 */
-	public NContainer getParent()
-	{
-		return parent;
-	}
-
-	/**
-	 * @return The current theme
+    /**
+     * Display list id, used for rendering.
      */
-	public NoctisTheme theme()
-	{
-		return parent.theme();
-	}
+    public int displayList = -1;
 
-	/**
-	 * @return The current drawer object
-	 */
-	public Drawer getDrawer()
-	{
-		return parent == null ? null : parent.getDrawer();
-	}
+    /**
+     * This component parent frame.
+     */
+    private NFrame frame;
 
-	/**
-	 * Register an event listener for this component events
-	 *
-	 * @param listener The event listener to add
-	 */
-	public void registerListener(NListener listener)
-	{
-		manager.registerListener(listener);
-	}
+    private boolean isHovered;
 
-	/**
-	 * Called every frame from the parent frame's render Thread to render this
-	 * component and its children to the screen.
-	 */
-	public final void render()
-	{
-		Drawer drawer = getDrawer();
+    public NComponent()
+    {
+        manager = new EventManager();
+        properties = new HashMap<String, Object>();
+    }
 
-		if (drawer != null)
-		{
-			if (drawer.shouldPaintEveryFrame())
-				paintComponent(drawer);
-			render(drawer);
-		}
-	}
+    public void setHovered(boolean isHovered)
+    {
+        this.isHovered = isHovered;
+    }
 
-	/**
-	 * Called every frame from the parent frame's render Thread to render this
-	 * component and its children to the screen.
-	 */
-	protected final void render(Drawer drawer)
-	{
-		renderComponent(drawer);
-		renderChildren(drawer);
-	}
+    public boolean isHovered()
+    {
+        return isHovered;
+    }
 
-	/**
-	 * Called every frame from the parent frame's render Thread to render this
-	 * component's children to the screen.
-	 */
-	protected void renderChildren(Drawer drawer)
-	{
+    public Map<String, Object> getProperties()
+    {
+        return properties;
+    }
 
-	}
+    /**
+     * @return The parent container (that contains this component)
+     */
+    public NContainer getParent()
+    {
+        return parent;
+    }
 
-	/**
-	 * Called every frame from the parent frame's render Thread to render this
-	 * component to the screen.
-	 */
-	protected void renderComponent(Drawer drawer)
-	{
-		drawer.render(this);
-	}
+    /**
+     * @return The current theme
+     */
+    public NoctisTheme theme()
+    {
+        return parent.theme();
+    }
 
-	/**
-	 * Paint the component, for the first time.
-	 *
-	 * @param drawer The current drawer (implemented by the used render lib)
-	 */
-	protected void paintComponent(Drawer drawer)
-	{
-	}
+    /**
+     * @return The current drawer object
+     */
+    public Drawer getDrawer()
+    {
+        return parent == null ? null : parent.getDrawer();
+    }
 
-	/**
-	 * Update the component (when some of its properties had changed, or
-	 * something)
-	 *
-	 * @param drawer The current drawer (implemented by the used render lib)
-	 */
-	protected final void repaint(Drawer drawer)
-	{
-		drawer.prePaint(this);
-		paintComponent(drawer);
-		drawer.postPaint(this);
-	}
+    /**
+     * Register an event listener for this component events
+     *
+     * @param listener The event listener to add
+     */
+    public void registerListener(NListener listener)
+    {
+        manager.registerListener(listener);
+    }
 
-	/**
-	 * Repaints this component (update it)
-	 */
-	public final void repaint()
-	{
-		schedulRenderTask(new Runnable() {
-			@Override
-			public void run()
-			{
-				repaint(getDrawer());
-			}
-		});
+    /**
+     * Called every frame from the parent frame's render Thread to render this
+     * component and its children to the screen.
+     */
+    public final void render()
+    {
+        Drawer drawer = getDrawer();
 
-		repaintChildren();
-	}
+        if (drawer != null)
+        {
+            if (drawer.shouldPaintEveryFrame())
+                paintComponent(drawer);
+            render(drawer);
+        }
+    }
 
-	/**
-	 * Called by repaint to repaint children.
-	 */
-	protected void repaintChildren()
-	{
+    /**
+     * Called every frame from the parent frame's render Thread to render this
+     * component and its children to the screen.
+     */
+    protected final void render(Drawer drawer)
+    {
+        renderComponent(drawer);
+        renderChildren(drawer);
+    }
 
-	}
+    /**
+     * Called every frame from the parent frame's render Thread to render this
+     * component's children to the screen.
+     */
+    protected void renderChildren(Drawer drawer)
+    {
 
-	/**
-	 * Executed when this component is added to a container, to setup things
-	 *
-	 * @param parent The container where this component was added
-	 */
-	final void onAdded(NContainer parent)
-	{
-		this.parent = parent;
+    }
 
-		NContainer parent2 = parent;
+    /**
+     * Called every frame from the parent frame's render Thread to render this
+     * component to the screen.
+     */
+    protected void renderComponent(Drawer drawer)
+    {
+        drawer.render(this);
+    }
 
-		while (parent2 != null)
-		{
-			if (parent2 instanceof NFrame)
-			{
-				frame = (NFrame) parent2;
-				break;
-			}
-			else
-			{
-				parent2 = parent2.getParent();
-			}
-		}
+    /**
+     * Paint the component, for the first time.
+     *
+     * @param drawer The current drawer (implemented by the used render lib)
+     */
+    protected void paintComponent(Drawer drawer)
+    {
+    }
 
-		schedulRenderTask(new Runnable() {
-			@Override
-			public void run()
-			{
-				init();
-			}
-		});
+    /**
+     * Update the component (when some of its properties had changed, or
+     * something)
+     *
+     * @param drawer The current drawer (implemented by the used render lib)
+     */
+    protected final void repaint(Drawer drawer)
+    {
+        drawer.prePaint(this);
+        paintComponent(drawer);
+        drawer.postPaint(this);
+    }
 
-		repaint();
+    /**
+     * Repaints this component (update it)
+     */
+    public final void repaint()
+    {
+        schedulRenderTask(new Runnable() {
+            @Override
+            public void run()
+            {
+                repaint(getDrawer());
+            }
+        });
 
-		onComponentAdded(parent);
-	}
+        repaintChildren();
+    }
 
-	/**
-	 * Executed when this component is added to a container
-	 *
-	 * @param parent The container where this component was added
-	 */
-	protected void onComponentAdded(NContainer parent)
-	{
+    /**
+     * Called by repaint to repaint children.
+     */
+    protected void repaintChildren()
+    {
 
-	}
+    }
 
-	public int getX()
-	{
-		return x;
-	}
+    /**
+     * Executed when this component is added to a container, to setup things
+     *
+     * @param parent The container where this component was added
+     */
+    final void onAdded(NContainer parent)
+    {
+        this.parent = parent;
 
-	public int getY()
-	{
-		return y;
-	}
+        NContainer parent2 = parent;
 
-	public void setX(int x)
-	{
-		this.x = x;
-	}
+        while (parent2 != null)
+        {
+            if (parent2 instanceof NFrame)
+            {
+                frame = (NFrame) parent2;
+                break;
+            }
+            else
+            {
+                parent2 = parent2.getParent();
+            }
+        }
 
-	public void setY(int y)
-	{
-		this.y = y;
-	}
+        schedulRenderTask(new Runnable() {
+            @Override
+            public void run()
+            {
+                init();
+            }
+        });
 
-	/**
-	 * Gets the width.
-	 *
-	 * @return the width
-	 */
-	public int getWidth()
-	{
-		return width;
-	}
+        repaint();
 
-	/**
-	 * Sets the width.
-	 *
-	 * @param width the new width
-	 */
-	public void setWidth(int width)
-	{
-		this.width = width;
-		invalidate();
-	}
+        onComponentAdded(parent);
+    }
 
-	/**
-	 * Gets the height.
-	 *
-	 * @return the height
-	 */
-	public int getHeight()
-	{
-		return height;
-	}
+    /**
+     * Executed when this component is added to a container
+     *
+     * @param parent The container where this component was added
+     */
+    protected void onComponentAdded(NContainer parent)
+    {
 
-	/**
-	 * Sets the height.
-	 *
-	 * @param height the new height
-	 */
-	public void setHeight(int height)
-	{
-		this.height = height;
-		invalidate();
-	}
+    }
 
-	/**
-	 * Invalidates this component. An not valid component needs to be laid out
-	 * again.
-	 */
-	public void invalidate()
-	{
-		// TODO : implement
+    public int getX()
+    {
+        return x;
+    }
 
-		repaint();
-	}
+    public int getY()
+    {
+        return y;
+    }
 
-	/**
-	 * @return The component position, corresponding to the current layout
-	 */
-	public LayoutProperty getPosition()
-	{
-		return position;
-	}
+    public void setX(int x)
+    {
+        this.x = x;
+    }
 
-	/**
-	 * Set the component position
-	 *
-	 * @param position The position, depending to the current layout
-	 */
-	public void setPosition(LayoutProperty position)
-	{
-		this.position = position;
-		repaint();
-	}
+    public void setY(int y)
+    {
+        this.y = y;
+    }
 
-	/**
-	 * Schedule the given task to be executed in the render Thread.
-	 * 
-	 * @param runnable The task to be executed in the render Thread.
-	 */
-	protected void schedulRenderTask(Runnable runnable)
-	{
-		getFrame().getFrameThread().runLater(runnable);
-	}
+    /**
+     * Gets the width.
+     *
+     * @return the width
+     */
+    public int getWidth()
+    {
+        return width;
+    }
 
-	/**
-	 * Gets the frame that contains this component.
-	 * 
-	 * @return The frame that contains this component.
-	 */
-	public NFrame getFrame()
-	{
-		return frame;
-	}
+    /**
+     * Sets the width.
+     *
+     * @param width the new width
+     */
+    public void setWidth(int width)
+    {
+        this.width = width;
+        invalidate();
+    }
 
-	/**
-	 * Called when added to a container from the render Thread to init the
-	 * component (load textures, fonts, etc.).
-	 */
-	protected void init()
-	{
+    /**
+     * Gets the height.
+     *
+     * @return the height
+     */
+    public int getHeight()
+    {
+        return height;
+    }
 
-	}
+    /**
+     * Sets the height.
+     *
+     * @param height the new height
+     */
+    public void setHeight(int height)
+    {
+        this.height = height;
+        invalidate();
+    }
+
+    /**
+     * Invalidates this component. An not valid component needs to be laid out
+     * again.
+     */
+    public void invalidate()
+    {
+        // TODO : implement
+
+        repaint();
+    }
+
+    /**
+     * @return The component position, corresponding to the current layout
+     */
+    public LayoutProperty getPosition()
+    {
+        return position;
+    }
+
+    /**
+     * Set the component position
+     *
+     * @param position The position, depending to the current layout
+     */
+    public void setPosition(LayoutProperty position)
+    {
+        this.position = position;
+        repaint();
+    }
+
+    /**
+     * Schedule the given task to be executed in the render Thread.
+     * 
+     * @param runnable The task to be executed in the render Thread.
+     */
+    protected void schedulRenderTask(Runnable runnable)
+    {
+        getFrame().getFrameThread().runLater(runnable);
+    }
+
+    /**
+     * Gets the frame that contains this component.
+     * 
+     * @return The frame that contains this component.
+     */
+    public NFrame getFrame()
+    {
+        return frame;
+    }
+
+    /**
+     * Called when added to a container from the render Thread to init the
+     * component (load textures, fonts, etc.).
+     */
+    protected void init()
+    {
+
+    }
 
     /**
      * Set the component position generated by the parent's layout.
@@ -430,13 +430,13 @@ public abstract class NComponent
         return generatedPosition;
     }
 
-	/**
-	 * Dispatch an event to the event manager
-	 *
-	 * @param event The event to dispatch
+    /**
+     * Dispatch an event to the event manager
+     *
+     * @param event The event to dispatch
      */
-	public void dispatchEvent(NEvent event)
-	{
-		manager.callEvent(event);
-	}
+    public void dispatchEvent(NEvent event)
+    {
+        manager.callEvent(event);
+    }
 }

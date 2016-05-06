@@ -27,61 +27,61 @@ package org.libnoctis.util;
  */
 public class Vector2f
 {
-	/**
-	 * The x position
-	 */
-	private float x;
+    /**
+     * The x position
+     */
+    private float x;
 
-	/**
-	 * The y position
-	 */
-	private float y;
+    /**
+     * The y position
+     */
+    private float y;
 
-	/**
-	 * A 2 Float Vector
-	 *
-	 * @param x The x position
-	 * @param y The y position
-	 */
-	public Vector2f(float x, float y)
-	{
-		this.x = x;
-		this.y = y;
-	}
+    /**
+     * A 2 Float Vector
+     *
+     * @param x The x position
+     * @param y The y position
+     */
+    public Vector2f(float x, float y)
+    {
+        this.x = x;
+        this.y = y;
+    }
 
-	/**
-	 * @return The x position
-	 */
-	public float getX()
-	{
-		return x;
-	}
+    /**
+     * @return The x position
+     */
+    public float getX()
+    {
+        return x;
+    }
 
-	/**
-	 * Set the x position of this vector
-	 *
-	 * @param x The new x position
-	 */
-	public void setX(float x)
-	{
-		this.x = x;
-	}
+    /**
+     * Set the x position of this vector
+     *
+     * @param x The new x position
+     */
+    public void setX(float x)
+    {
+        this.x = x;
+    }
 
-	/**
-	 * @return The y position
-	 */
-	public float getY()
-	{
-		return y;
-	}
+    /**
+     * @return The y position
+     */
+    public float getY()
+    {
+        return y;
+    }
 
-	/**
-	 * Set the y position of this vector
-	 *
-	 * @param y The new y position
-	 */
-	public void setY(float y)
-	{
-		this.y = y;
-	}
+    /**
+     * Set the y position of this vector
+     *
+     * @param y The new y position
+     */
+    public void setY(float y)
+    {
+        this.y = y;
+    }
 }

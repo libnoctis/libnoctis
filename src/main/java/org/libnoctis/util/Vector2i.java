@@ -27,72 +27,80 @@ package org.libnoctis.util;
  */
 public class Vector2i
 {
-	/**
-	 * The x position
-	 */
-	private int x;
+    /**
+     * The x position
+     */
+    private int x;
 
-	/**
-	 * The y position
-	 */
-	private int y;
+    /**
+     * The y position
+     */
+    private int y;
 
-	/**
-	 * A 2 Integers Vector
-	 *
-	 * @param x The x position
-	 * @param y The y position
-	 */
-	public Vector2i(int x, int y)
-	{
-		this.x = x;
-		this.y = y;
-	}
+    /**
+     * A 2 Integers Vector
+     *
+     * @param x The x position
+     * @param y The y position
+     */
+    public Vector2i(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
 
-	/**
-	 * @return The x position
-	 */
-	public int getX()
-	{
-		return x;
-	}
+    /**
+     * @return The x position
+     */
+    public int getX()
+    {
+        return x;
+    }
 
-	/**
-	 * Set the x position of this vector
-	 *
-	 * @param x The new x position
-	 */
-	public void setX(int x)
-	{
-		this.x = x;
-	}
+    /**
+     * Set the x position of this vector
+     *
+     * @param x The new x position
+     */
+    public void setX(int x)
+    {
+        this.x = x;
+    }
 
-	/**
-	 * @return The y position
-	 */
-	public int getY()
-	{
-		return y;
-	}
+    /**
+     * @return The y position
+     */
+    public int getY()
+    {
+        return y;
+    }
 
-	/**
-	 * Set the y position of this vector
-	 *
-	 * @param y The new y position
-	 */
-	public void setY(int y)
-	{
-		this.y = y;
-	}
+    /**
+     * Set the y position of this vector
+     *
+     * @param y The new y position
+     */
+    public void setY(int y)
+    {
+        this.y = y;
+    }
 
-	@Override
-	public String toString()
-	{
-		return "Vector2i [x=" + x + ", y=" + y + "]";
-	}
+    public Vector2i add(int x, int y)
+    {
+        this.x += x;
+        this.y += y;
 
-	public float length()
-	{
-		return (float) Math.sqrt(x * x + y * y);
-	}
+        return this;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Vector2i [x=" + x + ", y=" + y + "]";
+    }
+
+    public float length()
+    {
+        return (float) Math.sqrt(x * x + y * y);
+    }
 }

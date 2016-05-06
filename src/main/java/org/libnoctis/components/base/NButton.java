@@ -1,22 +1,19 @@
 /*
  * Copyright 2015-2016 Adrien "Litarvan" Navratil & Victor "Wytrem"
- *
  * This file is part of Libnoctis.
-
  * Libnoctis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Libnoctis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Libnoctis.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.libnoctis.components.base;
+
 
 import org.jetbrains.annotations.Nullable;
 import org.libnoctis.components.NComponent;
@@ -27,11 +24,11 @@ import org.libnoctis.input.mouse.MouseMoveEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
 import org.libnoctis.input.mouse.MouseReleasedEvent;
 import org.libnoctis.render.Drawer;
-import org.libnoctis.render.NTexture;
+import org.libnoctis.render.gl.GlTexture;
+
 
 /**
  * The Noctis Button
- *
  * <p>
  * A button, can be clicked. Click click click.
  * Click click click click click click click click click.
@@ -62,18 +59,18 @@ public class NButton extends NComponent implements NListener
     /**
      * The button texture
      */
-    private NTexture texture;
+    private GlTexture texture;
 
     /**
      * The texture when the mouse is on the button
      */
-    private NTexture hoverTexture;
+    private GlTexture hoverTexture;
 
     /**
      * The texture when the button is disabled
      */
     @Nullable
-    private NTexture disabledTexture;
+    private GlTexture disabledTexture;
 
     /**
      * True if the mouse is over this button
@@ -178,7 +175,7 @@ public class NButton extends NComponent implements NListener
     /**
      * @return Return the button texture
      */
-    public NTexture getTexture()
+    public GlTexture getTexture()
     {
         return texture;
     }
@@ -186,16 +183,17 @@ public class NButton extends NComponent implements NListener
     /**
      * @return The texture when the mouse is hover the button
      */
-    public NTexture getHoverTexture()
+    public GlTexture getHoverTexture()
     {
         return hoverTexture;
     }
 
     /**
-     * @return The button texture when it is disabled (can be null if the theme didn't give one)
+     * @return The button texture when it is disabled (can be null if the theme
+     *         didn't give one)
      */
     @Nullable
-    public NTexture getDisabledTexture()
+    public GlTexture getDisabledTexture()
     {
         return disabledTexture;
     }
@@ -223,8 +221,7 @@ public class NButton extends NComponent implements NListener
     @NoctisEvent
     private void move(MouseMoveEvent event)
     {
-        hover = event.getPos().getX() > getGeneratedPosition().getX() && event.getPos().getX() < getGeneratedPosition().getX() + getWidth() &&
-                event.getPos().getY() > getGeneratedPosition().getY() && event.getPos().getY() < getGeneratedPosition().getY() + getHeight();
+        hover = event.getPos().getX() > getGeneratedPosition().getX() && event.getPos().getX() < getGeneratedPosition().getX() + getWidth() && event.getPos().getY() > getGeneratedPosition().getY() && event.getPos().getY() < getGeneratedPosition().getY() + getHeight();
     }
 
     @NoctisEvent
@@ -244,18 +241,12 @@ public class NButton extends NComponent implements NListener
     {
         super.paintComponent(drawer);
 
-        if (disabled)
-            if (disabledTexture != null)
-                disabledTexture.bind();
-            else
-                throw new RuntimeException("Can't set the button disabled because there isn't any disabled texture");
-        else if (hover)
-            hoverTexture.bind();
-        else
-            texture.bind();
+        if (disabled && disabledTexture == null)
+        {
+            throw new RuntimeException("Can't set the button disabled because there isn't any disabled texture");
+        }
 
-        drawer.drawTexturedRect(getGeneratedPosition().getX(), getGeneratedPosition().getY(), this.getWidth(), this.getHeight());
-        NTexture.bindNone();
+        drawer.drawTexture(getGeneratedPosition().getX(), getGeneratedPosition().getY(), this.getWidth(), this.getHeight(), disabled ? disabledTexture : (hover ? hoverTexture : texture));
 
         // TODO: Draw the text
     }

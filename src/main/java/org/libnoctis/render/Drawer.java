@@ -1,33 +1,31 @@
 /*
  * Copyright 2015-2016 Adrien "Litarvan" Navratil & Victor "Wytrem"
- *
  * This file is part of Libnoctis.
-
  * Libnoctis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
  * Libnoctis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
- *
  * You should have received a copy of the GNU Lesser General Public License
- * along with Libnoctis.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.libnoctis.render;
 
+
 import org.libnoctis.components.NComponent;
-import org.libnoctis.render.gl.NFont;
+import org.libnoctis.render.gl.GlFont;
+import org.libnoctis.render.gl.GlTexture;
 import org.libnoctis.render.gl.TextureRegion;
+
 
 /**
  * The Drawer
- *
  * <p>
- *     The Drawer is used to draw things, like shapes or
- *     images. It is used to render the components.
+ * The Drawer is used to draw things, like shapes or
+ * images. It is used to render the components.
  * </p>
  *
  * @author Wytrem & Litarvan
@@ -36,110 +34,95 @@ import org.libnoctis.render.gl.TextureRegion;
  */
 public abstract class Drawer
 {
-	/**
-	 * Sets the current color of the drawer.
-	 *
-	 * @param color The drawing color
+    /**
+     * Sets the current color of the drawer.
+     *
+     * @param color The drawing color
      */
-	public abstract void setColor(Color color);
+    public abstract void setColor(Color color);
 
-	/**
-	 * Draws a plain color rectangle.
-	 *
-	 * @param x The x position of the rectangle.
-	 * @param y The y position of the rectangle.
-	 * @param width The width of the rectangle.
+    /**
+     * Sets the current font of the drawer.
+     * 
+     * @param font The font to be rendered.
+     * @see Drawer#drawString(String, int, int)
+     */
+    public abstract void setFont(GlFont font);
+
+    /**
+     * Draws the given string to the screen at the given location.
+     * 
+     * @param str The string to be rendered.
+     * @param x The X coordinate of the top-left string quad.
+     * @param y The Y coordinate of the top-left string quad.
+     */
+    public abstract void drawString(String str, int x, int y);
+
+    /**
+     * Draws a plain color rectangle.
+     *
+     * @param x The x position of the rectangle.
+     * @param y The y position of the rectangle.
+     * @param width The width of the rectangle.
      * @param height The height of the rectangle.
      */
-	public abstract void drawRect(int x, int y, int width, int height);
+    public abstract void drawRect(int x, int y, int width, int height);
 
-	public abstract void drawTexture(int x, int y, int width, int height, NTexture texture, TextureRegion icon);
-	
-	public void drawTexture(int x, int y, int width, int height, NTexture texture)
-	{
-		drawTexture(x, y, width, height, texture, TextureRegion.WHOLE_TEXTURE);
-	}
-	
-	/**
-	 * @return If the drawer should be called at every frame
-     */
-	public abstract boolean shouldPaintEveryFrame();
-    /**
-     * Draw a rectangle with the bound texture
-     *
-     * @param x The x position of the rectangle
-     * @param y The y position of the rectangle
-     * @param width The width of the rectangle
-     * @param height The height of the rectangle
-     */
-    public void drawTexturedRect(int x, int y, int width, int height)
+    public abstract void drawTexture(int x, int y, int width, int height, GlTexture texture, TextureRegion icon);
+
+    public void drawTexture(int x, int y, int width, int height, GlTexture texture)
     {
-        drawTexturedRect(x, y, width, height, 0, 0);
+        drawTexture(x, y, width, height, texture, TextureRegion.WHOLE_TEXTURE);
     }
 
-	/**
-	 * Draw a string to the given position with the current font
-	 *
-	 * @param x The x position of the text
-	 * @param y The y position of the text
-	 * @param string The string to draw
-	 */
-	public abstract void drawString(int x, int y, String string);
-
-	/**
-	 * Set the current font
-	 *
-	 * @param font The font to set
+    /**
+     * @return If the drawer should be called at every frame
      */
-	public abstract void setFont(NFont font);
-
-	/**
-	 * @return The current used font
-     */
-	public abstract NFont getFont();
-
-	/**
-	 * @return The current used color
-     */
-	public abstract Color getColor();
+    public abstract boolean shouldPaintEveryFrame();
 
     /**
-     * Draw a rectangle with the texture at the given x, y of the bound sprite
+     * Draw a string to the given position with the current font
      *
-     * @param x The x position of the rectangle
-     * @param y The y position of the rectangle
-     * @param width The width of the rectangle
-     * @param height The height of the rectangle
-     * @param u The x of the texture of the sprite
-     * @param v The y of the texture of the sprite
+     * @param x The x position of the text
+     * @param y The y position of the text
+     * @param string The string to draw
      */
-    public abstract void drawTexturedRect(int x, int y, int width, int height, int u, int v);
+    public abstract void drawString(int x, int y, String string);
 
-
-	/**
-	 * Event called after the painting of the given component
-	 *
-	 * @param component The component that was painted
+    /**
+     * @return The current used font
      */
-	public void postPaint(NComponent component)
-	{
-	}
+    public abstract GlFont getFont();
 
-	/**
-	 * Event called before the painting of the given component
-	 *
-	 * @param component The component that will be painted
+    /**
+     * @return The current used color
      */
-	public void prePaint(NComponent component)
-	{
-	}
+    public abstract Color getColor();
 
-	/**
-	 * Render the given component
-	 *
-	 * @param component The component to render
+    /**
+     * Event called after the painting of the given component
+     *
+     * @param component The component that was painted
      */
-	public void render(NComponent component)
-	{
-	}
+    public void postPaint(NComponent component)
+    {
+    }
+
+    /**
+     * Event called before the painting of the given component
+     *
+     * @param component The component to be be painted.
+     */
+    public void prePaint(NComponent component)
+    {
+    }
+
+    /**
+     * Renders the given component.
+     *
+     * @param component The component to be rendered.
+     */
+    public void render(NComponent component)
+    {
+    }
 }

@@ -33,75 +33,75 @@ import java.util.ArrayList;
  */
 public class EventManager
 {
-	/**
-	 * The list of the listeners
-	 */
-	private ArrayList<NListener> listeners = new ArrayList<NListener>();
+    /**
+     * The list of the listeners
+     */
+    private ArrayList<NListener> listeners = new ArrayList<NListener>();
 
-	/**
-	 * Dispatch an event to all the listeners
-	 *
-	 * @param event The instance of the event to call
-	 */
-	public void callEvent(NEvent event)
-	{
-		try
-		{
-			for (NListener listener : listeners)
-			{
-				launchEvent(listener, event);
-			}
-		}
-		catch (Throwable e)
-		{}
-	}
+    /**
+     * Dispatch an event to all the listeners
+     *
+     * @param event The instance of the event to call
+     */
+    public void callEvent(NEvent event)
+    {
+        try
+        {
+            for (NListener listener : listeners)
+            {
+                launchEvent(listener, event);
+            }
+        }
+        catch (Throwable e)
+        {}
+    }
 
-	/**
-	 * Register an event listener
-	 *
-	 * @param listener The listener containing the events
-	 */
-	public void registerListener(NListener listener)
-	{
-		listeners.add(listener);
-	}
+    /**
+     * Register an event listener
+     *
+     * @param listener The listener containing the events
+     */
+    public void registerListener(NListener listener)
+    {
+        listeners.add(listener);
+    }
 
-	/**
-	 * Launch an event
-	 *
-	 * @param listener The object that holds event method.
-	 * @param event The class (ex:
-	 *        {@link org.libnoctis.input.mouse.MouseMoveEvent} of the
-	 *        event
-	 * @see NoctisEvent
-	 */
-	private void launchEvent(NListener listener, NEvent event) throws Throwable
-	{
-		Method[] methods = listener.getClass().getDeclaredMethods();
-		for (Method method : methods)
-		{
-			if (method.getParameterTypes().length != 1)
-				return;
+    /**
+     * Launch an event
+     *
+     * @param listener The object that holds event method.
+     * @param event The class (ex:
+     *        {@link org.libnoctis.input.mouse.MouseMoveEvent} of the
+     *        event
+     * @see NoctisEvent
+     */
+    private void launchEvent(NListener listener, NEvent event) throws Throwable
+    {
+        Method[] methods = listener.getClass().getDeclaredMethods();
+        for (Method method : methods)
+        {
+            if (method.getParameterTypes().length != 1)
+                return;
 
-			Annotation[] annotations = method.getDeclaredAnnotations();
-			for (Annotation annotation : annotations)
-				if (annotation.annotationType().equals(NoctisEvent.class) && (method.getParameterTypes()[0].equals(event.getClass()) || (event.shouldPassForSuperclassEvent() && method.getParameterTypes()[0].isInstance(event))))
-				{
-					method.setAccessible(true);
+            Annotation[] annotations = method.getDeclaredAnnotations();
+            for (Annotation annotation : annotations)
+                if (annotation.annotationType().equals(NoctisEvent.class) && (method.getParameterTypes()[0].equals(event.getClass()) || (event.shouldPassForSuperclassEvent() && method.getParameterTypes()[0].isInstance(event))))
+                {
+                    method.setAccessible(true);
 
-					try
-					{
-						method.invoke(listener, event);
-					}
-					catch (IllegalAccessException ignored)
-					{
-						// Can't happen
-					}
-					catch (InvocationTargetException e)
-					{
-						throw e.getTargetException();
-					}
-				}
-		}
-	}
+                    try
+                    {
+                        method.invoke(listener, event);
+                    }
+                    catch (IllegalAccessException ignored)
+                    {
+                        // Can't happen
+                    }
+                    catch (InvocationTargetException e)
+                    {
+                        throw e.getTargetException();
+                    }
+                }
+        }
+    }
 }

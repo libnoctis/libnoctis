@@ -15,6 +15,10 @@
 package org.libnoctis.render.gl;
 
 
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
@@ -32,100 +36,102 @@ import org.lwjgl.opengl.Display;
  */
 public class NoctisFrameThread extends Thread
 {
-	/**
-	 * {@code true} is this Thread should keep running.
-	 */
-	private boolean isRunning;
+    /**
+     * {@code true} is this Thread should keep running.
+     */
+    private boolean isRunning;
 
-	/**
-	 * Ordered collection of tasks that should be executed is this Thread.
-	 */
-	private Deque<Runnable> runnables = new ArrayDeque<Runnable>();
+    /**
+     * Ordered collection of tasks that should be executed is this Thread.
+     */
+    private Deque<Runnable> runnables = new ArrayDeque<Runnable>();
 
-	/**
-	 * The frame rendered by this Thread.
-	 */
-	private NFrame frame;
+    /**
+     * The frame rendered by this Thread.
+     */
+    private NFrame frame;
 
-	/**
-	 * The Noctis Frame Thread
-	 *
-	 * @param frame The frame of this thread
-	 */
-	public NoctisFrameThread(NFrame frame)
-	{
-		isRunning = true;
-		this.frame = frame;
-	}
+    /**
+     * The Noctis Frame Thread
+     *
+     * @param frame The frame of this thread
+     */
+    public NoctisFrameThread(NFrame frame)
+    {
+        isRunning = true;
+        this.frame = frame;
+    }
 
-	@Override
-	public void run()
-	{
-		callRunnables();
+    @Override
+    public void run()
+    {
+        callRunnables();
 
-		while (isRunning)
-		{
-			callRunnables();
+        while (isRunning)
+        {
+            callRunnables();
 
-			if (Display.wasResized())
-			{
-				frame.resize();
-			}
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			if (Display.isCloseRequested())
-			{
-				frame.requestClose();
-			}
+            if (Display.wasResized())
+            {
+                frame.resize();
+            }
 
-			// Listen to user input
-			frame.input();
+            if (Display.isCloseRequested())
+            {
+                frame.requestClose();
+            }
 
-			// Render frame and its children
-			frame.render();
+            // Listen to user input
+            frame.input();
 
-			// Sync FPS as needed by the frame object
-			Display.sync(frame.getFPS());
+            // Render frame and its children
+            frame.render();
 
-			// Swap buffer
-			Display.update();
-		}
-	}
+            // Swap buffers
+            Display.update();
 
-	/**
-	 * Schedules the given task to be executed before next render pass.
-	 * 
-	 * @param runnable The task to be executed in this Thread.
-	 */
-	public void runLater(Runnable runnable)
-	{
-		synchronized (runnables)
-		{
-			runnables.addLast(runnable);
-		}
-	}
+            // Sync FPS as needed by the frame object
+            Display.sync(frame.getFPS());
+        }
+    }
 
-	/**
-	 * Call the runnables (of the runnables list)
-	 */
-	private void callRunnables()
-	{
-		synchronized (runnables)
-		{
-			for (Iterator<Runnable> iterator = runnables.iterator(); iterator.hasNext();)
-			{
-				iterator.next().run();
-				iterator.remove();
-			}
-		}
-	}
+    /**
+     * Schedules the given task to be executed before next render pass.
+     * 
+     * @param runnable The task to be executed in this Thread.
+     */
+    public void runLater(Runnable runnable)
+    {
+        synchronized (runnables)
+        {
+            runnables.addLast(runnable);
+        }
+    }
 
-	/**
-	 * Set the thread running or not
-	 *
-	 * @param b If it should be running or not
-	 */
-	public void setRunning(boolean b)
-	{
-		isRunning = b;
-	}
+    /**
+     * Call the runnables (of the runnables list)
+     */
+    private void callRunnables()
+    {
+        synchronized (runnables)
+        {
+            for (Iterator<Runnable> iterator = runnables.iterator(); iterator.hasNext();)
+            {
+                iterator.next().run();
+                iterator.remove();
+            }
+        }
+    }
+
+    /**
+     * Set the thread running or not
+     *
+     * @param b If it should be running or not
+     */
+    public void setRunning(boolean b)
+    {
+        isRunning = b;
+    }
 }

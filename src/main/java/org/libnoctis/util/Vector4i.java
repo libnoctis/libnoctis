@@ -27,31 +27,31 @@ package org.libnoctis.util;
  */
 public class Vector4i extends Vector2i
 {
-	/**
-	 * The w position
-	 */
-	private int w;
+    /**
+     * The w position
+     */
+    private int w;
 
-	/**
-	 * The z position
-	 */
-	private int z;
+    /**
+     * The z position
+     */
+    private int z;
 
-	/**
-	 * A 4 Integers Vector
-	 *
-	 * @param x The x position
-	 * @param y The y position
-	 * @param w The w position
-	 * @param z The z position
-	 */
-	public Vector4i(int x, int y, int w, int z)
-	{
-		super(x, y);
+    /**
+     * A 4 Integers Vector
+     *
+     * @param x The x position
+     * @param y The y position
+     * @param w The w position
+     * @param z The z position
+     */
+    public Vector4i(int x, int y, int w, int z)
+    {
+        super(x, y);
 
-		this.w = w;
-		this.z = z;
-	}
+        this.w = w;
+        this.z = z;
+    }
 
     /**
      * @return The w position
@@ -71,21 +71,21 @@ public class Vector4i extends Vector2i
         this.w = w;
     }
 
-	/**
-	 * @return The z position
-	 */
-	public int getZ()
-	{
-		return z;
-	}
+    /**
+     * @return The z position
+     */
+    public int getZ()
+    {
+        return z;
+    }
 
-	/**
-	 * Set the z position of this vector
-	 *
-	 * @param z The new z position
-	 */
-	public void setZ(int z)
-	{
-		this.z = z;
-	}
+    /**
+     * Set the z position of this vector
+     *
+     * @param z The new z position
+     */
+    public void setZ(int z)
+    {
+        this.z = z;
+    }
 }

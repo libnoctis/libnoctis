@@ -1,5 +1,6 @@
 package org.libnoctis.test.second;
 
+
 import java.io.File;
 import java.io.IOException;
 import org.libnoctis.components.NFrame;
@@ -9,6 +10,7 @@ import org.libnoctis.input.NoctisEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
 import org.libnoctis.layout.base.YoloLayout;
 import org.libnoctis.test.LWJGLSetup;
+
 
 public class SecondTest extends NFrame implements NListener
 {
