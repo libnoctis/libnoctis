@@ -15,6 +15,7 @@
 package org.libnoctis.components.base;
 
 
+import java.awt.Rectangle;
 import org.libnoctis.components.NComponent;
 import org.libnoctis.components.NContainer;
 import org.libnoctis.input.NListener;
@@ -22,7 +23,11 @@ import org.libnoctis.input.NoctisEvent;
 import org.libnoctis.input.keyboard.Key;
 import org.libnoctis.input.keyboard.KeyPressedEvent;
 import org.libnoctis.input.keyboard.KeyReleasedEvent;
+import org.libnoctis.ninepatch.NinePatch;
+import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
+import org.libnoctis.render.gl.GlTexture;
+import org.libnoctis.util.Vector4i;
 
 
 /**
@@ -57,6 +62,31 @@ public class NTextField extends NComponent implements NListener
      * If caps lock is enabled
      */
     private boolean capsLock = false;
+
+    /**
+     * The background nine patch
+     */
+    private NoctisNinePatch background;
+
+    /**
+     * The rectangle where is the text
+     */
+    private Rectangle textBounds;
+
+    @Override
+    protected void init()
+    {
+        super.init();
+
+        this.background = NinePatch.create(theme().requireImage(theme().requireProp("component.textfield.texture")));
+
+        int textX = Integer.parseInt(theme().requireProp("component.textfield.textbounds.x"));
+        int textY = Integer.parseInt(theme().requireProp("component.textfield.textbounds.y"));
+        int textWidth = Integer.parseInt(theme().requireProp("component.textfield.textbounds.width"));
+        int textHeight = Integer.parseInt(theme().requireProp("component.textfield.textbounds.height"));
+
+        this.textBounds = new Rectangle(textX, textY, textWidth, textHeight);
+    }
 
     @NoctisEvent
     private void onKeyPressed(KeyPressedEvent event)
@@ -95,6 +125,12 @@ public class NTextField extends NComponent implements NListener
     {
         super.paintComponent(drawer);
 
+        // Drawing background
+        GlTexture texture = background.generateFor(this.getWidth(), this.getHeight());
+        drawer.drawTexture(this.getGeneratedPosition().getX(), this.getGeneratedPosition().getY(), this.getWidth(), this.getHeight(), texture);
+
+        // Drawing the text
+        drawer.drawString(this.textBounds.x, this.textBounds.y, this.getText());
     }
 
     /**
