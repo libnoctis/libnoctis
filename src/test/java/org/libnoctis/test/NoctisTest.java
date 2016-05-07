@@ -6,10 +6,10 @@ import java.io.File;
 import java.io.IOException;
 
 import org.libnoctis.components.NFrame;
-import org.libnoctis.render.Color;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.FontCache;
 import org.libnoctis.render.gl.GlFont;
+import org.libnoctis.util.LoremGenerator;
 import org.lwjgl.LWJGLUtil;
 
 
@@ -29,22 +29,30 @@ public class NoctisTest
         NFrame frame = new NFrame("Salut") {
 
             GlFont font;
+            String str;
 
             @Override
             protected void paintComponent(Drawer drawer)
             {
                 if (font == null)
                 {
-                    font = FontCache.getGlFont(new Font("URW Bookman L", Font.PLAIN, 40));
+                    font = FontCache.getGlFont(new Font("URW Chancery L", Font.PLAIN, 32));
+
                     drawer.setFont(font);
+                    str = "";
+                    
+                    for (int i = 0; i < 10; i++)
+                    {
+                        for (int j = 0; j < 5; j++)
+                        {
+                            str += LoremGenerator.words(1, true) + " ";
+                        }
+                        
+                        str += "\n";
+                    }
                 }
 
-                drawer.drawRect(0, 0, 100, 100);
-                drawer.setColor(Color.RED);
-                drawer.drawString("Coucou lol", 0, 0);
-
-                drawer.setColor(Color.WHITE);
-                drawer.drawString("Coucou lol", 0, 100);
+                drawer.drawString(str, 0, 0);
             }
         };
 

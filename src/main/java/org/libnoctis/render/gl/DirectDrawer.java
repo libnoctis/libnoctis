@@ -21,7 +21,10 @@ import static org.lwjgl.opengl.GL11.glColor4f;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTexCoord2f;
+import static org.lwjgl.opengl.GL11.glTranslatef;
 import static org.lwjgl.opengl.GL11.glVertex2i;
 
 import org.libnoctis.render.Color;
@@ -122,5 +125,23 @@ public class DirectDrawer extends Drawer
     public Color getColor()
     {
         return currentColor;
+    }
+
+    @Override
+    public void pushMatrix()
+    {
+        glPushMatrix();
+    }
+
+    @Override
+    public void popMatrix()
+    {
+        glPopMatrix();
+    }
+
+    @Override
+    public void translate(int x, int y)
+    {
+        glTranslatef(x, y, 0.0f);
     }
 }
