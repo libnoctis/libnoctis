@@ -23,6 +23,7 @@ import org.libnoctis.input.NoctisEvent;
 import org.libnoctis.input.keyboard.Key;
 import org.libnoctis.input.keyboard.KeyPressedEvent;
 import org.libnoctis.input.keyboard.KeyReleasedEvent;
+import org.libnoctis.input.mouse.MouseClickedEvent;
 import org.libnoctis.ninepatch.NinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
@@ -73,6 +74,11 @@ public class NTextField extends NComponent implements NListener
      */
     private Rectangle textBounds;
 
+    /**
+     * Focus sur le text field (en cours d'ecriture)
+     */
+    private boolean focus = false;
+
     @Override
     protected void init()
     {
@@ -91,6 +97,9 @@ public class NTextField extends NComponent implements NListener
     @NoctisEvent
     private void onKeyPressed(KeyPressedEvent event)
     {
+        if (!focus)
+            return;
+
         if (event.getKey().isCharacter())
             setText(getText().substring(0, cursorPos) + ((currentShift != null || capsLock) && event.getKey().hasUpperCharacter() ? event.getKey().getUpperCharacter() : event.getKey().getCharacter()) + getText().substring(cursorPos, getText().length()));
         else if (event.getKey() == Key.KEY_RIGHT)
@@ -103,6 +112,12 @@ public class NTextField extends NComponent implements NListener
             currentShift = event.getKey();
         else if (event.getKey() == Key.KEY_CAPITAL)
             capsLock = !capsLock;
+    }
+
+    @NoctisEvent
+    private void onMouseClick(MouseClickedEvent event)
+    {
+        focus = textBounds.contains(event.getPos().getX(), event.getPos().getY());
     }
 
     @NoctisEvent
@@ -130,7 +145,7 @@ public class NTextField extends NComponent implements NListener
         drawer.drawTexture(this.getGeneratedPosition().getX(), this.getGeneratedPosition().getY(), this.getWidth(), this.getHeight(), texture);
 
         // Drawing the text
-        drawer.drawString(this.textBounds.x, this.textBounds.y, this.getText());
+        drawer.drawString(this.textBounds.x, this.textBounds.y, this.getText() + /* The caret */ (focus ? "_" : ""));
     }
 
     /**
