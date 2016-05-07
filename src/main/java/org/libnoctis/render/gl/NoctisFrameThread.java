@@ -83,11 +83,18 @@ public class NoctisFrameThread extends Thread
                 frame.requestClose();
             }
 
-            // Listen to user input
+            // - Listen to user input
             frame.input();
+            
+            // - Render pass
+            {
+                frame.getDrawer().preRender();
 
-            // Render frame and its children
-            frame.render();
+                // Render frame and its children
+                frame.render();
+                
+                frame.getDrawer().postRender();
+            }
 
             // Swap buffers
             Display.update();

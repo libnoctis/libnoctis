@@ -4,16 +4,18 @@ package org.libnoctis.render.gl;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.libnoctis.ninepatch.CompatibleImageMaker;
 import org.libnoctis.render.Drawer;
+import org.libnoctis.util.Pair;
 import org.libnoctis.util.Vector2i;
 
 
@@ -34,25 +36,39 @@ public class GlFont
     private class Glyph
     {
         /**
-         * Character width in pixels.
+         * Character's sprite width in pixels.
          */
         private int width;
 
         /**
-         * Character height in pixels.
+         * Character's sprite height in pixels.
          */
         private int height;
 
         /**
-         * Character texture.
+         * How many pixels far we should render from the basic char pos. This
+         * does not affect the next character position.
+         */
+        private int xPrevAdvance;
+
+        /**
+         * How many pixels far on x axis we should render the next character.
+         */
+        private int xAdvance;
+
+        /**
+         * How many pixels far from base character pos we should render this
+         * character.
+         */
+        private int yPrevAdvance;
+
+        /**
+         * Character sprite.
          */
         private TextureRegion icon;
 
-        public Glyph(int w, int h, TextureRegion icon)
+        public Glyph()
         {
-            this.width = w;
-            this.height = h;
-            this.icon = icon;
         }
     }
 
@@ -86,153 +102,358 @@ public class GlFont
      */
     private Font font;
 
-    /**
-     * If the antialiasing is activated for this font
-     */
-    private boolean antiAliasing = true;
-
     private GlFont(List<Character> chars, Font font)
     {
         this.font = font;
         buildTexture(chars);
     }
 
-    private void buildTexture(List<Character> chars)
+    private void buildTexture(List<Character> alphabet)
     {
         glyphs = new HashMap<Character, GlFont.Glyph>();
-        textureWidth = textureHeight = 1024;
-        int amountOfChars = chars.size();
+        int amountOfChars = alphabet.size();
         fontSize = font.getSize();
-
-        int cellSize = fontSize;
-        int lineSize = textureWidth / cellSize;
-        int columnSize = textureHeight / cellSize;
-
-        System.out.println("fontSize = " + fontSize);
-        System.out.println("amountOfChars = " + amountOfChars);
-        System.out.println("textureWidth = " + textureWidth);
-        System.out.println("textureHeight = " + textureHeight);
-        System.out.println("cellSize = " + cellSize);
-        System.out.println("lineSize = " + lineSize);
-        System.out.println("columnSize = " + columnSize);
-
-        if (lineSize * columnSize < amountOfChars)
-            throw new IllegalStateException();
-
-        BufferedImage imgTemp = new BufferedImage(textureWidth, textureHeight, BufferedImage.TYPE_INT_ARGB);
-
-        Graphics graphics = imgTemp.createGraphics();
-        graphics.setColor(new Color(0, 0, 0, 1));
-        graphics.fillRect(0, 0, textureWidth, textureHeight);
-
+        
+        textureWidth = textureHeight = 1024;
+        
+        Graphics2D g2d = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB).createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        FontMetrics fontMetrics = g2d.getFontMetrics(font);
+        
+        BufferedImage imgTemp = CompatibleImageMaker.translucent(textureWidth, textureHeight);
+        Graphics2D  graphics = imgTemp.createGraphics();
         TextureRegion.Builder iconBuilder = new TextureRegion.Builder(textureWidth, textureHeight);
 
         int x = 0;
         int y = 0;
         int w, h;
 
+        int maxHeight = 0;
+
         for (int i = 0; i < amountOfChars; i++)
         {
-            Character ch = chars.get(i);
+            Character ch = alphabet.get(i);
 
-            BufferedImage charImage = getFontImage(ch);
-            w = charImage.getWidth();
-            h = charImage.getHeight();
-
-            if (x > textureWidth - w)
+            Pair<Glyph, BufferedImage> pair = buildChar(ch, fontMetrics, graphics);
+            if (pair != null)
             {
-                x = 0;
-                y += h;
+                BufferedImage charImage = pair.getValue();
+                Glyph glyph = pair.getKey();
+
+                w = glyph.width;
+                h = glyph.height;
+
+                if (x > textureWidth - w)
+                {
+                    x = 0;
+                    y += maxHeight;
+                    maxHeight = 0;
+                }
+
+                graphics.drawImage(charImage, x, y, null);
+
+                glyph.icon = iconBuilder.build(x, y, w, h);
+
+                glyphs.put(ch, glyph);
+
+                x += w;
+
+                if (maxHeight < h)
+                {
+                    maxHeight = h;
+                }
             }
-
-            graphics.drawImage(charImage, x, y, null);
-            glyphs.put(ch, new Glyph(w, h, iconBuilder.build(x, y, w, h)));
-
-            x += w;
         }
+
+        graphics.dispose();
 
         fontTexture = new GlTexture(imgTemp);
     }
 
-    private BufferedImage getFontImage(char ch)
+    Vector2i temp = new Vector2i(0, 0);
+
+    /**
+     * Creates a character texture and display information.
+     * 
+     * @param ch The character to be computed.
+     * @param fontMetrics The global font metrics.
+     * @param spriteSheetGraphics The sprite sheet graphics that will be used to
+     *        render the character sprite to the sheet.
+     * @return The character display informations and its texture.
+     */
+    private Pair<Glyph, BufferedImage> buildChar(char ch, FontMetrics fontMetrics, Graphics2D spriteSheetGraphics)
     {
-        // Create a temporary image to extract the character's size
-        BufferedImage tempfontImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = (Graphics2D) tempfontImage.getGraphics();
+        if (!shouldTryRendering(ch))
+        {
+            return null;
+        }
 
-        if (antiAliasing)
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        String str = String.valueOf(ch);
 
-        g.setFont(font);
+        Rectangle2D bounds = fontMetrics.getStringBounds(str, spriteSheetGraphics);
 
-        FontMetrics fontMetrics = g.getFontMetrics();
-        int charwidth = fontMetrics.charWidth(ch);
-        if (charwidth <= 0)
-            charwidth = 7;
+        if (bounds.getWidth() <= 0)
+        {
+            str = "?";
+            bounds = fontMetrics.getStringBounds(str, spriteSheetGraphics);
+        }
 
-        int charheight = fontMetrics.getHeight();
-        if (charheight <= 0)
-            charheight = fontSize;
+        Glyph glyph = new Glyph();
 
-        // Create another image holding the character we are creating
-        BufferedImage fontImage = new BufferedImage(charwidth, charheight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D gt = (Graphics2D) fontImage.getGraphics();
+        int boundsWidth = (int) (bounds.getWidth());
+        int boundsHeight = (int) (bounds.getHeight());
+        int baseCharHeight = fontMetrics.getMaxAscent() + fontMetrics.getMaxDescent();
 
-        if (antiAliasing)
-            gt.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        BufferedImage charImage = CompatibleImageMaker.translucent(boundsWidth * 4, baseCharHeight);
 
-        gt.setFont(font);
-        gt.setColor(Color.WHITE);
+        Graphics2D charGraphics = charImage.createGraphics();
 
-        int charx = 0;
-        int chary = 0;
+        charGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        charGraphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        charGraphics.setFont(font);
+        charGraphics.setColor(Color.WHITE);
 
-        gt.drawString(String.valueOf(ch), (charx), (chary) + fontMetrics.getAscent());
+        charGraphics.drawString(str, (int) (boundsWidth * 0.5f), fontMetrics.getMaxAscent());
+        charGraphics.dispose();
 
-        return fontImage;
+        Rectangle2D defaultBounds = new Rectangle2D.Float((charImage.getWidth() - boundsWidth) / 2, (charImage.getHeight() - boundsHeight) / 2, boundsWidth, boundsHeight);
+
+        charImage = minimizeImage(charImage, defaultBounds, temp, false, true);
+
+        glyph.yPrevAdvance = 0;
+        glyph.xAdvance = (int) Math.floor(bounds.getWidth() - 1);
+        glyph.xPrevAdvance = -Math.max(0, (int) (defaultBounds.getX() - temp.getX()) - glyph.xAdvance) + 1;
+        glyph.width = charImage.getWidth();
+        glyph.height = charImage.getHeight();
+
+        return Pair.of(glyph, charImage);
     }
 
     /**
-     * Draw a string
+     * Crops an image to remove translucent border if any.
+     * 
+     * @param big The image to be cropped.
+     * @param defaultBounds The default bounds of the cropped image, if the big
+     *        is totally translucent.
+     * @param pos Vector to store the little texture left-top corner position in
+     *        big texture coords.
+     * @param defaultBoundsXTest {@code true} if the little texture's width has
+     *        to be greater than {@code defaultBounds} width, {@code false}
+     *        otherwise.
+     * @param defaultBoundsYTest {@code true} if the little texture's height has
+     *        to be greater than {@code defaultBounds} height, {@code false}
+     *        otherwise.
+     * @return The cropped image.
+     */
+    private BufferedImage minimizeImage(BufferedImage big, Rectangle2D defaultBounds, Vector2i pos, boolean defaultBoundsXTest, boolean defaultBoundsYTest)
+    {
+        int bigWidth = big.getWidth();
+        int bigHeight = big.getHeight();
+
+        int x1 = bigWidth;
+        int y1 = bigHeight;
+
+        int[] pixel = new int[4];
+
+        for (int i = 0; i < bigWidth; i++)
+        {
+            for (int j = 0; j < bigHeight; j++)
+            {
+                big.getRaster().getPixel(i, j, pixel);
+
+                if (sum(pixel) != 0)
+                {
+                    if (i < x1)
+                    {
+                        x1 = i;
+                    }
+
+                    if (j < y1)
+                    {
+                        y1 = j;
+                    }
+                }
+            }
+        }
+
+        int x2 = x1;
+        int y2 = y1;
+
+        for (int i = bigWidth - 1; i >= x1; i--)
+        {
+            for (int j = bigHeight - 1; j >= y1; j--)
+            {
+                big.getRaster().getPixel(i, j, pixel);
+
+                if (sum(pixel) != 0)
+                {
+                    if (i > x2)
+                    {
+                        x2 = i;
+                    }
+
+                    if (j > y2)
+                    {
+                        y2 = j;
+                    }
+                }
+            }
+        }
+
+        if (x1 == x2 || y1 == y2)
+        {
+            BufferedImage little = CompatibleImageMaker.translucent((int) defaultBounds.getWidth(), (int) defaultBounds.getHeight());
+
+            return little;
+        }
+        else
+        {
+            if (defaultBoundsXTest)
+            {
+                if (x1 > defaultBounds.getMinX())
+                {
+                    x1 = (int) defaultBounds.getMinX();
+                }
+
+                if (x2 < defaultBounds.getMaxX())
+                {
+                    x2 = (int) defaultBounds.getMaxX();
+                }
+            }
+
+            if (defaultBoundsYTest)
+            {
+                if (y1 > defaultBounds.getMinY())
+                {
+                    y1 = (int) defaultBounds.getMinY();
+                }
+
+                if (y2 < defaultBounds.getMaxY())
+                {
+                    y2 = (int) defaultBounds.getMaxY();
+                }
+            }
+
+            pos.setX(x1);
+            pos.setY(y1);
+
+            // Do not crop the last pixel column.
+            x2 += 1;
+            y2 += 1;
+
+            BufferedImage little = CompatibleImageMaker.translucent(x2 - x1, y2 - y1);
+
+            Graphics2D littleGraphics = little.createGraphics();
+
+            littleGraphics.drawImage(big, 0, 0, little.getWidth(), little.getHeight(), x1, y1, x2, y2, null);
+            littleGraphics.dispose();
+
+            return little;
+        }
+    }
+    
+    /**
+     * Sums the elements of the given array.
+     * 
+     * @param array The array to be computed.
+     * @return The sum value of the array elements.
+     */
+    private static int sum(int[] array)
+    {
+        int sum = 0;
+        for (int i = 0; i < array.length; i++)
+        {
+            sum += array[i];
+        }
+
+        return sum;
+    }
+
+    /**
+     * Draws a string.
      *
-     * @param str The string to draw
-     * @param x The x position where to draw the string
-     * @param y The y position where to draw the string
-     * @param drawer The drawer to use to render the string
+     * @param str The string to be drawn.
+     * @param x The drawing X position.
+     * @param y The drawing Y position.
+     * @param drawer The drawer to use to render the string.
      */
     public void drawString(String str, int x, int y, Drawer drawer)
     {
         Vector2i pos = new Vector2i(x, y);
 
-        for (char ch : str.toCharArray())
+        char[] charArray = str.toCharArray();
+
+        drawer.pushMatrix();
+
+        lastTranslateX = 0;
+
+        for (int i = 0; i < charArray.length; i++)
         {
-            drawChar(ch, pos, x, y, drawer);
+            char ch = charArray[i];
+            drawChar(ch, pos, x, y, i, drawer);
         }
+
+        lastTranslateX = 0;
+
+        drawer.popMatrix();
     }
 
-    public void drawChar(char ch, Vector2i pos, int origX, int origY, Drawer drawer)
+    /*
+     * Used when a string creates a new line.
+     */
+    private transient int lastTranslateX;
+
+    public void drawChar(char ch, Vector2i pos, int origX, int origY, int index, Drawer drawer)
+    {
+        if (shouldTryRendering(ch))
+        {
+            Glyph glyph = glyphs.get(ch);
+
+            // We don't want to apply glyph.xPrevAdvance for the first character of a line.
+            if (pos.getX() == origX)
+            {
+                drawer.translate(-lastTranslateX, 0);
+                drawer.translate(lastTranslateX = -glyph.xPrevAdvance, 0);
+            }
+
+            drawer.drawTexture(pos.getX() + glyph.xPrevAdvance, pos.getY() + glyph.yPrevAdvance, glyph.width, glyph.height, fontTexture, glyph.icon);
+        }
+
+        addCharSize(ch, pos, origX, origY);
+    }
+
+    /**
+     * @return {@code true} if there is any glyph registered for this character.
+     */
+    protected boolean shouldTryRendering(char ch)
+    {
+        return ch != ' ' && ch != '\t' && ch != '\n';
+    }
+
+    /**
+     * @return
+     */
+    protected void addCharSize(char ch, Vector2i vector, int origX, int origY)
     {
         if (ch == ' ')
         {
-            pos.add((int) (fontSize * 0.3f), 0);
-            return;
+            vector.add((int) (fontSize * 0.3f), 0);
         }
         else if (ch == '\t')
         {
-            pos.add((int) (fontSize * 1.2f), 0);
-            return;
+            vector.add((int) (fontSize * 1.2f), 0);
         }
         else if (ch == '\n')
         {
-            pos.setX(origX);
-            pos.add(0, fontSize);
-            return;
+            vector.setX(origX);
+            vector.add(0, fontSize);
         }
-
-        Glyph glyph = glyphs.get(ch);
-        drawer.drawTexture(pos.getX(), pos.getY(), glyph.width, glyph.height, fontTexture, glyph.icon);
-
-        pos.add(glyph.width, 0);
+        else if (glyphs.containsKey(ch))
+        {
+            Glyph glyph = glyphs.get(ch);
+            vector.add(glyph.xAdvance, 0);
+        }
     }
 
     /**
@@ -262,8 +483,17 @@ public class GlFont
     static
     {
         // Creating a character list
-        for (int i = 0; i < 256; i++)
-            CHARS.add((char) i);
+        for (int i = 32; i < 256; i++)
+        {
+            if (i >= 127 && i <= 159)
+            {
+
+            }
+            else
+            {
+                CHARS.add((char) i);
+            }
+        }
     }
 
     /**

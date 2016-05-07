@@ -98,9 +98,21 @@ public abstract class Drawer
      * @return The current used color
      */
     public abstract Color getColor();
-
+    
     /**
-     * Event called after the painting of the given component
+     * Pushes the current matrix.
+     */
+    public abstract void pushMatrix();
+    
+    /**
+     * Pops the current matrix.
+     */
+    public abstract void popMatrix();
+
+    public abstract void translate(int x, int y);
+    
+    /**
+     * Called after painting the given component
      *
      * @param component The component that was painted
      */
@@ -109,9 +121,9 @@ public abstract class Drawer
     }
 
     /**
-     * Event called before the painting of the given component
+     * Called before painting the given component
      *
-     * @param component The component to be be painted.
+     * @param component The component about to be be painted.
      */
     public void prePaint(NComponent component)
     {
@@ -124,5 +136,21 @@ public abstract class Drawer
      */
     public void render(NComponent component)
     {
+    }
+
+    /**
+     * Called before rendering a frame.
+     */
+    public void preRender()
+    {
+        
+    }
+
+    /**
+     * Called after rendering a frame.
+     */
+    public void postRender()
+    {
+        
     }
 }
