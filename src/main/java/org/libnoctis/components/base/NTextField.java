@@ -1,21 +1,25 @@
 /*
  * Copyright 2015-2016 Adrien "Litarvan" Navratil & Victor "Wytrem"
+ *
  * This file is part of Libnoctis.
+ *
  * Libnoctis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
  * Libnoctis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.libnoctis.components.base;
 
-
 import java.awt.Rectangle;
+import org.jetbrains.annotations.Nullable;
 import org.libnoctis.components.NComponent;
 import org.libnoctis.components.NContainer;
 import org.libnoctis.input.NListener;
@@ -30,12 +34,12 @@ import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
 import org.libnoctis.util.Vector4i;
 
-
 /**
  * The Noctis Text Field
+ *
  * <p>
- * A text field. Type type type.
- * Type.
+ *     A text field. Type type type.
+ *     Type.
  * </p>
  *
  * @author Litarvan
@@ -65,9 +69,16 @@ public class NTextField extends NComponent implements NListener
     private boolean capsLock = false;
 
     /**
-     * The background nine patch
+     * The background nine patch, null if #background is not
      */
-    private NoctisNinePatch background;
+    @Nullable
+    private NoctisNinePatch backgroundPatch;
+
+    /**
+     * The background nine patch, null if #backgroundPatch is not
+     */
+    @Nullable
+    private GlTexture background;
 
     /**
      * The rectangle where is the text
@@ -84,7 +95,12 @@ public class NTextField extends NComponent implements NListener
     {
         super.init();
 
-        this.background = NinePatch.create(theme().requireImage(theme().requireProp("component.textfield.texture")));
+        String background = theme().requireProp("component.textfield.texture");
+
+        if (background.endsWith(".9.png"))
+            this.backgroundPatch = NinePatch.create(theme().requireImage(theme().requireProp("component.textfield.texture")));
+        else
+            this.background = theme().requireTexture(theme().requireProp("component.textfield.texture"));
 
         int textX = Integer.parseInt(theme().requireProp("component.textfield.textbounds.x"));
         int textY = Integer.parseInt(theme().requireProp("component.textfield.textbounds.y"));
@@ -141,7 +157,7 @@ public class NTextField extends NComponent implements NListener
         super.paintComponent(drawer);
 
         // Drawing background
-        GlTexture texture = background.generateFor(this.getWidth(), this.getHeight());
+        GlTexture texture = background == null ? backgroundPatch.generateFor(this.getWidth(), this.getHeight()) : background;
         drawer.drawTexture(this.getGeneratedPosition().getX(), this.getGeneratedPosition().getY(), this.getWidth(), this.getHeight(), texture);
 
         // Drawing the text
@@ -184,5 +200,41 @@ public class NTextField extends NComponent implements NListener
     {
         this.cursorPos = cursorPos;
         repaint();
+    }
+
+    /**
+     * @return The background texture, as a nine patch. Can be null if it
+     *          is not a nine patch (if it is, use #getBackground)
+     */
+    @Nullable
+    public NoctisNinePatch getBackgroundPatch()
+    {
+        return backgroundPatch;
+    }
+
+    /**
+     * @return The background texture, can be null if it is a nine patch
+     *          (if it is, use #getBackgroundPatch)
+     */
+    @Nullable
+    public GlTexture getBackground()
+    {
+        return background;
+    }
+
+    /**
+     * @return The part of the field where the text should be
+     */
+    public Rectangle getTextBounds()
+    {
+        return textBounds;
+    }
+
+    /**
+     * @return If the user is typing in the text field
+     */
+    public boolean isFocused()
+    {
+        return focus;
     }
 }
