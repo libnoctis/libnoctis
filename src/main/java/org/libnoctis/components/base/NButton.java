@@ -131,9 +131,9 @@ public class NButton extends NComponent implements NListener
     }
 
     @Override
-    protected void onComponentAdded(NContainer parent)
+    protected void init()
     {
-        super.onComponentAdded(parent);
+        super.init();
 
         this.fixed = Boolean.parseBoolean(theme().requireProp("button.size.fixed"));
 
