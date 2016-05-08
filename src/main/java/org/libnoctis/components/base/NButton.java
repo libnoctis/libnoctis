@@ -1,14 +1,18 @@
 /*
  * Copyright 2015-2016 Adrien "Litarvan" Navratil & Victor "Wytrem"
+ *
  * This file is part of Libnoctis.
+ *
  * Libnoctis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
  * Libnoctis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -23,16 +27,19 @@ import org.libnoctis.input.NoctisEvent;
 import org.libnoctis.input.mouse.MouseMoveEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
 import org.libnoctis.input.mouse.MouseReleasedEvent;
+import org.libnoctis.ninepatch.NinePatch;
+import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
 
 
 /**
  * The Noctis Button
+ *
  * <p>
- * A button, can be clicked. Click click click.
- * Click click click click click click click click click.
- * Click click. Click.
+ *     A button, can be clicked. Click click click.
+ *     Click click click click click click click click click.
+ *     Click click. Click.
  * </p>
  *
  * @author Litarvan
@@ -57,20 +64,40 @@ public class NButton extends NComponent implements NListener
     private boolean fixed;
 
     /**
-     * The button texture
+     * The button texture, null if #texturePatch is not null
      */
+    @Nullable
     private GlTexture texture;
+
+    /**
+     * The button texture as a nine patch, null if #texture is not null
+     */
+    @Nullable
+    private NoctisNinePatch texturePatch;
 
     /**
      * The texture when the mouse is on the button
      */
+    @Nullable
     private GlTexture hoverTexture;
+
+    /**
+     * The texture when the mouse is on the button, as a nine patch
+     */
+    @Nullable
+    private NoctisNinePatch hoverTexturePatch;
 
     /**
      * The texture when the button is disabled
      */
     @Nullable
     private GlTexture disabledTexture;
+
+    /**
+     * The texture when the button is disabled, as a nine patch
+     */
+    @Nullable
+    private NoctisNinePatch disabledTexturePatch;
 
     /**
      * True if the mouse is over this button
@@ -86,6 +113,11 @@ public class NButton extends NComponent implements NListener
      * True if the button is disabled
      */
     private boolean disabled = false;
+
+    /**
+     * If the button's textures are nine patches
+     */
+    private boolean textureAreNinePatches;
 
     /**
      * The Noctis Button
@@ -104,10 +136,31 @@ public class NButton extends NComponent implements NListener
         super.onComponentAdded(parent);
 
         this.fixed = Boolean.parseBoolean(theme().requireProp("button.size.fixed"));
-        this.texture = theme().requireTexture(theme().requireProp("button.texture.normal"));
-        this.hoverTexture = theme().requireTexture(theme().requireProp("button.texture.hover"));
-        if (this.theme().hasProperty("button.texture.disabled"))
-            this.disabledTexture = theme().requireTexture(theme().requireProp("button.texture.disabled"));
+
+        String texture = theme().requireProp("button.texture.normal");
+        String textureHover = theme().requireProp("button.texture.hover");
+        String textureDisabled = this.theme().hasProperty("button.texture.disabled") ? theme().requireProp("button.texture.disabled") : null;
+
+        if (texture.endsWith(".9.png"))
+            textureAreNinePatches = true;
+
+        if (textureAreNinePatches)
+        {
+            this.texturePatch = NinePatch.create(theme().requireImage(texture));
+            this.hoverTexturePatch = NinePatch.create(theme().requireImage(textureHover));
+
+            if (textureDisabled != null)
+                this.disabledTexturePatch = NinePatch.create(theme().requireImage(textureDisabled));
+        }
+        else
+        {
+
+            this.texture = theme().requireTexture(texture);
+            this.hoverTexture = theme().requireTexture(textureHover);
+
+            if (textureDisabled != null)
+                this.disabledTexture = theme().requireTexture(textureDisabled);
+        }
 
         if (fixed)
         {
@@ -173,16 +226,21 @@ public class NButton extends NComponent implements NListener
     }
 
     /**
-     * @return Return the button texture
+     * @return Return the button texture (can be null if the texture is a nine patch,
+     *          if it is, use #getTexturePatch)
      */
+    @Nullable
     public GlTexture getTexture()
     {
         return texture;
     }
 
     /**
-     * @return The texture when the mouse is hover the button
+     * @return The texture when the mouse is hover the button. (can be null if the
+     *          the theme didn't give one, or if it is a nine patch (if it is,
+     *          use #getHoverTexturePatch).
      */
+    @Nullable
     public GlTexture getHoverTexture()
     {
         return hoverTexture;
@@ -190,12 +248,53 @@ public class NButton extends NComponent implements NListener
 
     /**
      * @return The button texture when it is disabled (can be null if the theme
-     *         didn't give one)
+     *          didn't give one, or if it is a nine patch (if it is, use
+     *          #getDisabledTexturePatch).
      */
     @Nullable
     public GlTexture getDisabledTexture()
     {
         return disabledTexture;
+    }
+
+    /**
+     * @return Return the button texture, as a nine patch (can be null if the
+     *          texture is not a nine patch, if it is, use #getTexture)
+     */
+    @Nullable
+    public NoctisNinePatch getTexturePatch()
+    {
+        return texturePatch;
+    }
+
+    /**
+     * @return The texture when the mouse is hover the button, as a nine patch.
+     *          (can be null if the the theme didn't give one, or if it is not a
+     *          nine patch (if it is, use #getHoverTexture).
+     */
+    @Nullable
+    public NoctisNinePatch getHoverTexturePatch()
+    {
+        return hoverTexturePatch;
+    }
+
+    /**
+     * @return The button texture when it is disabled, as a nine patch (can be null
+     *          if the theme didn't give one, or if it is not a nine patch (if it is,
+     *          use #getDisabledTexture).
+     */
+    @Nullable
+    public NoctisNinePatch getDisabledTexturePatch()
+    {
+        return disabledTexturePatch;
+    }
+
+    /**
+     * @return If the textures are nine patch
+     */
+    public boolean areTexturesNinePatches()
+    {
+        return textureAreNinePatches;
     }
 
     /**
@@ -246,7 +345,18 @@ public class NButton extends NComponent implements NListener
             throw new RuntimeException("Can't set the button disabled because there isn't any disabled texture");
         }
 
-        drawer.drawTexture(getGeneratedPosition().getX(), getGeneratedPosition().getY(), this.getWidth(), this.getHeight(), disabled ? disabledTexture : (hover ? hoverTexture : texture));
+        GlTexture toDraw;
+
+        if (textureAreNinePatches)
+        {
+            toDraw = disabled ? disabledTexturePatch.generateFor(this.getWidth(), this.getHeight()) :
+                     (hover ? hoverTexturePatch.generateFor(this.getWidth(), this.getHeight()) :
+                     texturePatch.generateFor(this.getWidth(), this.getHeight()));
+        }
+        else
+            toDraw = disabled ? disabledTexture : (hover ? hoverTexture : texture);
+
+        drawer.drawTexture(getGeneratedPosition().getX(), getGeneratedPosition().getY(), this.getWidth(), this.getHeight(), toDraw);
 
         // TODO: Draw the text
     }
