@@ -28,15 +28,16 @@ import java.util.zip.ZipFile;
 
 import javax.imageio.ImageIO;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.libnoctis.render.gl.GlTexture;
 
-
 /**
  * A Noctis Theme
+ *
  * <p>
- * A Noctis Theme is a zip containing some properties (in a properties file) and
- * some images.
+ *     A Noctis Theme is a zip containing some properties (in a properties file) and
+ *     some images.
  * </p>
  *
  * @author Litarvan
@@ -81,9 +82,15 @@ public class NoctisTheme
      * @return An input stream of the file.
      * @throws IOException If it failed to read the file.
      */
-    public InputStream get(String path) throws IOException
+    public InputStream get(@NotNull String path) throws IOException
     {
+        if (path == null)
+            throw new IllegalArgumentException("path == null");
+
         ZipEntry entry = zip.getEntry(path);
+        if (entry == null)
+            throw new IOException("Can't find the entry " + path);
+
         return zip.getInputStream(entry);
     }
 
@@ -95,7 +102,7 @@ public class NoctisTheme
      * @return An input stream of the file.
      * @throws ThemeRequiredException If it failed to read the file.
      */
-    public InputStream require(String path) throws ThemeRequiredException
+    public InputStream require(@NotNull String path) throws ThemeRequiredException
     {
         try
         {
@@ -112,10 +119,9 @@ public class NoctisTheme
      *
      * @param path The path of the image (in the textures folder of the zip).
      * @return The read buffered image.
-     * @throws IOException If it failed to read the image.
      */
     @Nullable
-    public BufferedImage image(String path)
+    public BufferedImage image(@NotNull String path)
     {
         return imageWithDefault(path, null);
     }
@@ -126,19 +132,21 @@ public class NoctisTheme
      *
      * @param path The path of the image (in the textures folder of the zip).
      * @return The read buffered image.
-     * @throws IOException If it failed to read the image.
      */
-    public BufferedImage imageWithDefault(String path, BufferedImage defaultImage)
+    @Nullable
+    public BufferedImage imageWithDefault(@NotNull String path, BufferedImage defaultImage)
     {
+        if (path == null)
+            throw new IllegalArgumentException("path == null");
+
         BufferedImage image = null;
 
         try
         {
             image = ImageIO.read(get(TEXTURE_FOLDER + path));
         }
-        catch (IOException e)
+        catch (IOException ignored)
         {
-
         }
 
         return image == null ? defaultImage : image;
@@ -152,14 +160,17 @@ public class NoctisTheme
      * @return The read buffered image.
      * @throws ThemeRequiredException If it failed to read the image.
      */
-    public BufferedImage requireImage(String path)
+    @NotNull
+    public BufferedImage requireImage(@NotNull String path)
     {
-        if (!hasProperty(path))
+        BufferedImage image;
+
+        if (!hasProperty(path) || (image = image(path)) == null)
         {
-            throw new ThemeRequiredException("Can't find the required image '" + path + "'");
+            throw new ThemeRequiredException("Can't find/read the required image '" + path + "'");
         }
 
-        return image(path);
+        return image;
     }
 
     /**
@@ -168,10 +179,9 @@ public class NoctisTheme
      *
      * @param path The path of the texture (in the textures folder of the zip).
      * @return The read texture.
-     * @throws IOException If an I/O error occurs while loading the texture.
      */
     @Nullable
-    public GlTexture texture(String path)
+    public GlTexture texture(@NotNull String path)
     {
         return textureWithDefault(path, null);
     }
@@ -183,17 +193,17 @@ public class NoctisTheme
      * @param path The path of the texture (in the textures folder of the zip).
      * @return The read texture.
      */
-    public GlTexture textureWithDefault(String path, GlTexture defaultTexture)
+    @Nullable
+    public GlTexture textureWithDefault(@NotNull String path, GlTexture defaultTexture)
     {
         BufferedImage image = null;
 
         try
         {
-            image = requireImage(path);
+            image = image(path);
         }
-        catch (ThemeRequiredException ex)
+        catch (ThemeRequiredException ignored)
         {
-
         }
 
         return image == null ? defaultTexture : new GlTexture(image);
@@ -207,14 +217,17 @@ public class NoctisTheme
      * @return The read texture.
      * @throws ThemeRequiredException If the property couldn't be found.
      */
-    public GlTexture requireTexture(String path)
+    @NotNull
+    public GlTexture requireTexture(@NotNull String path)
     {
-        if (!hasProperty(path))
+        GlTexture texture;
+
+        if (!hasProperty(path) || (texture = texture(path)) == null)
         {
-            throw new ThemeRequiredException("Couln't find required texture '" + path + "'");
+            throw new ThemeRequiredException("Couln't find/read required texture '" + path + "'");
         }
 
-        return texture(path);
+        return texture;
     }
 
     /**
@@ -223,8 +236,11 @@ public class NoctisTheme
      * @param key The property of the value to check.
      * @return {@code true} if this theme has the given property.
      */
-    public boolean hasProperty(String key)
+    public boolean hasProperty(@NotNull String key)
     {
+        if (key == null)
+            throw new IllegalArgumentException("key == null");
+
         return properties.containsKey(key);
     }
 
@@ -235,7 +251,8 @@ public class NoctisTheme
      * @return The read value.
      * @throws ThemeRequiredException If the property couldn't be found.
      */
-    public String requireProp(String key)
+    @NotNull
+    public String requireProp(@NotNull String key)
     {
         if (!hasProperty(key))
         {
@@ -254,9 +271,14 @@ public class NoctisTheme
      *        couldn't be found.
      * @return The read value.
      */
-    public String propWithDefault(String key, String defaultValue)
+    @Nullable
+    public String propWithDefault(@NotNull String key, String defaultValue)
     {
+        if (key == null)
+            throw new IllegalArgumentException("key == null");
+
         String prop = properties.getProperty(key);
+
         if (prop == null)
         {
             return defaultValue;
@@ -274,7 +296,7 @@ public class NoctisTheme
      * @return The read value.
      */
     @Nullable
-    public String prop(String key)
+    public String prop(@NotNull String key)
     {
         return propWithDefault(key, null);
     }
@@ -294,10 +316,12 @@ public class NoctisTheme
      * Gets the theme integer of the given key.
      *
      * @param key The key of the value to get.
+     *
      * @return The read integer.
+     *
      * @throws ThemeRequiredException If the property couldn't be found.
      */
-    public int requireInt(String key)
+    public int requireInt(@NotNull String key)
     {
         if (!hasProperty(key))
         {
@@ -314,9 +338,10 @@ public class NoctisTheme
      * @param key The key of the value to get.
      * @param defaultValue The default value to return in case of the property
      *        couldn't be found.
+     *
      * @return The read value.
      */
-    public int getIntWithDefault(String key, int defaultValue)
+    public int getIntWithDefault(@NotNull String key, int defaultValue)
     {
         if (!hasProperty(key))
         {
@@ -339,8 +364,7 @@ public class NoctisTheme
      * @param key The key of the integer to get.
      * @return The read value.
      */
-    @Nullable
-    public boolean getBoolean(String key)
+    public boolean getBoolean(@NotNull String key)
     {
         return getBooleanWithDefault(key, false);
     }
@@ -352,7 +376,7 @@ public class NoctisTheme
      * @return The read integer.
      * @throws ThemeRequiredException If the property couldn't be found.
      */
-    public boolean requireBoolean(String key)
+    public boolean requireBoolean(@NotNull String key)
     {
         if (!hasProperty(key))
         {
@@ -371,7 +395,7 @@ public class NoctisTheme
      *        couldn't be found.
      * @return The read value.
      */
-    public boolean getBooleanWithDefault(String key, boolean defaultValue)
+    public boolean getBooleanWithDefault(@NotNull String key, boolean defaultValue)
     {
         if (!hasProperty(key))
         {
@@ -389,17 +413,21 @@ public class NoctisTheme
         }
     }
 
-    private String followLink(String prop)
+    private String followLink(@NotNull String prop)
     {
+        if (prop == null)
+            throw new IllegalArgumentException("prop == null");
+
         while (prop.startsWith("$"))
         {
-            prop = prop(prop.substring(1));
+            prop = requireProp(prop.substring(1));
         }
 
         while (prop.startsWith("\\$") || prop.startsWith("\\"))
         {
             prop = prop.substring(1);
         }
+
         return prop;
     }
 }
