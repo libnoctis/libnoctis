@@ -32,7 +32,6 @@ import org.libnoctis.ninepatch.NinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
-import org.libnoctis.util.Vector4i;
 
 /**
  * The Noctis Text Field
@@ -75,10 +74,22 @@ public class NTextField extends NComponent implements NListener
     private NoctisNinePatch backgroundPatch;
 
     /**
+     * The background when focused, as a nine patch.
+     */
+    @Nullable
+    private NoctisNinePatch focusBackgroundPatch;
+
+    /**
      * The background nine patch, null if #backgroundPatch is not
      */
     @Nullable
     private GlTexture background;
+
+    /**
+     * The background when focused
+     */
+    @Nullable
+    private GlTexture focusBackground;
 
     /**
      * The rectangle where is the text
@@ -96,11 +107,18 @@ public class NTextField extends NComponent implements NListener
         super.init();
 
         String background = theme().requireProp("component.textfield.texture");
+        String backgroundFocused = theme().prop("component.textfield.texture.hover");
 
         if (background.endsWith(".9.png"))
-            this.backgroundPatch = NinePatch.create(theme().requireImage(theme().requireProp("component.textfield.texture")));
+            this.backgroundPatch = NinePatch.create(theme().requireImage(background));
         else
-            this.background = theme().requireTexture(theme().requireProp("component.textfield.texture"));
+            this.background = theme().requireTexture(background);
+
+        if (backgroundFocused != null)
+            if (backgroundFocused.endsWith(".9.png"))
+                this.focusBackgroundPatch = NinePatch.create(theme().requireImage(backgroundFocused));
+            else
+                this.focusBackground = theme().requireTexture(backgroundFocused);
 
         int textX = Integer.parseInt(theme().requireProp("component.textfield.textbounds.x"));
         int textY = Integer.parseInt(theme().requireProp("component.textfield.textbounds.y"));
@@ -156,8 +174,14 @@ public class NTextField extends NComponent implements NListener
     {
         super.paintComponent(drawer);
 
-        // Drawing background
-        GlTexture texture = background == null ? backgroundPatch.generateFor(this.getWidth(), this.getHeight()) : background;
+        // Drawing background (or focused background)
+        GlTexture texture;
+
+        if (focus && (focusBackground != null || focusBackgroundPatch != null))
+            texture = focusBackground == null ? focusBackgroundPatch.generateFor(this.getWidth(), this.getHeight()) : focusBackground;
+        else
+            texture = background == null ? backgroundPatch.generateFor(this.getWidth(), this.getHeight()) : background;
+
         drawer.drawTexture(this.getGeneratedPosition().getX(), this.getGeneratedPosition().getY(), this.getWidth(), this.getHeight(), texture);
 
         // Drawing the text
@@ -220,6 +244,35 @@ public class NTextField extends NComponent implements NListener
     public GlTexture getBackground()
     {
         return background;
+    }
+
+    /**
+     * @return The background texture when focused, as a nine patch. Can be null
+     * if it is not a nine patch (if it is, use #getFocusBackground) or if the theme
+     * hasn't
+     */
+    @Nullable
+    public NoctisNinePatch getFocusBackgroundPatch()
+    {
+        return focusBackgroundPatch;
+    }
+
+    /**
+     * @return The background texture, can be null if it is not a nine patch
+     *          (if it is, use #getFocusBackgroundPatch)
+     */
+    @Nullable
+    public GlTexture getFocusBackground()
+    {
+        return focusBackground;
+    }
+
+    /**
+     * @return If the text field is focused (the user is typing in)
+     */
+    public boolean isFocus()
+    {
+        return focus;
     }
 
     /**

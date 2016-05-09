@@ -137,7 +137,7 @@ public class NButton extends NComponent implements NListener
 
         this.fixed = Boolean.parseBoolean(theme().requireProp("button.size.fixed"));
 
-        String texture = theme().requireProp("button.texture.normal");
+        String texture = theme().requireProp("button.texture");
         String textureHover = theme().requireProp("button.texture.hover");
         String textureDisabled = this.theme().hasProperty("button.texture.disabled") ? theme().requireProp("button.texture.disabled") : null;
 
