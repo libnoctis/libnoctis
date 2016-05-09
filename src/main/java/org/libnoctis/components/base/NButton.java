@@ -137,7 +137,7 @@ public class NButton extends NComponent implements NListener
     {
         super.init();
 
-        this.fixed = Boolean.parseBoolean(theme().requireProp("button.size.fixed"));
+        this.fixed = Boolean.parseBoolean(theme().requireProp("component.button.size.fixed"));
 
         String texture = theme().requireProp(BUTTON_TEXTURE_PROPERTY);
         String textureHover = theme().requireProp(BUTTON_HOVER_TEXTURE_PROPERTY);
@@ -166,8 +166,8 @@ public class NButton extends NComponent implements NListener
 
         if (fixed)
         {
-            this.setWidth(Integer.parseInt(theme().requireProp("button.size.width")));
-            this.setHeight(Integer.parseInt(theme().requireProp("button.size.height")));
+            this.setWidth(Integer.parseInt(theme().requireProp("component.button.size.width")));
+            this.setHeight(Integer.parseInt(theme().requireProp("component.button.size.height")));
         }
     }
 
