@@ -68,8 +68,11 @@ public class NoctisTheme
      *
      * @throws IOException If it failed to read the zip.
      */
-    NoctisTheme(File zip) throws IOException
+    public NoctisTheme(File zip) throws IOException, ThemeLoadingException
     {
+        if (!zip.exists())
+            throw new ThemeLoadingException("Zip file doesn't exist");
+
         this.zip = new ZipFile(zip);
 
         // Read the properties from the theme.properties file of the zip
@@ -214,6 +217,8 @@ public class NoctisTheme
 
             if (texture == null)
                 throw new IOException("Can't find the file " + path);
+
+            return texture;
         }
         catch (IOException e)
         {

@@ -31,8 +31,12 @@ import static org.lwjgl.opengl.GL11.glLoadIdentity;
 import static org.lwjgl.opengl.GL11.glMatrixMode;
 import static org.lwjgl.opengl.GL11.glOrtho;
 
+
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.io.File;
 
+import java.io.IOException;
 import org.libnoctis.input.keyboard.Key;
 import org.libnoctis.input.keyboard.KeyPressedEvent;
 import org.libnoctis.input.keyboard.KeyReleasedEvent;
@@ -43,10 +47,11 @@ import org.libnoctis.input.mouse.MousePressedEvent;
 import org.libnoctis.input.mouse.MouseReleasedEvent;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.DirectDrawer;
+import org.libnoctis.render.gl.FontCache;
 import org.libnoctis.render.gl.NoctisFrameThread;
 import org.libnoctis.theme.NoctisTheme;
-import org.libnoctis.theme.ThemeLoader;
 import org.libnoctis.theme.ThemeLoadingException;
+import org.libnoctis.theme.ThemeRequiredException;
 import org.libnoctis.util.Vector2i;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -120,6 +125,7 @@ public class NFrame extends NContainer
         this.title = title;
         this.frameThread = new NoctisFrameThread(this);
         this.drawer = drawer;
+
         getFrameThread().runLater(new Runnable() {
             @Override
             public void run()
@@ -132,6 +138,20 @@ public class NFrame extends NContainer
                     mouseCreate();
                     keyboardCreate();
                     resize();
+
+                    try
+                    {
+                        NFrame.this.drawer.setFont(FontCache.getGlFont(Font.createFont(Font.TRUETYPE_FONT, theme().require(theme().requireProp("font.default")))));
+                    }
+                    catch (FontFormatException e)
+                    {
+                        throw new ThemeRequiredException("Default font should be a true type font", e);
+                    }
+                    catch (IOException e)
+                    {
+                        throw new ThemeRequiredException("Can't read the default font !", e);
+                    }
+
                     isVisible = true;
                 }
                 catch (LWJGLException e)
@@ -163,12 +183,9 @@ public class NFrame extends NContainer
      *
      * @param zipTheme The theme zip
      */
-    public void loadTheme(File zipTheme) throws ThemeLoadingException
+    public void loadTheme(File zipTheme) throws ThemeLoadingException, IOException
     {
-        ThemeLoader loader = new ThemeLoader();
-        loader.load(zipTheme);
-
-        this.theme = loader.get();
+        this.theme = new NoctisTheme(zipTheme);
     }
 
     /**

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.libnoctis.theme.NoctisTheme;
+import org.libnoctis.theme.ThemeLoadingException;
 import org.lwjgl.LWJGLUtil;
 
 
@@ -30,10 +31,19 @@ public class NoctisTest
 //        frame.setWidth(640);
 //        frame.setHeight(480);
 //        frame.show();
-        
-        NoctisTheme theme = new NoctisTheme(new File("/home/victor/Ylinor/test/theme.zip"));
-    
-        System.out.println("" + theme.propWithDefault("unePazeroperty", "Salut"));
+
+        NoctisTheme theme = null;
+        try
+        {
+            theme = new NoctisTheme(new File("/home/victor/Ylinor/test/theme.zip"));
+        }
+        catch (ThemeLoadingException e)
+        {
+            e.printStackTrace();
+            System.exit(0);
+        }
+
+        System.out.println("" + theme.prop("unePazeroperty", "Salut"));
     }
 
     private static boolean init()
