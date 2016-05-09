@@ -18,17 +18,18 @@
  */
 package org.libnoctis.render;
 
+
 import org.libnoctis.components.NComponent;
 import org.libnoctis.render.gl.GlFont;
 import org.libnoctis.render.gl.GlTexture;
 import org.libnoctis.render.gl.TextureRegion;
 
+
 /**
  * The Drawer
- *
  * <p>
- *     The Drawer is used to draw things, like shapes or
- *     images. It is used to render the components.
+ * The Drawer is used to draw things, like shapes or
+ * images. It is used to render the components.
  * </p>
  *
  * @author Wytrem & Litarvan
@@ -71,6 +72,16 @@ public abstract class Drawer
      */
     public abstract void drawRect(int x, int y, int width, int height);
 
+    /**
+     * Draw the given region of the given texture to the screen.
+     * 
+     * @param x The x position of the screen rectangle.
+     * @param y The y position of the screen rectangle.
+     * @param width The width of the screen rectangle.
+     * @param height The height of the screen rectangle.
+     * @param texture The texture to be rendered.
+     * @param icon The region to be rendered.
+     */
     public abstract void drawTexture(int x, int y, int width, int height, GlTexture texture, TextureRegion icon);
 
     public void drawTexture(int x, int y, int width, int height, GlTexture texture)
@@ -101,19 +112,19 @@ public abstract class Drawer
      * @return The current used color
      */
     public abstract Color getColor();
-    
+
     /**
      * Pushes the current matrix.
      */
     public abstract void pushMatrix();
-    
+
     /**
      * Pops the current matrix.
      */
     public abstract void popMatrix();
 
     public abstract void translate(int x, int y);
-    
+
     /**
      * Called after painting the given component
      *
@@ -146,7 +157,7 @@ public abstract class Drawer
      */
     public void preRender()
     {
-        
+
     }
 
     /**
@@ -154,6 +165,6 @@ public abstract class Drawer
      */
     public void postRender()
     {
-        
+
     }
 }
