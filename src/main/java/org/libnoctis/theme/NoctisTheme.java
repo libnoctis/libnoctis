@@ -165,7 +165,7 @@ public class NoctisTheme
     {
         BufferedImage image;
 
-        if (!hasProperty(path) || (image = image(path)) == null)
+        if ((image = image(path)) == null)
         {
             throw new ThemeRequiredException("Can't find/read the required image '" + path + "'");
         }
