@@ -186,7 +186,7 @@ public class NTextField extends NComponent implements NListener
         drawer.drawTexture(this.getGeneratedPosition().getX(), this.getGeneratedPosition().getY(), this.getWidth(), this.getHeight(), texture);
 
         // Drawing the text
-        drawer.drawString(this.textBounds.x, this.textBounds.y, this.getText() + /* The caret */ (focus ? "_" : ""));
+        drawer.drawString(this.getText() + /* The caret */ (focus ? "_" : ""), this.textBounds.x, this.textBounds.y);
     }
 
     /**

@@ -18,6 +18,7 @@
  */
 package org.libnoctis.theme;
 
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -29,12 +30,12 @@ import javax.imageio.ImageIO;
 
 import org.libnoctis.render.gl.GlTexture;
 
+
 /**
  * A Noctis Theme
- *
  * <p>
- *     A Noctis Theme is a zip containing some properties (in a json)
- *     and some images.
+ * A Noctis Theme is a zip containing some properties (in a properties file) and
+ * some images.
  * </p>
  *
  * @author Litarvan
@@ -44,26 +45,25 @@ import org.libnoctis.render.gl.GlTexture;
 public class NoctisTheme
 {
     /**
-     * The folder where the textures are in the zip file
+     * The folder where the textures are in the zip file.
      */
     public static final String TEXTURE_FOLDER = "textures/";
 
     /**
-     * The zip file of the theme
+     * The zip file of the theme.
      */
     private ZipFile zip;
 
     /**
-     * The theme properties
+     * The theme properties.
      */
     private Properties properties = new Properties();
 
     /**
-     * The Noctis Theme
+     * The Noctis Theme.
      *
-     * @param zip The zip file of the theme
-     *
-     * @throws IOException If it failed to read the zip
+     * @param zip The zip file of the theme.
+     * @throws IOException If it failed to read the zip.
      */
     NoctisTheme(File zip) throws IOException
     {
@@ -74,13 +74,11 @@ public class NoctisTheme
     }
 
     /**
-     * Read a file from the zip
+     * Reads a file from the zip.
      *
-     * @param path The path of the file (in the zip)
-     *
-     * @return An input stream of the file
-     *
-     * @throws IOException If it failed to read the file
+     * @param path The path of the file (in the zip).
+     * @return An input stream of the file.
+     * @throws IOException If it failed to read the file.
      */
     public InputStream get(String path) throws IOException
     {
@@ -89,15 +87,12 @@ public class NoctisTheme
     }
 
     /**
-     * Read a file from the zip and throws a ThemeRequiredException
-     * (RuntimeException)
-     * if it can't find it
+     * Reads a file from the zip and throws a {@code ThemeRequiredException} if
+     * it couldn't find it.
      *
-     * @param path The path of the file (in the zip)
-     *
-     * @return An input stream of the file
-     *
-     * @throws ThemeRequiredException If it failed to read the file
+     * @param path The path of the file (in the zip).
+     * @return An input stream of the file.
+     * @throws ThemeRequiredException If it failed to read the file.
      */
     public InputStream require(String path) throws ThemeRequiredException
     {
@@ -112,13 +107,11 @@ public class NoctisTheme
     }
 
     /**
-     * Read an image from the zip
+     * Reads an image from the zip.
      *
-     * @param path The path of the image (in the textures folder of the zip)
-     *
-     * @return The read buffered image
-     *
-     * @throws IOException If it failed to read the image
+     * @param path The path of the image (in the textures folder of the zip).
+     * @return The read buffered image.
+     * @throws IOException If it failed to read the image.
      */
     public BufferedImage image(String path) throws IOException
     {
@@ -126,15 +119,12 @@ public class NoctisTheme
     }
 
     /**
-     * Read an image from the zip and throws a ThemeRequiredException
-     * (RuntimeException)
-     * if it can't find it
+     * Read an image from the zip and throws a {@code ThemeRequiredException}
+     * if it couldn't find it.
      *
-     * @param path The path of the image (in the textures folder of the zip)
-     *
-     * @return The read buffered image
-     *
-     * @throws ThemeRequiredException If it failed to read the image
+     * @param path The path of the image (in the textures folder of the zip).
+     * @return The read buffered image.
+     * @throws ThemeRequiredException If it failed to read the image.
      */
     public BufferedImage requireImage(String path) throws ThemeRequiredException
     {
@@ -149,13 +139,11 @@ public class NoctisTheme
     }
 
     /**
-     * Read a texture from the zip
+     * Reads a texture from the zip.
      *
-     * @param path The path of the texture (in the textures folder of the zip)
-     *
-     * @return The read texture
-     *
-     * @throws IOException If it failed to read the texture
+     * @param path The path of the texture (in the textures folder of the zip).
+     * @return The read texture.
+     * @throws IOException If it failed to read the texture.
      */
     public GlTexture texture(String path) throws IOException
     {
@@ -163,14 +151,11 @@ public class NoctisTheme
     }
 
     /**
-     * Read a texture from the zip and throws a ThemeRequiredException
-     * (RuntimeException)
-     * if it can't find it
+     * Read a texture from the zip and throws a {@code ThemeRequiredException}
+     * if it couldn't find it.
      *
      * @param path The path of the texture (in the textures folder of the zip)
-     *
      * @return The read texture
-     *
      * @throws ThemeRequiredException If it failed to read the texture
      */
     public GlTexture requireTexture(String path) throws ThemeRequiredException
@@ -186,11 +171,10 @@ public class NoctisTheme
     }
 
     /**
-     * Check if the theme has the given property
+     * Checks if the theme has the given property.
      *
-     * @param key The property of the value to check
-     *
-     * @return If the theme has the given property
+     * @param key The property of the value to check.
+     * @return If the theme has the given property.
      */
     public boolean hasProperty(String key)
     {
@@ -198,11 +182,10 @@ public class NoctisTheme
     }
 
     /**
-     * Get the theme property of the given key
+     * Gets the theme property of the given key.
      *
-     * @param key The key of the value to get
-     *
-     * @return The read value
+     * @param key The key of the value to get.
+     * @return The read value.
      */
     public String prop(String key)
     {
@@ -218,12 +201,10 @@ public class NoctisTheme
 
     /**
      * Get the theme property of the given key and throws a
-     * ThemeRequiredException
-     * (RuntimeException) if it can't find it
+     * {@code ThemeRequiredException} if it can't find it.
      *
-     * @param key The key of the value to get
-     *
-     * @return The read value
+     * @param key The key of the value to get.
+     * @return The read value.
      */
     public String requireProp(String key)
     {

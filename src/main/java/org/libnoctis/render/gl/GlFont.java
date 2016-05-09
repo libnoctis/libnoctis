@@ -18,6 +18,7 @@
  */
 package org.libnoctis.render.gl;
 
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -35,12 +36,12 @@ import org.libnoctis.render.Drawer;
 import org.libnoctis.util.Pair;
 import org.libnoctis.util.Vector2i;
 
+
 /**
  * A Noctis Font
- *
  * <p>
- *     The Noctis Font object, very ugly as from now because
- *     we haven't got time so, don't jugde please.
+ * The Noctis Font object, very ugly as from now because
+ * we haven't got time so, don't jugde please.
  * </p>
  *
  * @author Wytrem
@@ -132,20 +133,20 @@ public class GlFont
         glyphs = new HashMap<Character, GlFont.Glyph>();
         int amountOfChars = alphabet.size();
         fontSize = font.getSize();
-        
+
         textureWidth = textureHeight = 1024;
-        
+
         Graphics2D g2d = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB).createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         FontMetrics fontMetrics = g2d.getFontMetrics(font);
-        
+
         BufferedImage imgTemp = CompatibleImageMaker.translucent(textureWidth, textureHeight);
-        Graphics2D  graphics = imgTemp.createGraphics();
+        Graphics2D graphics = imgTemp.createGraphics();
         TextureRegion.Builder iconBuilder = new TextureRegion.Builder(textureWidth, textureHeight);
 
         baseCharHeight = fontMetrics.getMaxAscent() + fontMetrics.getMaxDescent();
-        
+
         int x = 0;
         int y = 0;
         int w, h;
@@ -191,9 +192,8 @@ public class GlFont
 
         fontTexture = new GlTexture(imgTemp);
     }
-    
-    int baseCharHeight;
 
+    int baseCharHeight;
 
     Vector2i temp = new Vector2i(0, 0);
 
@@ -375,7 +375,7 @@ public class GlFont
             return little;
         }
     }
-    
+
     /**
      * Sums the elements of the given array.
      * 
@@ -426,7 +426,45 @@ public class GlFont
      * Used when a string creates a new line.
      */
     private transient int lastTranslateX;
-    
+
+    public int getStringWidth(String str)
+    {
+        Vector2i pos = new Vector2i(0, 0);
+        int width = 0;
+        String[] lines = str.split("\n");
+
+        for (int i = 0; i < lines.length; i++)
+        {
+            pos.setX(0);
+            pos.setY(0);
+
+            char[] line = lines[i].toCharArray();
+
+            for (int j = 0; j < line.length; j++)
+            {
+                char ch = line[j];
+
+                if (j == 0)
+                {
+                    if (shouldTryRendering(ch))
+                    {
+                        Glyph glyph = glyphs.get(ch);
+                        pos.add(-glyph.xPrevAdvance, 0);
+                    }
+                }
+
+                addCharSize(ch, pos, 0, 0);
+
+                if (pos.getX() > width)
+                {
+                    width = pos.getX();
+                }
+            }
+        }
+
+        return width;
+    }
+
     public Rectangle2D getStringBounds(String str, int x, int y)
     {
         Vector2i pos = new Vector2i(0, 0);
@@ -438,13 +476,13 @@ public class GlFont
         {
             pos.setX(0);
             pos.setY(0);
-            
+
             char[] line = lines[i].toCharArray();
-            
+
             for (int j = 0; j < line.length; j++)
             {
                 char ch = line[j];
-                
+
                 if (j == 0)
                 {
                     if (shouldTryRendering(ch))
@@ -453,7 +491,7 @@ public class GlFont
                         pos.add(-glyph.xPrevAdvance, 0);
                     }
                 }
-                
+
                 addCharSize(ch, pos, x, y);
 
                 if (pos.getX() > width)
@@ -462,8 +500,13 @@ public class GlFont
                 }
             }
         }
-        
+
         return new Rectangle2D.Float(x, y, width, height);
+    }
+    
+    public int getFontSize()
+    {
+        return fontSize;
     }
 
     public void drawChar(char ch, Vector2i pos, int origX, int origY, int index, Drawer drawer)

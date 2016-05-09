@@ -18,6 +18,7 @@
  */
 package org.libnoctis.components;
 
+
 import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
@@ -52,6 +53,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+
 
 /**
  * Base class for Noctis frames.
@@ -172,7 +174,7 @@ public class NFrame extends NContainer
     /**
      * Checks if is resizable.
      *
-     * @return true, if is resizable.
+     * @return {@code true}, if is resizable, {@code false} otherwise.
      */
     public boolean isResizable()
     {

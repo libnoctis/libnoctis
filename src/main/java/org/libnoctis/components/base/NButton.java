@@ -46,6 +46,10 @@ import org.libnoctis.render.gl.GlTexture;
  */
 public class NButton extends NComponent implements NListener
 {
+    public static final String BUTTON_TEXTURE_PROPERTY = "button.texture";
+    public static final String BUTTON_HOVER_TEXTURE_PROPERTY = "button.texture.hover";
+    public static final String BUTTON_DISABLED_TEXTURE_PROPERTY = "button.texture.disabled";
+
     /**
      * The button text
      */
@@ -135,9 +139,9 @@ public class NButton extends NComponent implements NListener
 
         this.fixed = Boolean.parseBoolean(theme().requireProp("button.size.fixed"));
 
-        String texture = theme().requireProp("button.texture");
-        String textureHover = theme().requireProp("button.texture.hover");
-        String textureDisabled = this.theme().hasProperty("button.texture.disabled") ? theme().requireProp("button.texture.disabled") : null;
+        String texture = theme().requireProp(BUTTON_TEXTURE_PROPERTY);
+        String textureHover = theme().requireProp(BUTTON_HOVER_TEXTURE_PROPERTY);
+        String textureDisabled = theme().hasProperty(BUTTON_DISABLED_TEXTURE_PROPERTY) ? theme().requireProp(BUTTON_DISABLED_TEXTURE_PROPERTY) : null;
 
         if (texture.endsWith(".9.png"))
             textureAreNinePatches = true;
@@ -359,5 +363,6 @@ public class NButton extends NComponent implements NListener
         drawer.drawTexture(getGeneratedPosition().getX(), getGeneratedPosition().getY(), this.getWidth(), this.getHeight(), toDraw);
 
         // TODO: Draw the text
+        drawer.drawCenteredString(text, getX() + getWidth() / 2, getY() + getHeight() / 2);
     }
 }
