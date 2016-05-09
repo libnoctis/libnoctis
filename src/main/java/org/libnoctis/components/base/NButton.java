@@ -133,11 +133,11 @@ public class NButton extends NComponent implements NListener
     {
         super.init();
 
-        this.fixed = Boolean.parseBoolean(theme().requireProp("button.size.fixed"));
+        this.fixed = Boolean.parseBoolean(theme().requireProp("component.button.size.fixed"));
 
-        String texture = theme().requireProp("button.texture");
-        String textureHover = theme().requireProp("button.texture.hover");
-        String textureDisabled = this.theme().hasProperty("button.texture.disabled") ? theme().requireProp("button.texture.disabled") : null;
+        String texture = theme().requireProp("component.button.texture");
+        String textureHover = theme().requireProp("component.button.texture.hover");
+        String textureDisabled = this.theme().hasProperty("component.button.texture.disabled") ? theme().requireProp("component.button.texture.disabled") : null;
 
         if (texture.endsWith(".9.png"))
             textureAreNinePatches = true;
@@ -162,8 +162,8 @@ public class NButton extends NComponent implements NListener
 
         if (fixed)
         {
-            this.setWidth(Integer.parseInt(theme().requireProp("button.size.width")));
-            this.setHeight(Integer.parseInt(theme().requireProp("button.size.height")));
+            this.setWidth(Integer.parseInt(theme().requireProp("component.button.size.width")));
+            this.setHeight(Integer.parseInt(theme().requireProp("component.button.size.height")));
         }
     }
 
