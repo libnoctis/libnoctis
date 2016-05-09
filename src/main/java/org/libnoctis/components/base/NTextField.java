@@ -33,6 +33,7 @@ import org.libnoctis.ninepatch.NinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
+import org.libnoctis.util.Vector2i;
 
 /**
  * The Noctis Text Field
@@ -93,9 +94,9 @@ public class NTextField extends NComponent implements NListener
     private GlTexture focusBackground;
 
     /**
-     * The rectangle where is the text
+     * The coords of the field where is the text
      */
-    private Rectangle textBounds;
+    private Vector2i textPadding;
 
     /**
      * Focus sur le text field (en cours d'ecriture)
@@ -121,12 +122,10 @@ public class NTextField extends NComponent implements NListener
             else
                 this.focusBackground = theme().requireTexture(backgroundFocused);
 
-        int textX = Integer.parseInt(theme().requireProp("component.textfield.textbounds.x"));
-        int textY = Integer.parseInt(theme().requireProp("component.textfield.textbounds.y"));
-        int textWidth = Integer.parseInt(theme().requireProp("component.textfield.textbounds.width"));
-        int textHeight = Integer.parseInt(theme().requireProp("component.textfield.textbounds.height"));
+        int xPadding = Integer.parseInt(theme().requireProp("component.textfield.textpadding.x"));
+        int yPadding = Integer.parseInt(theme().requireProp("component.textfield.textpadding.y"));
 
-        this.textBounds = new Rectangle(textX, textY, textWidth, textHeight);
+        this.textPadding = new Vector2i(xPadding, yPadding);
     }
 
     @NoctisEvent
@@ -152,7 +151,8 @@ public class NTextField extends NComponent implements NListener
     @NoctisEvent
     private void onMouseClick(MouseClickedEvent event)
     {
-        focus = textBounds.contains(event.getPos().getX(), event.getPos().getY());
+        Rectangle rectangle = new Rectangle(textPadding.getX(), textPadding.getY(), this.getWidth() - textPadding.getX(), this.getHeight() - textPadding.getY());
+        focus = rectangle.contains(event.getPos().getX(), event.getPos().getY());
     }
 
     @NoctisEvent
@@ -186,7 +186,7 @@ public class NTextField extends NComponent implements NListener
         drawer.drawTexture(this.getGeneratedPosition().getX(), this.getGeneratedPosition().getY(), this.getWidth(), this.getHeight(), texture);
 
         // Drawing the text
-        drawer.drawString(this.textBounds.x, this.textBounds.y, this.getText() + /* The caret */ (focus ? "_" : ""));
+        drawer.drawString(this.textPadding.getX(), this.textPadding.getY(), this.getText() + /* The caret */ (focus ? "_" : ""));
     }
 
     /**
@@ -277,11 +277,11 @@ public class NTextField extends NComponent implements NListener
     }
 
     /**
-     * @return The part of the field where the text should be
+     * @return The coords of the field where the text should be
      */
-    public Rectangle getTextBounds()
+    public Vector2i getTextPadding()
     {
-        return textBounds;
+        return textPadding;
     }
 
     /**
