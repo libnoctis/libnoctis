@@ -65,9 +65,10 @@ public class NoctisTheme
      * The Noctis Theme.
      *
      * @param zip The zip file of the theme.
+     *
      * @throws IOException If it failed to read the zip.
      */
-    public NoctisTheme(File zip) throws IOException
+    NoctisTheme(File zip) throws IOException
     {
         this.zip = new ZipFile(zip);
 
@@ -79,17 +80,18 @@ public class NoctisTheme
      * Reads a file from the zip.
      *
      * @param path The path of the file (in the zip).
+     *
      * @return An input stream of the file.
+     *
      * @throws IOException If it failed to read the file.
      */
+    @Nullable
     public InputStream get(@NotNull String path) throws IOException
     {
-        if (path == null)
-            throw new IllegalArgumentException("path == null");
-
         ZipEntry entry = zip.getEntry(path);
+
         if (entry == null)
-            throw new IOException("Can't find the entry " + path);
+            return null;
 
         return zip.getInputStream(entry);
     }
@@ -99,14 +101,22 @@ public class NoctisTheme
      * it couldn't find it.
      *
      * @param path The path of the file (in the zip).
+     *
      * @return An input stream of the file.
+     *
      * @throws ThemeRequiredException If it failed to read the file.
      */
+    @NotNull
     public InputStream require(@NotNull String path) throws ThemeRequiredException
     {
         try
         {
-            return get(path);
+            InputStream stream = get(path);
+
+            if (stream == null)
+                throw new IOException("Can't find the file " + path);
+
+            return stream;
         }
         catch (IOException e)
         {
@@ -118,123 +128,105 @@ public class NoctisTheme
      * Reads an image from the zip.
      *
      * @param path The path of the image (in the textures folder of the zip).
-     * @return The read buffered image.
-     */
-    @Nullable
-    public BufferedImage image(@NotNull String path)
-    {
-        return imageWithDefault(path, null);
-    }
-
-    /**
-     * Reads an image from the zip. Returns the given default image if the key
-     * couldn't be resolved.
      *
-     * @param path The path of the image (in the textures folder of the zip).
      * @return The read buffered image.
+     *
+     * @throws IOException If it failed to read the image.
      */
     @Nullable
-    public BufferedImage imageWithDefault(@NotNull String path, BufferedImage defaultImage)
+    public BufferedImage image(@NotNull String path) throws IOException
     {
         if (path == null)
             throw new IllegalArgumentException("path == null");
 
-        BufferedImage image = null;
+        InputStream stream = get(TEXTURE_FOLDER + path);
 
-        try
-        {
-            image = ImageIO.read(get(TEXTURE_FOLDER + path));
-        }
-        catch (IOException ignored)
-        {
-        }
+        if (stream == null)
+            return null;
 
-        return image == null ? defaultImage : image;
+        return ImageIO.read(stream);
     }
 
     /**
-     * Read an image from the zip and throws a {@code ThemeRequiredException} if
-     * it couldn't find it.
+     * Read an image from the zip and throws a {@code ThemeRequiredException}
+     * if it couldn't find it.
      *
      * @param path The path of the image (in the textures folder of the zip).
+     *
      * @return The read buffered image.
+     *
      * @throws ThemeRequiredException If it failed to read the image.
      */
     @NotNull
-    public BufferedImage requireImage(@NotNull String path)
+    public BufferedImage requireImage(@NotNull String path) throws ThemeRequiredException
     {
-        BufferedImage image;
-
-        if (!hasProperty(path) || (image = image(path)) == null)
-        {
-            throw new ThemeRequiredException("Can't find/read the required image '" + path + "'");
-        }
-
-        return image;
-    }
-
-    /**
-     * Reads a texture from the zip. Returns {@code null} if the texture
-     * couldn't be loaded or if the property doesn't exist.
-     *
-     * @param path The path of the texture (in the textures folder of the zip).
-     * @return The read texture.
-     */
-    @Nullable
-    public GlTexture texture(@NotNull String path)
-    {
-        return textureWithDefault(path, null);
-    }
-
-    /**
-     * Reads a texture from the zip. Returns {@code null} if the texture
-     * couldn't be loaded or if the property doesn't exist.
-     *
-     * @param path The path of the texture (in the textures folder of the zip).
-     * @return The read texture.
-     */
-    @Nullable
-    public GlTexture textureWithDefault(@NotNull String path, GlTexture defaultTexture)
-    {
-        BufferedImage image = null;
-
         try
         {
-            image = image(path);
-        }
-        catch (ThemeRequiredException ignored)
-        {
-        }
+            BufferedImage image = image(path);
 
-        return image == null ? defaultTexture : new GlTexture(image);
+            if (image == null)
+                throw new IOException("Can't find the file " + path);
+
+            return image;
+        }
+        catch (IOException e)
+        {
+            throw new ThemeRequiredException("Can't find the required image " + path + " in the current theme", e);
+        }
+    }
+
+    /**
+     * Reads a texture from the zip.
+     *
+     * @param path The path of the texture (in the textures folder of the zip).
+     *
+     * @return The read texture.
+     *
+     * @throws IOException If it failed to read the texture.
+     */
+    @Nullable
+    public GlTexture texture(@NotNull String path) throws IOException
+    {
+        BufferedImage image = image(path);
+
+        if (image == null)
+            return null;
+
+        return new GlTexture(requireImage(path));
     }
 
     /**
      * Read a texture from the zip and throws a {@code ThemeRequiredException}
      * if it couldn't find it.
      *
-     * @param path The path of the texture (in the textures folder of the zip).
-     * @return The read texture.
-     * @throws ThemeRequiredException If the property couldn't be found.
+     * @param path The path of the texture (in the textures folder of the zip)
+     *
+     * @return The read texture
+     *
+     * @throws ThemeRequiredException If it failed to read the texture
      */
     @NotNull
-    public GlTexture requireTexture(@NotNull String path)
+    public GlTexture requireTexture(@NotNull String path) throws ThemeRequiredException
     {
-        GlTexture texture;
-
-        if (!hasProperty(path) || (texture = texture(path)) == null)
+        try
         {
-            throw new ThemeRequiredException("Couln't find/read required texture '" + path + "'");
-        }
+            GlTexture texture = texture(path);
 
-        return texture;
+            if (texture == null)
+                throw new IOException("Can't find the file " + path);
+        }
+        catch (IOException e)
+        {
+            throw new ThemeRequiredException("Can't find the required texture " + path + " in the current theme", e);
+        }
     }
 
     /**
      * Checks if the theme has the given property.
      *
      * @param key The property of the value to check.
-     * @return {@code true} if this theme has the given property.
+     *
+     * @return If the theme has the given property.
      */
     public boolean hasProperty(@NotNull String key)
     {
@@ -245,34 +237,16 @@ public class NoctisTheme
     }
 
     /**
-     * Gets the theme property of the given key.
+     * Gets the theme property of the given key, or the default
+     * value if the key doesn't exist.
      *
      * @param key The key of the value to get.
-     * @return The read value.
-     * @throws ThemeRequiredException If the property couldn't be found.
-     */
-    @NotNull
-    public String requireProp(@NotNull String key)
-    {
-        if (!hasProperty(key))
-        {
-            throw new ThemeRequiredException("Can't find the required property " + key + " in the current theme");
-        }
-
-        return followLink(properties.getProperty(key));
-    }
-
-    /**
-     * Gets the theme property of the given key. If none, returns the given
-     * default value.
+     * @param def The default value if the key doesn't exist
      *
-     * @param key The key of the value to get.
-     * @param defaultValue The default value to return in case of the property
-     *        couldn't be found.
      * @return The read value.
      */
     @Nullable
-    public String propWithDefault(@NotNull String key, String defaultValue)
+    public String prop(@NotNull String key, @Nullable String def)
     {
         if (key == null)
             throw new IllegalArgumentException("key == null");
@@ -280,154 +254,46 @@ public class NoctisTheme
         String prop = properties.getProperty(key);
 
         if (prop == null)
-        {
-            return defaultValue;
-        }
-        else
-        {
-            return followLink(prop);
-        }
+            return def;
+
+        if (prop.startsWith("$"))
+            prop = requireProp(prop.substring(1));
+
+        if (prop.startsWith("\\$") || prop.startsWith("\\"))
+            prop = prop.substring(1);
+
+        return prop;
     }
 
     /**
-     * Gets the theme property of the given key. If none, returns {@code null}.
+     * Gets the theme property of the given key.
      *
      * @param key The key of the value to get.
+     *
      * @return The read value.
      */
     @Nullable
     public String prop(@NotNull String key)
     {
-        return propWithDefault(key, null);
+        return prop(key, null);
     }
 
     /**
-     * Gets the theme integer of the given key. If none, returns {@code 0}.
-     *
-     * @param key The key of the integer to get.
-     * @return The read value.
-     */
-    public int getInt(String key)
-    {
-        return getIntWithDefault(key, 0);
-    }
-
-    /**
-     * Gets the theme integer of the given key.
+     * Get the theme property of the given key and throws a
+     * {@code ThemeRequiredException} if it can't find it.
      *
      * @param key The key of the value to get.
      *
-     * @return The read integer.
-     *
-     * @throws ThemeRequiredException If the property couldn't be found.
-     */
-    public int requireInt(@NotNull String key)
-    {
-        if (!hasProperty(key))
-        {
-            throw new ThemeRequiredException("Couln't find required integer '" + key + "'");
-        }
-
-        return getInt(key);
-    }
-
-    /**
-     * Gets the theme integer of the given key. If none, returns the given
-     * default value.
-     *
-     * @param key The key of the value to get.
-     * @param defaultValue The default value to return in case of the property
-     *        couldn't be found.
-     *
      * @return The read value.
      */
-    public int getIntWithDefault(@NotNull String key, int defaultValue)
+    public String requireProp(String key)
     {
-        if (!hasProperty(key))
-        {
-            return defaultValue;
-        }
+        String prop = prop(key);
 
-        try
-        {
-            return Integer.parseInt(prop(key));
-        }
-        catch (NumberFormatException ex)
-        {
-            return defaultValue;
-        }
-    }
-
-    /**
-     * Gets the theme boolean of the given key. If none, returns {@code false}.
-     *
-     * @param key The key of the integer to get.
-     * @return The read value.
-     */
-    public boolean getBoolean(@NotNull String key)
-    {
-        return getBooleanWithDefault(key, false);
-    }
-
-    /**
-     * Gets the theme boolean of the given key.
-     *
-     * @param key The key of the value to get.
-     * @return The read integer.
-     * @throws ThemeRequiredException If the property couldn't be found.
-     */
-    public boolean requireBoolean(@NotNull String key)
-    {
-        if (!hasProperty(key))
-        {
-            throw new ThemeRequiredException("Couln't find required integer '" + key + "'");
-        }
-
-        return getBoolean(key);
-    }
-
-    /**
-     * Gets the theme boolean of the given key. If none, returns the given
-     * default value.
-     *
-     * @param key The key of the value to get.
-     * @param defaultValue The default value to return in case of the property
-     *        couldn't be found.
-     * @return The read value.
-     */
-    public boolean getBooleanWithDefault(@NotNull String key, boolean defaultValue)
-    {
-        if (!hasProperty(key))
-        {
-            return defaultValue;
-        }
-
-        try
-        {
-            return Boolean.parseBoolean(prop(key));
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-            return defaultValue;
-        }
-    }
-
-    private String followLink(@NotNull String prop)
-    {
         if (prop == null)
-            throw new IllegalArgumentException("prop == null");
-
-        while (prop.startsWith("$"))
-        {
-            prop = requireProp(prop.substring(1));
-        }
-
-        while (prop.startsWith("\\$") || prop.startsWith("\\"))
-        {
-            prop = prop.substring(1);
-        }
+            throw new ThemeRequiredException("Can't find the required property " + key + " in the current theme");
 
         return prop;
     }
 }
+
