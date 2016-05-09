@@ -32,6 +32,7 @@ public class SecondTest extends NFrame implements NListener
         button.setHeight(50);
 
         this.add(button);
+        this.registerListener(this);
     }
 
     @NoctisEvent
