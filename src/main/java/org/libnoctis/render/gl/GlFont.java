@@ -125,6 +125,8 @@ public class GlFont
         Graphics2D  graphics = imgTemp.createGraphics();
         TextureRegion.Builder iconBuilder = new TextureRegion.Builder(textureWidth, textureHeight);
 
+        baseCharHeight = fontMetrics.getMaxAscent() + fontMetrics.getMaxDescent();
+        
         int x = 0;
         int y = 0;
         int w, h;
@@ -170,6 +172,9 @@ public class GlFont
 
         fontTexture = new GlTexture(imgTemp);
     }
+    
+    int baseCharHeight;
+
 
     Vector2i temp = new Vector2i(0, 0);
 
@@ -203,7 +208,6 @@ public class GlFont
 
         int boundsWidth = (int) (bounds.getWidth());
         int boundsHeight = (int) (bounds.getHeight());
-        int baseCharHeight = fontMetrics.getMaxAscent() + fontMetrics.getMaxDescent();
 
         BufferedImage charImage = CompatibleImageMaker.translucent(boundsWidth * 4, baseCharHeight);
 
@@ -403,6 +407,45 @@ public class GlFont
      * Used when a string creates a new line.
      */
     private transient int lastTranslateX;
+    
+    public Rectangle2D getStringBounds(String str, int x, int y)
+    {
+        Vector2i pos = new Vector2i(0, 0);
+        int width = 0;
+        String[] lines = str.split("\n");
+        int height = lines.length * fontSize;
+
+        for (int i = 0; i < lines.length; i++)
+        {
+            pos.setX(0);
+            pos.setY(0);
+            
+            char[] line = lines[i].toCharArray();
+            
+            for (int j = 0; j < line.length; j++)
+            {
+                char ch = line[j];
+                
+                if (j == 0)
+                {
+                    if (shouldTryRendering(ch))
+                    {
+                        Glyph glyph = glyphs.get(ch);
+                        pos.add(-glyph.xPrevAdvance, 0);
+                    }
+                }
+                
+                addCharSize(ch, pos, x, y);
+
+                if (pos.getX() > width)
+                {
+                    width = pos.getX();
+                }
+            }
+        }
+        
+        return new Rectangle2D.Float(x, y, width, height);
+    }
 
     public void drawChar(char ch, Vector2i pos, int origX, int origY, int index, Drawer drawer)
     {

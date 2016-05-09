@@ -2,10 +2,12 @@ package org.libnoctis.test;
 
 
 import java.awt.Font;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
 
 import org.libnoctis.components.NFrame;
+import org.libnoctis.render.Color;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.FontCache;
 import org.libnoctis.render.gl.GlFont;
@@ -30,13 +32,15 @@ public class NoctisTest
 
             GlFont font;
             String str;
-
+            Rectangle2D rect;
+            
             @Override
             protected void paintComponent(Drawer drawer)
             {
                 if (font == null)
                 {
-                    font = FontCache.getGlFont(new Font("URW Chancery L", Font.PLAIN, 32));
+//                    font = FontCache.getGlFont(new Font("URW Chancery L", Font.PLAIN, 32));
+                    font = FontCache.getGlFont(new Font("Arial", Font.ITALIC, 32));
 
                     drawer.setFont(font);
                     str = "";
@@ -50,9 +54,14 @@ public class NoctisTest
                         
                         str += "\n";
                     }
+                    
+                    rect =font.getStringBounds(str, 0, 0);
                 }
 
+                drawer.setColor(Color.WHITE);
                 drawer.drawString(str, 0, 0);
+                drawer.setColor(new Color(1.0f, 0.0f, 0.0f, 0.3f));
+                drawer.drawRect((int) rect.getX(), (int) rect.getY(), (int) rect.getWidth(), (int) rect.getHeight());
             }
         };
 
