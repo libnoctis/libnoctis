@@ -22,7 +22,6 @@ import org.libnoctis.components.NComponent;
 import org.libnoctis.layout.IllegalLayoutPropertyException;
 import org.libnoctis.layout.NLayout;
 import org.libnoctis.util.Vector2i;
-import org.libnoctis.util.exception.IllegalNoctisStateException;
 
 /**
  * The Absolute Layout

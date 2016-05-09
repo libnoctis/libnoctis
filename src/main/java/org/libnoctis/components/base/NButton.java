@@ -22,7 +22,6 @@ package org.libnoctis.components.base;
 import org.jetbrains.annotations.Nullable;
 import org.libnoctis.components.NComponent;
 import org.libnoctis.input.NListener;
-import org.libnoctis.components.NContainer;
 import org.libnoctis.input.NoctisEvent;
 import org.libnoctis.input.mouse.MouseMoveEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
@@ -35,11 +34,10 @@ import org.libnoctis.render.gl.GlTexture;
 
 /**
  * The Noctis Button
- *
  * <p>
- *     A button, can be clicked. Click click click.
- *     Click click click click click click click click click.
- *     Click click. Click.
+ * A button, can be clicked. Click click click.
+ * Click click click click click click click click click.
+ * Click click. Click.
  * </p>
  *
  * @author Litarvan
@@ -226,8 +224,9 @@ public class NButton extends NComponent implements NListener
     }
 
     /**
-     * @return Return the button texture (can be null if the texture is a nine patch,
-     *          if it is, use #getTexturePatch)
+     * @return Return the button texture (can be null if the texture is a nine
+     *         patch,
+     *         if it is, use #getTexturePatch)
      */
     @Nullable
     public GlTexture getTexture()
@@ -236,9 +235,10 @@ public class NButton extends NComponent implements NListener
     }
 
     /**
-     * @return The texture when the mouse is hover the button. (can be null if the
-     *          the theme didn't give one, or if it is a nine patch (if it is,
-     *          use #getHoverTexturePatch).
+     * @return The texture when the mouse is hover the button. (can be null if
+     *         the
+     *         the theme didn't give one, or if it is a nine patch (if it is,
+     *         use #getHoverTexturePatch).
      */
     @Nullable
     public GlTexture getHoverTexture()
@@ -248,8 +248,8 @@ public class NButton extends NComponent implements NListener
 
     /**
      * @return The button texture when it is disabled (can be null if the theme
-     *          didn't give one, or if it is a nine patch (if it is, use
-     *          #getDisabledTexturePatch).
+     *         didn't give one, or if it is a nine patch (if it is, use
+     *         #getDisabledTexturePatch).
      */
     @Nullable
     public GlTexture getDisabledTexture()
@@ -259,7 +259,7 @@ public class NButton extends NComponent implements NListener
 
     /**
      * @return Return the button texture, as a nine patch (can be null if the
-     *          texture is not a nine patch, if it is, use #getTexture)
+     *         texture is not a nine patch, if it is, use #getTexture)
      */
     @Nullable
     public NoctisNinePatch getTexturePatch()
@@ -269,8 +269,8 @@ public class NButton extends NComponent implements NListener
 
     /**
      * @return The texture when the mouse is hover the button, as a nine patch.
-     *          (can be null if the the theme didn't give one, or if it is not a
-     *          nine patch (if it is, use #getHoverTexture).
+     *         (can be null if the the theme didn't give one, or if it is not a
+     *         nine patch (if it is, use #getHoverTexture).
      */
     @Nullable
     public NoctisNinePatch getHoverTexturePatch()
@@ -279,9 +279,11 @@ public class NButton extends NComponent implements NListener
     }
 
     /**
-     * @return The button texture when it is disabled, as a nine patch (can be null
-     *          if the theme didn't give one, or if it is not a nine patch (if it is,
-     *          use #getDisabledTexture).
+     * @return The button texture when it is disabled, as a nine patch (can be
+     *         null
+     *         if the theme didn't give one, or if it is not a nine patch (if it
+     *         is,
+     *         use #getDisabledTexture).
      */
     @Nullable
     public NoctisNinePatch getDisabledTexturePatch()
@@ -349,9 +351,7 @@ public class NButton extends NComponent implements NListener
 
         if (textureAreNinePatches)
         {
-            toDraw = disabled ? disabledTexturePatch.generateFor(this.getWidth(), this.getHeight()) :
-                     (hover ? hoverTexturePatch.generateFor(this.getWidth(), this.getHeight()) :
-                     texturePatch.generateFor(this.getWidth(), this.getHeight()));
+            toDraw = disabled ? disabledTexturePatch.generateFor(this.getWidth(), this.getHeight()) : (hover ? hoverTexturePatch.generateFor(this.getWidth(), this.getHeight()) : texturePatch.generateFor(this.getWidth(), this.getHeight()));
         }
         else
             toDraw = disabled ? disabledTexture : (hover ? hoverTexture : texture);

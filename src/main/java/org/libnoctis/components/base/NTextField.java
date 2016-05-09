@@ -19,6 +19,7 @@
 package org.libnoctis.components.base;
 
 import java.awt.Rectangle;
+
 import org.jetbrains.annotations.Nullable;
 import org.libnoctis.components.NComponent;
 import org.libnoctis.components.NContainer;
@@ -32,7 +33,6 @@ import org.libnoctis.ninepatch.NinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
-import org.libnoctis.util.Vector4i;
 
 /**
  * The Noctis Text Field

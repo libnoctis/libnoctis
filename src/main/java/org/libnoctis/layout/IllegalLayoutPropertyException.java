@@ -34,6 +34,8 @@ import org.libnoctis.components.NComponent;
  */
 public class IllegalLayoutPropertyException extends RuntimeException
 {
+    private static final long serialVersionUID = 6333933366129076054L;
+
     /**
      * The Illegal Layout Property Exception
      *
