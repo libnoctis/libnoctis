@@ -16,50 +16,32 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.libnoctis.input.mouse;
+package org.libnoctis.layout;
+
+import org.libnoctis.components.NComponent;
 
 /**
- * The Mouse Buttons
+ * The Illegal Layout Property Exception
  *
  * <p>
- *     An enumeration of the different mouse buttons, used by the events.
+ *     This exception is thrown when a component hasn't
+ *     the right illegal layout property type.
  * </p>
  *
  * @author Litarvan
  * @version 1.0.0
  * @since 1.0.0
  */
-public enum MouseButton
+public class IllegalLayoutPropertyException extends RuntimeException
 {
-     /**
-      * The left mouse button
-      */
-     LEFT,
-
-     /**
-      * The right mouse button
-      */
-     RIGHT,
-
-     /**
-      * The mouse wheel button
-      */
-     CENTER;
-
     /**
-     * Get the MouseButton of the given id
+     * The Illegal Layout Property Exception
      *
-     * @param id The id of the mouse button to get
-     *
-     * @return The mouse button of the given id
+     * @param component The component that hasn't the right layout property type
+     * @param shouldBe The type of layout property the component should have
      */
-    public static MouseButton byId(int id)
+    public IllegalLayoutPropertyException(NComponent component, String shouldBe)
     {
-        if (id < 0)
-        {
-            return null;
-        }
-
-        return values()[id];
+        super("A component has as position a " + (component.getPosition() == null ? "null" :  component.getPosition().getClass().getSimpleName()) + " but should have a " + shouldBe);
     }
 }

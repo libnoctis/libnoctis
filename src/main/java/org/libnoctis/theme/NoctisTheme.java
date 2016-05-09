@@ -1,19 +1,22 @@
 /*
  * Copyright 2015-2016 Adrien "Litarvan" Navratil & Victor "Wytrem"
+ *
  * This file is part of Libnoctis.
+ *
  * Libnoctis is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
  * Libnoctis is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Lesser General Public License for more details.
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.libnoctis.theme;
-
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -26,12 +29,12 @@ import javax.imageio.ImageIO;
 
 import org.libnoctis.render.gl.GlTexture;
 
-
 /**
  * A Noctis Theme
+ *
  * <p>
- * A Noctis Theme is a zip containing some properties (in a json)
- * and some images.
+ *     A Noctis Theme is a zip containing some properties (in a json)
+ *     and some images.
  * </p>
  *
  * @author Litarvan
@@ -59,6 +62,7 @@ public class NoctisTheme
      * The Noctis Theme
      *
      * @param zip The zip file of the theme
+     *
      * @throws IOException If it failed to read the zip
      */
     NoctisTheme(File zip) throws IOException
@@ -73,7 +77,9 @@ public class NoctisTheme
      * Read a file from the zip
      *
      * @param path The path of the file (in the zip)
+     *
      * @return An input stream of the file
+     *
      * @throws IOException If it failed to read the file
      */
     public InputStream get(String path) throws IOException
@@ -88,7 +94,9 @@ public class NoctisTheme
      * if it can't find it
      *
      * @param path The path of the file (in the zip)
+     *
      * @return An input stream of the file
+     *
      * @throws ThemeRequiredException If it failed to read the file
      */
     public InputStream require(String path) throws ThemeRequiredException
@@ -107,7 +115,9 @@ public class NoctisTheme
      * Read an image from the zip
      *
      * @param path The path of the image (in the textures folder of the zip)
+     *
      * @return The read buffered image
+     *
      * @throws IOException If it failed to read the image
      */
     public BufferedImage image(String path) throws IOException
@@ -121,7 +131,9 @@ public class NoctisTheme
      * if it can't find it
      *
      * @param path The path of the image (in the textures folder of the zip)
+     *
      * @return The read buffered image
+     *
      * @throws ThemeRequiredException If it failed to read the image
      */
     public BufferedImage requireImage(String path) throws ThemeRequiredException
@@ -140,7 +152,9 @@ public class NoctisTheme
      * Read a texture from the zip
      *
      * @param path The path of the texture (in the textures folder of the zip)
+     *
      * @return The read texture
+     *
      * @throws IOException If it failed to read the texture
      */
     public GlTexture texture(String path) throws IOException
@@ -154,7 +168,9 @@ public class NoctisTheme
      * if it can't find it
      *
      * @param path The path of the texture (in the textures folder of the zip)
+     *
      * @return The read texture
+     *
      * @throws ThemeRequiredException If it failed to read the texture
      */
     public GlTexture requireTexture(String path) throws ThemeRequiredException
@@ -173,6 +189,7 @@ public class NoctisTheme
      * Check if the theme has the given property
      *
      * @param key The property of the value to check
+     *
      * @return If the theme has the given property
      */
     public boolean hasProperty(String key)
@@ -184,6 +201,7 @@ public class NoctisTheme
      * Get the theme property of the given key
      *
      * @param key The key of the value to get
+     *
      * @return The read value
      */
     public String prop(String key)
@@ -204,6 +222,7 @@ public class NoctisTheme
      * (RuntimeException) if it can't find it
      *
      * @param key The key of the value to get
+     *
      * @return The read value
      */
     public String requireProp(String key)
