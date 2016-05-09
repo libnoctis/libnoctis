@@ -49,6 +49,10 @@ import org.libnoctis.util.Vector2i;
  */
 public class NTextField extends NComponent implements NListener
 {
+    public static final String TEXTFIELD_SECTION = COMPONENTS_SECTION + ".textfield";
+    public static final String TEXTFIELD_TEXTURE = TEXTFIELD_SECTION + ".texture";
+    public static final String TEXTFIELD_TEXTURE_HOVER = TEXTFIELD_SECTION + ".texture.hover";
+
     /**
      * The current text field text
      */
@@ -108,8 +112,8 @@ public class NTextField extends NComponent implements NListener
     {
         super.init();
 
-        String background = theme().requireProp("component.textfield.texture");
-        String backgroundFocused = theme().prop("component.textfield.texture.hover");
+        String background = theme().requireProp(TEXTFIELD_TEXTURE);
+        String backgroundFocused = theme().prop(TEXTFIELD_TEXTURE_HOVER);
 
         if (background.endsWith(".9.png"))
             this.backgroundPatch = NinePatch.create(theme().requireImage(background));
@@ -183,10 +187,10 @@ public class NTextField extends NComponent implements NListener
         else
             texture = background == null ? backgroundPatch.generateFor(this.getWidth(), this.getHeight()) : background;
 
-        drawer.drawTexture(this.getGeneratedPosition().getX(), this.getGeneratedPosition().getY(), this.getWidth(), this.getHeight(), texture);
+        drawer.drawTexture(getX(), getY(), this.getWidth(), this.getHeight(), texture);
 
         // Drawing the text
-        drawer.drawString(this.textPadding.getX(), this.textPadding.getY(), this.getText() + /* The caret */ (focus ? "_" : ""));
+        drawer.drawString(this.getText() + /* The caret */ (focus ? "_" : ""), this.textPadding.getX(), this.textPadding.getY());
     }
 
     /**

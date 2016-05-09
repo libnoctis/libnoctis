@@ -18,6 +18,7 @@
  */
 package org.libnoctis.render.gl;
 
+import static org.lwjgl.opengl.GL11.GL_LINE_LOOP;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glColor4f;
@@ -73,7 +74,7 @@ public class DirectDrawer extends Drawer
     public void drawRect(int x, int y, int width, int height)
     {
         glDisable(GlTexture.TARGET);
-        glBegin(GL_QUADS);
+        glBegin(GL_LINE_LOOP);
         {
             glVertex2i(x, y);
             glVertex2i(x, y + height);
@@ -110,18 +111,6 @@ public class DirectDrawer extends Drawer
     }
 
     @Override
-    public void drawString(String str, int x, int y)
-    {
-        currentFont.drawString(str, x, y, this);
-    }
-
-    @Override
-    public void drawString(int x, int y, String string)
-    {
-        this.currentFont.drawString(string, x, y, this);
-    }
-
-    @Override
     public void setFont(GlFont font)
     {
         this.currentFont = font;
@@ -149,5 +138,20 @@ public class DirectDrawer extends Drawer
     public void translate(int x, int y)
     {
         glTranslatef(x, y, 0.0f);
+    }
+
+    @Override
+    public void fillRect(int x, int y, int width, int height)
+    {
+        glDisable(GlTexture.TARGET);
+        glBegin(GL_QUADS);
+        {
+            glVertex2i(x, y);
+            glVertex2i(x, y + height);
+            glVertex2i(x + width, y + height);
+            glVertex2i(x + width, y);
+        }
+        glEnd();
+        glEnable(GlTexture.TARGET);        
     }
 }

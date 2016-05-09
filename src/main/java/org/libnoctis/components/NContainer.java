@@ -18,6 +18,7 @@
  */
 package org.libnoctis.components;
 
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -25,12 +26,12 @@ import org.libnoctis.layout.NLayout;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.util.Vector2i;
 
+
 /**
  * The Noctis Container
- *
  * <p>
- *     The Noctis Container is a component that can contains other components.
- *     For example, NPanel is a NContainer.
+ * The Noctis Container is a component that can contains other components.
+ * For example, NPanel is a NContainer.
  * </p>
  *
  * @author Litarvan
@@ -89,7 +90,10 @@ public abstract class NContainer extends NComponent
         component.onAdded(this);
         this.positions = layout.getElementsPosition(this.components.toArray(new NComponent[this.components.size()]));
 
-        component.setGeneratedPosition(this.positions[this.components.size() - 1]);
+        // FIXME : this cannot work, it applies the layout only on the latest added component.
+        Vector2i pos = this.positions[this.components.size() - 1];
+        component.setX(pos.getX());
+        component.setY(pos.getY());
         component.onAdded(this);
 
         repaint();
