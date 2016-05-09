@@ -85,6 +85,9 @@ public class NoctisTheme
     public InputStream get(String path) throws IOException
     {
         ZipEntry entry = zip.getEntry(path);
+        if (entry == null)
+            throw new IOException("Can't find the entry " + path);
+
         return zip.getInputStream(entry);
     }
 

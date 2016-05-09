@@ -36,9 +36,9 @@ import java.io.IOException;
 public class ThemeLoader
 {
     /**
-     * The current theme
+     * The theme loaded (call load() if it is not)
      */
-    private NoctisTheme currentTheme;
+    private NoctisTheme loaded;
 
     /**
      * Load a theme in the given file
@@ -58,7 +58,10 @@ public class ThemeLoader
 
         try
         {
-            return new NoctisTheme(themeZip);
+            NoctisTheme theme = new NoctisTheme(themeZip);
+            this.loaded = theme;
+
+            return theme;
         }
         catch (IOException e)
         {
@@ -67,20 +70,10 @@ public class ThemeLoader
     }
 
     /**
-     * Set the current theme
-     *
-     * @param theme The theme to set
-     */
-    public void set(NoctisTheme theme)
-    {
-        this.currentTheme = theme;
-    }
-
-    /**
-     * @return The current theme
+     * @return The loaded theme (call load if not)
      */
     public NoctisTheme get()
     {
-        return currentTheme;
+        return loaded;
     }
 }

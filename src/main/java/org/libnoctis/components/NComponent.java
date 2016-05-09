@@ -227,6 +227,9 @@ public abstract class NComponent
      */
     public final void repaint()
     {
+        if (getFrame() == null)
+            return;
+
         schedulRenderTask(new Runnable() {
             @Override
             public void run()
@@ -382,6 +385,7 @@ public abstract class NComponent
     public void setPosition(LayoutProperty position)
     {
         this.position = position;
+
         repaint();
     }
 

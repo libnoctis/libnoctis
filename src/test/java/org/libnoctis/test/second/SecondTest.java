@@ -1,16 +1,18 @@
 package org.libnoctis.test.second;
 
-
 import java.io.File;
 import java.io.IOException;
+import org.libnoctis.Libnoctis;
 import org.libnoctis.components.NFrame;
 import org.libnoctis.input.NListener;
 import org.libnoctis.components.base.NButton;
 import org.libnoctis.input.NoctisEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
+import org.libnoctis.layout.base.AbsoluteLayout;
+import org.libnoctis.layout.base.AbsoluteLayoutProperty;
 import org.libnoctis.layout.base.YoloLayout;
 import org.libnoctis.test.LWJGLSetup;
-
+import org.libnoctis.theme.ThemeLoadingException;
 
 public class SecondTest extends NFrame implements NListener
 {
@@ -23,7 +25,11 @@ public class SecondTest extends NFrame implements NListener
         this.setWidth(750);
         this.setHeight(750);
         this.setUndecorated(true);
-        this.setLayout(new YoloLayout());
+        this.setLayout(new AbsoluteLayout());
+
+        button.setPosition(new AbsoluteLayoutProperty(75, 75));
+        button.setWidth(500);
+        button.setHeight(50);
 
         this.add(button);
     }
@@ -39,6 +45,14 @@ public class SecondTest extends NFrame implements NListener
         LWJGLSetup.load(new File(System.getProperty("user.home"), ".noctis"));
 
         SecondTest test = new SecondTest("Second test");
+        try
+        {
+            test.loadTheme(new File("/home/litarvan/Documents/Ylinor/Design/noctis/ylinor.zip"));
+        }
+        catch (ThemeLoadingException e)
+        {
+            e.printStackTrace();
+        }
         test.show();
     }
 }
