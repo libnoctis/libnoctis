@@ -3,21 +3,20 @@
  *
  * This file is part of Libnoctis.
  *
- * Libnoctis is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Libnoctis is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Libnoctis is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * Libnoctis is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.libnoctis.theme;
-
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -67,7 +66,7 @@ public class NoctisTheme
      * @param zip The zip file of the theme.
      * @throws IOException If it failed to read the zip.
      */
-    NoctisTheme(File zip) throws IOException
+    public NoctisTheme(File zip) throws IOException
     {
         this.zip = new ZipFile(zip);
 
@@ -146,8 +145,8 @@ public class NoctisTheme
     }
 
     /**
-     * Read an image from the zip and throws a {@code ThemeRequiredException}
-     * if it couldn't find it.
+     * Read an image from the zip and throws a {@code ThemeRequiredException} if
+     * it couldn't find it.
      *
      * @param path The path of the image (in the textures folder of the zip).
      * @return The read buffered image.
@@ -304,7 +303,7 @@ public class NoctisTheme
         {
             throw new ThemeRequiredException("Couln't find required integer '" + key + "'");
         }
-        
+
         return getInt(key);
     }
 
@@ -323,7 +322,7 @@ public class NoctisTheme
         {
             return defaultValue;
         }
-        
+
         try
         {
             return Integer.parseInt(prop(key));
@@ -333,7 +332,7 @@ public class NoctisTheme
             return defaultValue;
         }
     }
-    
+
     /**
      * Gets the theme boolean of the given key. If none, returns {@code false}.
      *
@@ -359,7 +358,7 @@ public class NoctisTheme
         {
             throw new ThemeRequiredException("Couln't find required integer '" + key + "'");
         }
-        
+
         return getBoolean(key);
     }
 
@@ -378,7 +377,7 @@ public class NoctisTheme
         {
             return defaultValue;
         }
-        
+
         try
         {
             return Boolean.parseBoolean(prop(key));

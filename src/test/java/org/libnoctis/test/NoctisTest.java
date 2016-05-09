@@ -4,9 +4,7 @@ package org.libnoctis.test;
 import java.io.File;
 import java.io.IOException;
 
-import org.libnoctis.components.NFrame;
-import org.libnoctis.components.base.NTextField;
-import org.libnoctis.layout.base.YoloLayout;
+import org.libnoctis.theme.NoctisTheme;
 import org.lwjgl.LWJGLUtil;
 
 
@@ -14,8 +12,9 @@ public class NoctisTest
 {
     /**
      * Starts the game.
+     * @throws IOException 
      */
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException
     {
         if (!init())
         {
@@ -23,14 +22,18 @@ public class NoctisTest
             return;
         }
 
-        NFrame frame = new NFrame("Salut");
-        frame.setLayout(new YoloLayout());
+//        NFrame frame = new NFrame("Salut");
+//        frame.setLayout(new YoloLayout());
+//        
+//        frame.add(new NTextField());
+//
+//        frame.setWidth(640);
+//        frame.setHeight(480);
+//        frame.show();
         
-        frame.add(new NTextField());
-
-        frame.setWidth(640);
-        frame.setHeight(480);
-        frame.show();
+        NoctisTheme theme = new NoctisTheme(new File("/home/victor/Ylinor/test/theme.zip"));
+    
+        System.out.println("" + theme.propWithDefault("unePazeroperty", "Salut"));
     }
 
     private static boolean init()
