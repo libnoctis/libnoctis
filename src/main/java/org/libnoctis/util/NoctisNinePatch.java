@@ -40,6 +40,21 @@ import org.libnoctis.render.gl.GlTexture;
 public class NoctisNinePatch extends NinePatch
 {
     /**
+     * The last generated image
+     */
+    private BufferedImage lastGeneratedImage;
+
+    /**
+     * The last generated texture
+     */
+    private GlTexture lastGeneratedTexture;
+
+    /**
+     * The dimensions of the last generated image
+     */
+    private Vector2i lastGeneratedDimensions;
+
+    /**
      * The Noctis Nine Patch
      *
      * @param image The nine patch image
@@ -71,8 +86,15 @@ public class NoctisNinePatch extends NinePatch
      */
     public BufferedImage generateFor(int width, int height)
     {
+        if (lastGeneratedDimensions.getX() == width && lastGeneratedDimensions.getY() == height)
+            return lastGeneratedImage;
+
         BufferedImage image = GraphicsUtilities.createCompatibleImage(width, height);
         this.draw((Graphics2D) image.getGraphics(), 0, 0, width, height);
+
+        this.lastGeneratedImage = image;
+        this.lastGeneratedTexture = new GlTexture(image);
+        this.lastGeneratedDimensions = new Vector2i(width, height);
 
         return image;
     }
@@ -99,6 +121,9 @@ public class NoctisNinePatch extends NinePatch
      */
     public GlTexture generateTextureFor(int width, int height)
     {
-        return new GlTexture(generateFor(width, height));
+        if (lastGeneratedDimensions.getX() != width || lastGeneratedDimensions.getY() != height)
+            generateFor(width, height);
+
+        return lastGeneratedTexture;
     }
 }

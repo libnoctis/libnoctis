@@ -4,7 +4,6 @@ package org.libnoctis.test;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import org.lwjgl.LWJGLUtil;
 
 

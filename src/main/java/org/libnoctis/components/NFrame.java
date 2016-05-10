@@ -140,18 +140,18 @@ public class NFrame extends NContainer
     {
         try
         {
-            System.out.println("\n[Libnoctis] Creating the window\r");
+            System.out.print("\n[Libnoctis] Creating the window\r");
 
             displayUpdateTitle();
             displayUpdateDisplayMode();
             displayCreate();
 
-            System.out.println("[Libnoctis] Initializing I/O\r");
+            System.out.print("[Libnoctis] Creating I/O         \r");
 
             mouseCreate();
             keyboardCreate();
 
-            System.out.println("[Libnoctis] Finalizing\r");
+            System.out.print("[Libnoctis] Finalizing           \r");
 
             resize();
 
@@ -168,7 +168,8 @@ public class NFrame extends NContainer
                 throw new ThemeRequiredException("Can't read the default font !", e);
             }
 
-            System.out.println("\n[Libnoctis] Libnoctis " + Libnoctis.VERSION);
+            System.out.print("---------------------------------------\n");
+            System.out.println("[Libnoctis] Libnoctis " + Libnoctis.VERSION);
             System.out.println("[Libnoctis] by Victor 'Wytrem' and Adrien 'Litarvan' Navratil");
             System.out.println("[Libnoctis] (c) 2016 under the terms of the GNU Lesser General Public License version 3.0\n");
 

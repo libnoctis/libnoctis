@@ -2,7 +2,6 @@ package org.libnoctis.test.second;
 
 import java.io.File;
 import java.io.IOException;
-import org.libnoctis.Libnoctis;
 import org.libnoctis.components.NFrame;
 import org.libnoctis.input.NListener;
 import org.libnoctis.components.base.NButton;
@@ -10,7 +9,6 @@ import org.libnoctis.input.NoctisEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
 import org.libnoctis.layout.base.AbsoluteLayout;
 import org.libnoctis.layout.base.AbsoluteLayoutProperty;
-import org.libnoctis.layout.base.YoloLayout;
 import org.libnoctis.test.LWJGLSetup;
 import org.libnoctis.theme.ThemeLoadingException;
 
