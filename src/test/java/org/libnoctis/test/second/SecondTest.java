@@ -16,6 +16,8 @@ import org.libnoctis.theme.ThemeLoadingException;
 public class SecondTest extends NFrame implements NListener
 {
     private NButton button = new NButton("Yolo !");
+    private NButton button2 = new NButton("MDR !");
+    private NButton button1 = new NButton("LOL !");
 
     public SecondTest(String title)
     {
@@ -26,10 +28,20 @@ public class SecondTest extends NFrame implements NListener
         this.setLayout(new AbsoluteLayout());
 
         button.setPosition(new AbsoluteLayoutProperty(75, 75));
-        button.setWidth(500);
+        button.setWidth(450);
         button.setHeight(50);
-
         this.add(button);
+
+        button1.setPosition(new AbsoluteLayoutProperty(75, 150));
+        button1.setWidth(550);
+        button1.setHeight(150);
+        this.add(button1);
+
+        button2.setPosition(new AbsoluteLayoutProperty(75, 500));
+        button2.setWidth(650);
+        button2.setHeight(50);
+        this.add(button2);
+
         this.registerListener(this);
     }
 
