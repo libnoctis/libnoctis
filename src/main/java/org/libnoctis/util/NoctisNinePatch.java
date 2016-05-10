@@ -52,7 +52,7 @@ public class NoctisNinePatch extends NinePatch
     /**
      * The dimensions of the last generated image
      */
-    private Vector2i lastGeneratedDimensions;
+    private Vector2i lastGeneratedDimensions = new Vector2i(-1, -1);
 
     /**
      * The Noctis Nine Patch

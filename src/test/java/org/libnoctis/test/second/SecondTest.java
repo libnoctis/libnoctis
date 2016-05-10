@@ -58,7 +58,7 @@ public class SecondTest extends NFrame implements NListener
         SecondTest test = new SecondTest("Second test");
         try
         {
-            test.loadTheme(new File("/home/victor/Ylinor/test/ylinor.zip"));
+            test.loadTheme(new File("/home/litarvan/Documents/Ylinor/Design/noctis/ylinor.zip"));
         }
         catch (ThemeLoadingException e)
         {
