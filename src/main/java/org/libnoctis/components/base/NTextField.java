@@ -18,7 +18,6 @@
  */
 package org.libnoctis.components.base;
 
-import java.awt.Font;
 import java.awt.Rectangle;
 
 import org.jetbrains.annotations.Nullable;
@@ -30,12 +29,9 @@ import org.libnoctis.input.keyboard.Key;
 import org.libnoctis.input.keyboard.KeyPressedEvent;
 import org.libnoctis.input.keyboard.KeyReleasedEvent;
 import org.libnoctis.input.mouse.MouseClickedEvent;
-import org.libnoctis.ninepatch.NinePatch;
-import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
-import org.libnoctis.render.gl.FontCache;
-import org.libnoctis.render.gl.GlFont;
 import org.libnoctis.render.gl.GlTexture;
+import org.libnoctis.util.NoctisNinePatch;
 import org.libnoctis.util.Vector2i;
 
 /**
@@ -119,13 +115,13 @@ public class NTextField extends NComponent implements NListener
         String backgroundFocused = theme().prop(TEXTFIELD_TEXTURE_HOVER);
 
         if (background.endsWith(".9.png"))
-            this.backgroundPatch = NinePatch.create(theme().requireImage(background));
+            this.backgroundPatch = new NoctisNinePatch(theme().requireImage(background));
         else
             this.background = theme().requireTexture(background);
 
         if (backgroundFocused != null)
             if (backgroundFocused.endsWith(".9.png"))
-                this.focusBackgroundPatch = NinePatch.create(theme().requireImage(backgroundFocused));
+                this.focusBackgroundPatch = new NoctisNinePatch(theme().requireImage(backgroundFocused));
             else
                 this.focusBackground = theme().requireTexture(backgroundFocused);
 
@@ -186,9 +182,9 @@ public class NTextField extends NComponent implements NListener
         GlTexture texture;
 
         if (focus && (focusBackground != null || focusBackgroundPatch != null))
-            texture = focusBackground == null ? focusBackgroundPatch.generateFor(this.getWidth(), this.getHeight()) : focusBackground;
+            texture = focusBackground == null ? focusBackgroundPatch.generateTextureFor(this.getWidth(), this.getHeight()) : focusBackground;
         else
-            texture = background == null ? backgroundPatch.generateFor(this.getWidth(), this.getHeight()) : background;
+            texture = background == null ? backgroundPatch.generateTextureFor(this.getWidth(), this.getHeight()) : background;
 
         drawer.drawTexture(getX(), getY(), this.getWidth(), this.getHeight(), texture);
 

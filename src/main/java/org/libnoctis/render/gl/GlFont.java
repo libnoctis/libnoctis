@@ -19,6 +19,7 @@
 package org.libnoctis.render.gl;
 
 
+import com.android.ninepatch.GraphicsUtilities;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -31,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.libnoctis.ninepatch.CompatibleImageMaker;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.util.Pair;
 import org.libnoctis.util.Vector2i;
@@ -141,7 +141,7 @@ public class GlFont
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         FontMetrics fontMetrics = g2d.getFontMetrics(font);
 
-        BufferedImage imgTemp = CompatibleImageMaker.translucent(textureWidth, textureHeight);
+        BufferedImage imgTemp = GraphicsUtilities.createTranslucentCompatibleImage(textureWidth, textureHeight);
         Graphics2D graphics = imgTemp.createGraphics();
         TextureRegion.Builder iconBuilder = new TextureRegion.Builder(textureWidth, textureHeight);
 
@@ -228,7 +228,7 @@ public class GlFont
         int boundsWidth = (int) (bounds.getWidth());
         int boundsHeight = (int) (bounds.getHeight());
 
-        BufferedImage charImage = CompatibleImageMaker.translucent(boundsWidth * 4, baseCharHeight);
+        BufferedImage charImage = GraphicsUtilities.createTranslucentCompatibleImage(boundsWidth * 4, baseCharHeight);
 
         Graphics2D charGraphics = charImage.createGraphics();
 
@@ -326,7 +326,7 @@ public class GlFont
 
         if (x1 == x2 || y1 == y2)
         {
-            BufferedImage little = CompatibleImageMaker.translucent((int) defaultBounds.getWidth(), (int) defaultBounds.getHeight());
+            BufferedImage little = GraphicsUtilities.createTranslucentCompatibleImage((int) defaultBounds.getWidth(), (int) defaultBounds.getHeight());
 
             return little;
         }
@@ -365,7 +365,7 @@ public class GlFont
             x2 += 1;
             y2 += 1;
 
-            BufferedImage little = CompatibleImageMaker.translucent(x2 - x1, y2 - y1);
+            BufferedImage little = GraphicsUtilities.createTranslucentCompatibleImage(x2 - x1, y2 - y1);
 
             Graphics2D littleGraphics = little.createGraphics();
 

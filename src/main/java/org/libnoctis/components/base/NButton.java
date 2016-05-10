@@ -26,18 +26,18 @@ import org.libnoctis.input.NoctisEvent;
 import org.libnoctis.input.mouse.MouseMoveEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
 import org.libnoctis.input.mouse.MouseReleasedEvent;
-import org.libnoctis.ninepatch.NinePatch;
-import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
+import org.libnoctis.util.NoctisNinePatch;
 
 
 /**
  * The Noctis Button
+ *
  * <p>
- * A button, can be clicked. Click click click.
- * Click click click click click click click click click.
- * Click click. Click.
+ *     A button, can be clicked. Click click click.
+ *     Click click click click click click click click click.
+ *     Click click. Click.
  * </p>
  *
  * @author Litarvan
@@ -148,11 +148,11 @@ public class NButton extends NComponent implements NListener
 
         if (textureAreNinePatches)
         {
-            this.texturePatch = NinePatch.create(theme().requireImage(texture));
-            this.hoverTexturePatch = NinePatch.create(theme().requireImage(textureHover));
+            this.texturePatch = new NoctisNinePatch(theme().requireImage(texture));
+            this.hoverTexturePatch = new NoctisNinePatch(theme().requireImage(textureHover));
 
             if (textureDisabled != null)
-                this.disabledTexturePatch = NinePatch.create(theme().requireImage(textureDisabled));
+                this.disabledTexturePatch = new NoctisNinePatch(theme().requireImage(textureDisabled));
         }
         else
         {
@@ -355,7 +355,7 @@ public class NButton extends NComponent implements NListener
 
         if (textureAreNinePatches)
         {
-            toDraw = disabled ? disabledTexturePatch.generateFor(this.getWidth(), this.getHeight()) : (hover ? hoverTexturePatch.generateFor(this.getWidth(), this.getHeight()) : texturePatch.generateFor(this.getWidth(), this.getHeight()));
+            toDraw = disabled ? disabledTexturePatch.generateTextureFor(this.getWidth(), this.getHeight()) : (hover ? hoverTexturePatch.generateTextureFor(this.getWidth(), this.getHeight()) : texturePatch.generateTextureFor(this.getWidth(), this.getHeight()));
         }
         else
             toDraw = disabled ? disabledTexture : (hover ? hoverTexture : texture);
