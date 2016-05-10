@@ -95,8 +95,8 @@ public abstract class Drawer
      * Draws the given string to the screen, centered at the given location.
      * 
      * @param str The string to be rendered.
-     * @param x The X coordinate of the center.
-     * @param y The Y coordinate of the center.
+     * @param centerX The X coordinate of the center.
+     * @param centerY The Y coordinate of the center.
      */
     public void drawCenteredString(String str, int centerX, int centerY)
     {
