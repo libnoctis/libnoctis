@@ -3,15 +3,15 @@
  *
  * This file is part of Libnoctis.
  *
- * Libnoctis is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Libnoctis is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Libnoctis is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * Libnoctis is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
@@ -28,6 +28,7 @@ import java.util.Iterator;
 
 import org.libnoctis.components.NFrame;
 import org.lwjgl.opengl.Display;
+
 
 /**
  * A frame render Thread.
@@ -87,14 +88,14 @@ public class NoctisFrameThread extends Thread
 
             // - Listen to user input
             frame.input();
-            
+
             // - Render pass
             {
                 frame.getDrawer().preRender();
 
                 // Render frame and its children
                 frame.render();
-                
+
                 frame.getDrawer().postRender();
             }
 

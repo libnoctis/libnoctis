@@ -3,21 +3,22 @@
  *
  * This file is part of Libnoctis.
  *
- * Libnoctis is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Libnoctis is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Libnoctis is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * Libnoctis is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.libnoctis.components.base;
 
+import java.awt.Font;
 
 import org.jetbrains.annotations.Nullable;
 import org.libnoctis.components.NComponent;
@@ -36,9 +37,8 @@ import org.libnoctis.util.NoctisNinePatch;
  * The Noctis Button
  *
  * <p>
- *     A button, can be clicked. Click click click.
- *     Click click click click click click click click click.
- *     Click click. Click.
+ * A button, can be clicked. Click click click. Click click click click click
+ * click click click click. Click click. Click.
  * </p>
  *
  * @author Litarvan
@@ -122,6 +122,8 @@ public class NButton extends NComponent implements NListener
      */
     private boolean textureAreNinePatches;
 
+    GlTexture toDraw;
+
     /**
      * The Noctis Button
      *
@@ -130,7 +132,28 @@ public class NButton extends NComponent implements NListener
     public NButton(String text)
     {
         this.text = text;
-        this.registerListener(this);
+        this.registerListener(new ButtonMouseListener());
+    }
+
+    class ButtonMouseListener implements NListener
+    {
+        @NoctisEvent
+        private void move(MouseMoveEvent event)
+        {
+            hover = event.getPos().getX() > getX() && event.getPos().getX() < getX() + getWidth() && event.getPos().getY() > getY() && event.getPos().getY() < getY() + getHeight();
+        }
+
+        @NoctisEvent
+        private void click(MousePressedEvent event)
+        {
+            clicked = hover;
+        }
+
+        @NoctisEvent
+        private void release(MouseReleasedEvent event)
+        {
+            clicked = false;
+        }
     }
 
     @Override
@@ -169,6 +192,11 @@ public class NButton extends NComponent implements NListener
         {
             this.setWidth(Integer.parseInt(theme().requireProp("component.button.size.width")));
             this.setHeight(Integer.parseInt(theme().requireProp("component.button.size.height")));
+        }
+
+        if (textureAreNinePatches)
+        {
+            toDraw = disabled ? disabledTexturePatch.generateTextureFor(this.getWidth(), this.getHeight()) : (hover ? hoverTexturePatch.generateTextureFor(this.getWidth(), this.getHeight()) : texturePatch.generateTextureFor(this.getWidth(), this.getHeight()));
         }
     }
 
@@ -230,8 +258,7 @@ public class NButton extends NComponent implements NListener
 
     /**
      * @return Return the button texture (can be null if the texture is a nine
-     *         patch,
-     *         if it is, use #getTexturePatch)
+     *         patch, if it is, use #getTexturePatch)
      */
     @Nullable
     public GlTexture getTexture()
@@ -241,9 +268,8 @@ public class NButton extends NComponent implements NListener
 
     /**
      * @return The texture when the mouse is hover the button. (can be null if
-     *         the
-     *         the theme didn't give one, or if it is a nine patch (if it is,
-     *         use #getHoverTexturePatch).
+     *         the the theme didn't give one, or if it is a nine patch (if it
+     *         is, use #getHoverTexturePatch).
      */
     @Nullable
     public GlTexture getHoverTexture()
@@ -285,10 +311,8 @@ public class NButton extends NComponent implements NListener
 
     /**
      * @return The button texture when it is disabled, as a nine patch (can be
-     *         null
-     *         if the theme didn't give one, or if it is not a nine patch (if it
-     *         is,
-     *         use #getDisabledTexture).
+     *         null if the theme didn't give one, or if it is not a nine patch
+     *         (if it is, use #getDisabledTexture).
      */
     @Nullable
     public NoctisNinePatch getDisabledTexturePatch()
@@ -324,23 +348,7 @@ public class NButton extends NComponent implements NListener
         repaint();
     }
 
-    @NoctisEvent
-    private void move(MouseMoveEvent event)
-    {
-        hover = event.getPos().getX() > getX() && event.getPos().getX() < getX() + getWidth() && event.getPos().getY() > getY() && event.getPos().getY() < getY() + getHeight();
-    }
-
-    @NoctisEvent
-    private void click(MousePressedEvent event)
-    {
-        clicked = hover;
-    }
-
-    @NoctisEvent
-    private void release(MouseReleasedEvent event)
-    {
-        clicked = false;
-    }
+    private Font font = new java.awt.Font("Arial", 0, 36);
 
     @Override
     protected void paintComponent(Drawer drawer)
@@ -352,17 +360,9 @@ public class NButton extends NComponent implements NListener
             throw new RuntimeException("Can't set the button disabled because there isn't any disabled texture");
         }
 
-        GlTexture toDraw;
-
-        if (textureAreNinePatches)
-        {
-            toDraw = disabled ? disabledTexturePatch.generateTextureFor(this.getWidth(), this.getHeight()) : (hover ? hoverTexturePatch.generateTextureFor(this.getWidth(), this.getHeight()) : texturePatch.generateTextureFor(this.getWidth(), this.getHeight()));
-        }
-        else
-            toDraw = disabled ? disabledTexture : (hover ? hoverTexture : texture);
-
         drawer.drawTexture(getX(), getY(), this.getWidth(), this.getHeight(), toDraw);
-        drawer.setFont(FontCache.getGlFont(new java.awt.Font("Arial", 0, 36)));
+
+        drawer.setFont(FontCache.getGlFont(font));
         drawer.drawCenteredString(text, getX() + getWidth() / 2, getY() + getHeight() / 2);
     }
 }

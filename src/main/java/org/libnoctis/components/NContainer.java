@@ -22,6 +22,7 @@ package org.libnoctis.components;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.libnoctis.input.NEvent;
 import org.libnoctis.layout.NLayout;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.util.Vector2i;
@@ -187,5 +188,16 @@ public abstract class NContainer extends NComponent
     public void setLayout(NLayout layout)
     {
         this.layout = layout;
+    }
+    
+    @Override
+    public void dispatchEvent(NEvent event)
+    {
+        super.dispatchEvent(event);
+        
+        for (Iterator<NComponent> iterator = components.iterator(); iterator.hasNext();)
+        {
+            iterator.next().dispatchEvent(event);
+        }
     }
 }
