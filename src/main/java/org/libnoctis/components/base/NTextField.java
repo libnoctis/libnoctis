@@ -18,6 +18,7 @@
  */
 package org.libnoctis.components.base;
 
+import java.awt.Font;
 import java.awt.Rectangle;
 
 import org.jetbrains.annotations.Nullable;
@@ -32,6 +33,8 @@ import org.libnoctis.input.mouse.MouseClickedEvent;
 import org.libnoctis.ninepatch.NinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
+import org.libnoctis.render.gl.FontCache;
+import org.libnoctis.render.gl.GlFont;
 import org.libnoctis.render.gl.GlTexture;
 import org.libnoctis.util.Vector2i;
 

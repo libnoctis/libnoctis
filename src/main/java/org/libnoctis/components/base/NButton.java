@@ -29,6 +29,7 @@ import org.libnoctis.input.mouse.MouseReleasedEvent;
 import org.libnoctis.ninepatch.NinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
+import org.libnoctis.render.gl.FontCache;
 import org.libnoctis.render.gl.GlTexture;
 
 
@@ -361,8 +362,7 @@ public class NButton extends NComponent implements NListener
             toDraw = disabled ? disabledTexture : (hover ? hoverTexture : texture);
 
         drawer.drawTexture(getX(), getY(), this.getWidth(), this.getHeight(), toDraw);
-
-        // TODO: Draw the text
+        drawer.setFont(FontCache.getGlFont(new java.awt.Font("Arial", 0, 36)));
         drawer.drawCenteredString(text, getX() + getWidth() / 2, getY() + getHeight() / 2);
     }
 }

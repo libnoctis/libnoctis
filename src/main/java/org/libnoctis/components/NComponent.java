@@ -43,7 +43,7 @@ import org.libnoctis.theme.NoctisTheme;
  */
 public abstract class NComponent
 {
-    public static final String COMPONENTS_SECTION = "components";
+    public static final String COMPONENTS_SECTION = "component";
     
     /**
      * This component width, in pixels.
