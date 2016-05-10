@@ -2,9 +2,10 @@ package org.libnoctis.test.second;
 
 import java.io.File;
 import java.io.IOException;
+
 import org.libnoctis.components.NFrame;
-import org.libnoctis.input.NListener;
 import org.libnoctis.components.base.NButton;
+import org.libnoctis.input.NListener;
 import org.libnoctis.input.NoctisEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
 import org.libnoctis.layout.base.AbsoluteLayout;
@@ -24,7 +25,6 @@ public class SecondTest extends NFrame implements NListener
 
         this.setWidth(750);
         this.setHeight(750);
-        this.setUndecorated(true);
         this.setLayout(new AbsoluteLayout());
 
         button.setPosition(new AbsoluteLayoutProperty(75, 75));
@@ -53,12 +53,12 @@ public class SecondTest extends NFrame implements NListener
 
     public static void main(String[] args) throws IOException
     {
-        LWJGLSetup.load(new File(System.getProperty("user.home"), ".noctis"));
+        LWJGLSetup.load(new File(System.getProperty("user.home"), ".lwjgl"));
 
         SecondTest test = new SecondTest("Second test");
         try
         {
-            test.loadTheme(new File("/home/litarvan/Documents/Ylinor/Design/noctis/ylinor.zip"));
+            test.loadTheme(new File("/home/victor/Ylinor/test/ylinor.zip"));
         }
         catch (ThemeLoadingException e)
         {
