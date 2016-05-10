@@ -37,6 +37,7 @@ import java.awt.FontFormatException;
 import java.io.File;
 
 import java.io.IOException;
+import org.libnoctis.Libnoctis;
 import org.libnoctis.input.keyboard.Key;
 import org.libnoctis.input.keyboard.KeyPressedEvent;
 import org.libnoctis.input.keyboard.KeyReleasedEvent;
@@ -130,37 +131,54 @@ public class NFrame extends NContainer
             @Override
             public void run()
             {
-                try
-                {
-                    displayUpdateTitle();
-                    displayUpdateDisplayMode();
-                    displayCreate();
-                    mouseCreate();
-                    keyboardCreate();
-                    resize();
-
-                    try
-                    {
-                        NFrame.this.drawer.setFont(FontCache.getGlFont(Font.createFont(Font.TRUETYPE_FONT, theme().require(theme().requireProp("font.default")))));
-                    }
-                    catch (FontFormatException e)
-                    {
-                        throw new ThemeRequiredException("Default font should be a true type font", e);
-                    }
-                    catch (IOException e)
-                    {
-                        throw new ThemeRequiredException("Can't read the default font !", e);
-                    }
-
-                    isVisible = true;
-                }
-                catch (LWJGLException e)
-                {
-                    isVisible = false;
-                    getFrameThread().setRunning(false);
-                }
+                create();
             }
         });
+    }
+
+    private void create()
+    {
+        try
+        {
+            System.out.println("\n[Libnoctis] Creating the window\r");
+
+            displayUpdateTitle();
+            displayUpdateDisplayMode();
+            displayCreate();
+
+            System.out.println("[Libnoctis] Initializing I/O\r");
+
+            mouseCreate();
+            keyboardCreate();
+
+            System.out.println("[Libnoctis] Finalizing\r");
+
+            resize();
+
+            try
+            {
+                NFrame.this.drawer.setFont(FontCache.getGlFont(Font.createFont(Font.TRUETYPE_FONT, theme().require(theme().requireProp("font.default")))));
+            }
+            catch (FontFormatException e)
+            {
+                throw new ThemeRequiredException("Default font should be a true type font", e);
+            }
+            catch (IOException e)
+            {
+                throw new ThemeRequiredException("Can't read the default font !", e);
+            }
+
+            System.out.println("\n[Libnoctis] Libnoctis " + Libnoctis.VERSION);
+            System.out.println("[Libnoctis] by Victor 'Wytrem' and Adrien 'Litarvan' Navratil");
+            System.out.println("[Libnoctis] (c) 2016 under the terms of the GNU Lesser General Public License version 3.0\n");
+
+            isVisible = true;
+        }
+        catch (LWJGLException e)
+        {
+            isVisible = false;
+            getFrameThread().setRunning(false);
+        }
     }
 
     @Override
