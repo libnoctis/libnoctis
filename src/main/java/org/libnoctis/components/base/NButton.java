@@ -348,8 +348,6 @@ public class NButton extends NComponent implements NListener
         repaint();
     }
 
-    private Font font = new java.awt.Font("Arial", 0, 36);
-
     @Override
     protected void paintComponent(Drawer drawer)
     {
@@ -361,8 +359,6 @@ public class NButton extends NComponent implements NListener
         }
 
         drawer.drawTexture(getX(), getY(), this.getWidth(), this.getHeight(), toDraw);
-
-        drawer.setFont(FontCache.getGlFont(font));
         drawer.drawCenteredString(text, getX() + getWidth() / 2, getY() + getHeight() / 2);
     }
 }
