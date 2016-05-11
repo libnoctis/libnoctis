@@ -18,8 +18,6 @@
  */
 package org.libnoctis.components.base;
 
-import java.awt.Font;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.libnoctis.components.NComponent;
@@ -29,7 +27,6 @@ import org.libnoctis.input.mouse.MouseMoveEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
 import org.libnoctis.input.mouse.MouseReleasedEvent;
 import org.libnoctis.render.Drawer;
-import org.libnoctis.render.gl.FontCache;
 import org.libnoctis.render.gl.GlTexture;
 import org.libnoctis.util.NoctisNinePatch;
 import org.libnoctis.util.NoctisNinePatchCache;
@@ -134,10 +131,10 @@ public class NButton extends NComponent implements NListener
     {
         this.text = text;
 
-        this.registerListener(new ButtonMouseListener());
+        this.registerListener(new NButtonMouseListener());
     }
 
-    class ButtonMouseListener implements NListener
+    class NButtonMouseListener implements NListener
     {
         @NoctisEvent
         private void move(MouseMoveEvent event)
