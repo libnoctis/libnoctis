@@ -143,7 +143,7 @@ public class NButton extends NComponent implements NListener
         }
 
         @NoctisEvent
-        private void click(MousePressedEvent event)
+        private void pressed(MousePressedEvent event)
         {
             clicked = hover;
 
@@ -152,7 +152,7 @@ public class NButton extends NComponent implements NListener
         }
 
         @NoctisEvent
-        private void release(MouseReleasedEvent event)
+        private void released(MouseReleasedEvent event)
         {
             if (clicked)
                 System.out.println("Plus de click :(");
