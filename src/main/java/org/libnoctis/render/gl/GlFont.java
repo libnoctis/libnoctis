@@ -470,7 +470,7 @@ public class GlFont
         Vector2i pos = new Vector2i(0, 0);
         int width = 0;
         String[] lines = str.split("\n");
-        int height = lines.length * fontSize;
+        int height = lines.length * baseCharHeight;
 
         for (int i = 0; i < lines.length; i++)
         {
@@ -552,7 +552,7 @@ public class GlFont
         else if (ch == '\n')
         {
             vector.setX(origX);
-            vector.add(0, fontSize);
+            vector.add(0, baseCharHeight);
         }
         else if (glyphs.containsKey(ch))
         {
@@ -622,5 +622,10 @@ public class GlFont
     static GlFont fromAwt(Font font, List<Character> chars)
     {
         return new GlFont(chars, font);
+    }
+    
+    public void release()
+    {
+        fontTexture.release();
     }
 }

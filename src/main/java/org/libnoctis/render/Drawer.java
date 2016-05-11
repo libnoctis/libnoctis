@@ -100,7 +100,7 @@ public abstract class Drawer
      */
     public void drawCenteredString(String str, int centerX, int centerY)
     {
-        drawString(str, centerX - getStringWidth(str) / 2, centerY - getFont().getFontSize() / 2);
+        drawString(str, centerX - getStringWidth(str) / 2, centerY - getFont().getFontSize() / 2 - 3);
     }
 
     /**
