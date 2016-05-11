@@ -20,6 +20,7 @@ package org.libnoctis.components.base;
 
 import java.awt.Rectangle;
 
+import java.awt.geom.Rectangle2D;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.libnoctis.components.NComponent;
@@ -148,8 +149,17 @@ public class NTextField extends NComponent
 
             if (event.getKey().isCharacter())
             {
-                setText(getText().substring(0, cursorPos) + ((currentShift != null || capsLock) && event.getKey().hasUpperCharacter() ? event.getKey().getUpperCharacter() : event.getKey().getCharacter()) + getText().substring(cursorPos, getText().length()));
-                cursorPos++;
+                String newText = getText().substring(0, cursorPos) +
+                                 ((currentShift != null || capsLock) && event.getKey().hasUpperCharacter() ? event.getKey().getUpperCharacter() : event.getKey().getCharacter()) +
+                                 getText().substring(cursorPos, getText().length());
+
+                Rectangle2D bounds = getDrawer().getFont().getStringBounds(newText, 0, 0);
+                if (bounds.getWidth() > getWidth() - getTextPadding().getX() * 2 ||
+                    bounds.getHeight() > getHeight() - getTextPadding().getY() * 2)
+                    return;
+
+                setText(newText);
+                setCursorPos(getCursorPos() + 1);
             }
             else if (event.getKey() == Key.KEY_RIGHT)
                 setCursorPos(getCursorPos() + 1);
@@ -158,7 +168,7 @@ public class NTextField extends NComponent
             else if (event.getKey() == Key.KEY_BACK && cursorPos != 0)
             {
                 setText(getText().substring(0, cursorPos - 1) + getText().substring(cursorPos, getText().length()));
-                cursorPos++;
+                setCursorPos(getCursorPos() - 1);
             }
             else if (event.getKey() == Key.KEY_LSHIFT && event.getKey() == Key.KEY_RSHIFT)
                 currentShift = event.getKey();
