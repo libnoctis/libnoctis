@@ -18,6 +18,7 @@
  */
 package org.libnoctis.layout;
 
+import java.util.List;
 import org.libnoctis.components.NComponent;
 import org.libnoctis.components.NContainer;
 import org.libnoctis.util.Vector2i;
@@ -65,10 +66,9 @@ public abstract class NLayout
     }
 
     /**
-     * Generate the position and the size of the given elements
+     * Update the position and the size of the given elements
      *
-     * @param components The components to generate the position
-     * @return The position and the size of all the components
+     * @param components The components to update the position and the size
      */
-    public abstract Vector2i[] getElementsPosition(NComponent[] components);
+    public abstract void updateElements(List<NComponent> components);
 }

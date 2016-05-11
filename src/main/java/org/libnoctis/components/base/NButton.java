@@ -131,10 +131,10 @@ public class NButton extends NComponent implements NListener
     {
         this.text = text;
 
-        this.registerListener(new ButtonMouseListener());
+        this.registerListener(new NButtonMouseListener());
     }
 
-    class ButtonMouseListener implements NListener
+    class NButtonMouseListener implements NListener
     {
         @NoctisEvent
         private void move(MouseMoveEvent event)

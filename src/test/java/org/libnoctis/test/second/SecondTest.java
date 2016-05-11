@@ -5,11 +5,10 @@ import java.io.IOException;
 
 import org.libnoctis.components.NFrame;
 import org.libnoctis.components.base.NButton;
+import org.libnoctis.components.base.NTextField;
 import org.libnoctis.input.NListener;
 import org.libnoctis.input.NoctisEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
-import org.libnoctis.layout.base.AbsoluteLayout;
-import org.libnoctis.layout.base.AbsoluteLayoutProperty;
 import org.libnoctis.test.LWJGLSetup;
 import org.libnoctis.theme.ThemeLoadingException;
 
@@ -19,25 +18,31 @@ public class SecondTest extends NFrame implements NListener
     private NButton button2 = new NButton("MDR !");
     private NButton button1 = new NButton("LOL !");
 
+    private NTextField field = new NTextField();
+
     public SecondTest(String title)
     {
         super(title);
 
         this.setWidth(750);
         this.setHeight(750);
-        this.setLayout(new AbsoluteLayout());
 
-        button.setPosition(new AbsoluteLayoutProperty(75, 75));
+        button.setPosition(75, 50);
         button.setWidth(450);
         button.setHeight(50);
         this.add(button);
 
-        button1.setPosition(new AbsoluteLayoutProperty(75, 150));
+        button1.setPosition(75, 150);
         button1.setWidth(550);
         button1.setHeight(150);
         this.add(button1);
 
-        button2.setPosition(new AbsoluteLayoutProperty(75, 500));
+        field.setPosition(75, 350);
+        field.setWidth(500);
+        field.setHeight(50);
+        this.add(field);
+
+        button2.setPosition(75, 500);
         button2.setWidth(650);
         button2.setHeight(50);
         this.add(button2);

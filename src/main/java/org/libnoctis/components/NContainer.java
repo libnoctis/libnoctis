@@ -47,11 +47,6 @@ public abstract class NContainer extends NComponent
     private ArrayList<NComponent> components = new ArrayList<NComponent>();
 
     /**
-     * The components positions
-     */
-    private Vector2i[] positions = new Vector2i[0];
-
-    /**
      * The container layout
      */
     private NLayout layout;
@@ -83,19 +78,11 @@ public abstract class NContainer extends NComponent
      */
     public NContainer add(NComponent component) throws RuntimeException
     {
-        if (layout == null)
-            throw new RuntimeException("Layout not set ! Use setLayout !");
-
         this.components.add(component);
-
         component.onAdded(this);
-        this.positions = layout.getElementsPosition(this.components.toArray(new NComponent[this.components.size()]));
 
-        // FIXME : this cannot work, it applies the layout only on the latest added component.
-        Vector2i pos = this.positions[this.components.size() - 1];
-        component.setX(pos.getX());
-        component.setY(pos.getY());
-        component.onAdded(this);
+        if (layout != null)
+            layout.updateElements(this.components);
 
         repaint();
 
@@ -125,14 +112,6 @@ public abstract class NContainer extends NComponent
         repaint();
 
         return component;
-    }
-
-    /**
-     * @return The components position, in order.
-     */
-    public Vector2i[] getPositions()
-    {
-        return positions;
     }
 
     /**

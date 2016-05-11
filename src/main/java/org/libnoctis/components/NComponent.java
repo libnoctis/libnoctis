@@ -27,6 +27,7 @@ import org.libnoctis.input.NListener;
 import org.libnoctis.layout.LayoutProperty;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.theme.NoctisTheme;
+import org.libnoctis.util.Vector2i;
 
 /**
  * A Noctis Component
@@ -66,9 +67,9 @@ public abstract class NComponent
     private int y;
 
     /**
-     * The component position, depending of the current layout.
+     * The component layout property, depending of the current layout.
      */
-    private LayoutProperty position;
+    private LayoutProperty property;
 
     /**
      * The parent container (that contains this component)
@@ -366,23 +367,70 @@ public abstract class NComponent
     }
 
     /**
-     * @return The component position, corresponding to the current layout
+     * @return The component layout property, corresponding to the current layout
      */
-    public LayoutProperty getPosition()
+    public LayoutProperty getProperty()
     {
-        return position;
+        return property;
+    }
+
+    /**
+     * Set the component layout property (object to make the current layout generate
+     * the property and the size of the component)
+     *
+     * @param property The property, depending to the current layout
+     */
+    public void setLayoutProperty(LayoutProperty property)
+    {
+        this.property = property;
+
+        repaint();
     }
 
     /**
      * Set the component position
      *
-     * @param position The position, depending to the current layout
+     * @param x The new x position of this component
+     * @param y The new y position of this component
      */
-    public void setPosition(LayoutProperty position)
+    public void setPosition(int x, int y)
     {
-        this.position = position;
+        this.setX(x);
+        this.setY(y);
+    }
 
-        repaint();
+    /**
+     * Set the component position
+     *
+     * @param position The new position of the component
+     */
+    public void setPosition(Vector2i position)
+    {
+        this.setPosition(position.getX(), position.getY());
+    }
+
+    /**
+     * Set the component size
+     *
+     * @param width The new width of the component
+     * @param height The new height of the component
+     */
+    public void setSize(int width, int height)
+    {
+        this.setWidth(width);
+        this.setHeight(height);
+    }
+
+    /**
+     * Set the component size
+     *
+     * @param width The new width of the component
+     * @param height The new height of the component
+     */
+    public void setSize(Vector2i dimensions)
+    {
+        this.setWidth(dimensions.getX());
+        this.setHeight(dimensions.getY());
     }
 
     /**

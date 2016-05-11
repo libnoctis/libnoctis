@@ -30,6 +30,7 @@ import org.libnoctis.input.keyboard.Key;
 import org.libnoctis.input.keyboard.KeyPressedEvent;
 import org.libnoctis.input.keyboard.KeyReleasedEvent;
 import org.libnoctis.input.mouse.MouseClickedEvent;
+import org.libnoctis.input.mouse.MousePressedEvent;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
 import org.libnoctis.util.NoctisNinePatch;
@@ -48,7 +49,7 @@ import org.libnoctis.util.Vector2i;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class NTextField extends NComponent implements NListener
+public class NTextField extends NComponent
 {
     public static final String TEXTFIELD_SECTION = COMPONENTS_SECTION + ".textfield";
     public static final String TEXTFIELD_TEXTURE = TEXTFIELD_SECTION + ".texture";
@@ -131,48 +132,53 @@ public class NTextField extends NComponent implements NListener
         int yPadding = Integer.parseInt(theme().requireProp("component.textfield.textpadding.y"));
 
         this.textPadding = new Vector2i(xPadding, yPadding);
+
+        this.registerListener(new NTextFieldListener());
+
+        updateNinePatches();
     }
 
-    @NoctisEvent
-    private void onKeyPressed(KeyPressedEvent event)
+    public class NTextFieldListener implements NListener
     {
-        if (!focus)
-            return;
+        @NoctisEvent
+        private void keyPress(KeyPressedEvent event)
+        {
+            if (!focus)
+                return;
 
-        if (event.getKey().isCharacter())
-            setText(getText().substring(0, cursorPos) + ((currentShift != null || capsLock) && event.getKey().hasUpperCharacter() ? event.getKey().getUpperCharacter() : event.getKey().getCharacter()) + getText().substring(cursorPos, getText().length()));
-        else if (event.getKey() == Key.KEY_RIGHT)
-            setCursorPos(getCursorPos() + 1);
-        else if (event.getKey() == Key.KEY_LEFT && cursorPos != 0)
-            setCursorPos(getCursorPos() - 1);
-        else if (event.getKey() == Key.KEY_BACK && cursorPos != 0)
-            setText(getText().substring(0, cursorPos - 1) + getText().substring(cursorPos, getText().length()));
-        else if (event.getKey() == Key.KEY_LSHIFT && event.getKey() == Key.KEY_RSHIFT)
-            currentShift = event.getKey();
-        else if (event.getKey() == Key.KEY_CAPITAL)
-            capsLock = !capsLock;
-    }
+            if (event.getKey().isCharacter())
+            {
+                setText(getText().substring(0, cursorPos) + ((currentShift != null || capsLock) && event.getKey().hasUpperCharacter() ? event.getKey().getUpperCharacter() : event.getKey().getCharacter()) + getText().substring(cursorPos, getText().length()));
+                cursorPos++;
+            }
+            else if (event.getKey() == Key.KEY_RIGHT)
+                setCursorPos(getCursorPos() + 1);
+            else if (event.getKey() == Key.KEY_LEFT && cursorPos != 0)
+                setCursorPos(getCursorPos() - 1);
+            else if (event.getKey() == Key.KEY_BACK && cursorPos != 0)
+            {
+                setText(getText().substring(0, cursorPos - 1) + getText().substring(cursorPos, getText().length()));
+                cursorPos++;
+            }
+            else if (event.getKey() == Key.KEY_LSHIFT && event.getKey() == Key.KEY_RSHIFT)
+                currentShift = event.getKey();
+            else if (event.getKey() == Key.KEY_CAPITAL)
+                capsLock = !capsLock;
+        }
 
-    @NoctisEvent
-    private void onMouseClick(MouseClickedEvent event)
-    {
-        Rectangle rectangle = new Rectangle(textPadding.getX(), textPadding.getY(), this.getWidth() - textPadding.getX(), this.getHeight() - textPadding.getY());
-        focus = rectangle.contains(event.getPos().getX(), event.getPos().getY());
-    }
+        @NoctisEvent
+        private void mousePress(MousePressedEvent event)
+        {
+            Rectangle rectangle = new Rectangle(getX() + textPadding.getX(), getY() + textPadding.getY(), getWidth() - textPadding.getX(), getHeight() - textPadding.getY());
+            focus = rectangle.contains(event.getPos().getX(), event.getPos().getY());
+        }
 
-    @NoctisEvent
-    private void onKeyReleased(KeyReleasedEvent event)
-    {
-        if (event.getKey() == currentShift)
-            currentShift = null;
-    }
-
-    @Override
-    protected void onComponentAdded(NContainer parent)
-    {
-        super.onComponentAdded(parent);
-
-        this.registerListener(this);
+        @NoctisEvent
+        private void keyRelease(KeyReleasedEvent event)
+        {
+            if (event.getKey() == currentShift)
+                currentShift = null;
+        }
     }
 
     @SuppressWarnings("unused")
@@ -195,12 +201,28 @@ public class NTextField extends NComponent implements NListener
         super.paintComponent(drawer);
 
         // Drawing background (or focused background)
-        GlTexture texture = (focus && (focusBackground != null || focusBackgroundPatch != null)) ? focusBackground : background;
+        GlTexture texture = focus && focusBackground != null ? focusBackground : background;
 
         drawer.drawTexture(getX(), getY(), this.getWidth(), this.getHeight(), texture);
 
         // Drawing the text
-        drawer.drawString(this.getText() + /* The caret */ (focus ? "_" : ""), this.textPadding.getX(), this.textPadding.getY());
+        drawer.drawString(this.getText() + /* The caret */ (focus ? "_" : ""), getX() + this.textPadding.getX(), getY() + this.textPadding.getY());
+    }
+
+    @Override
+    public void setWidth(int width)
+    {
+        super.setWidth(width);
+
+        updateNinePatches();
+    }
+
+    @Override
+    public void setHeight(int height)
+    {
+        super.setHeight(height);
+
+        updateNinePatches();
     }
 
     /**
