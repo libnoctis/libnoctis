@@ -157,7 +157,7 @@ public class NFrame extends NContainer
 
             try
             {
-                NFrame.this.drawer.setFont(FontCache.getGlFont(Font.createFont(Font.TRUETYPE_FONT, theme().require(theme().requireProp("font.default")))));
+                NFrame.this.drawer.setFont(FontCache.getGlFont(Font.createFont(Font.TRUETYPE_FONT, theme().require(theme().requireProp("font.default"))).deriveFont(15F)));
             }
             catch (FontFormatException e)
             {

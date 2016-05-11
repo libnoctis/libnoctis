@@ -291,7 +291,8 @@ public class NoctisTheme
      *
      * @return The read value.
      */
-    public String requireProp(String key)
+    @NotNull
+    public String requireProp(@NotNull String key)
     {
         String prop = prop(key);
 
