@@ -25,7 +25,6 @@ import java.util.Iterator;
 import org.libnoctis.input.NEvent;
 import org.libnoctis.layout.NLayout;
 import org.libnoctis.render.Drawer;
-import org.libnoctis.util.Vector2i;
 
 
 /**

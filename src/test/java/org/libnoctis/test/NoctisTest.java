@@ -6,8 +6,6 @@ import java.io.IOException;
 import org.libnoctis.components.NFrame;
 import org.libnoctis.components.base.NButton;
 import org.libnoctis.input.NListener;
-import org.libnoctis.layout.base.AbsoluteLayout;
-import org.libnoctis.layout.base.AbsoluteLayoutProperty;
 import org.libnoctis.theme.ThemeLoadingException;
 import org.lwjgl.LWJGLUtil;
 
@@ -25,19 +23,15 @@ public class NoctisTest extends NFrame implements NListener
 
         this.setWidth(750);
         this.setHeight(750);
-        this.setLayout(new AbsoluteLayout());
 
-        button.setPosition(new AbsoluteLayoutProperty(75, 75));
         button.setWidth(450);
         button.setHeight(50);
         this.add(button);
 
-        button1.setPosition(new AbsoluteLayoutProperty(75, 150));
         button1.setWidth(550);
         button1.setHeight(150);
         this.add(button1);
 
-        button2.setPosition(new AbsoluteLayoutProperty(75, 500));
         button2.setWidth(650);
         button2.setHeight(50);
         this.add(button2);

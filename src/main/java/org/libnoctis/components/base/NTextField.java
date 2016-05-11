@@ -23,13 +23,11 @@ import java.awt.Rectangle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.libnoctis.components.NComponent;
-import org.libnoctis.components.NContainer;
 import org.libnoctis.input.NListener;
 import org.libnoctis.input.NoctisEvent;
 import org.libnoctis.input.keyboard.Key;
 import org.libnoctis.input.keyboard.KeyPressedEvent;
 import org.libnoctis.input.keyboard.KeyReleasedEvent;
-import org.libnoctis.input.mouse.MouseClickedEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
@@ -181,7 +179,6 @@ public class NTextField extends NComponent
         }
     }
 
-    @SuppressWarnings("unused")
     private void updateNinePatches()
     {
         if (backgroundPatch == null)

@@ -19,9 +19,9 @@
 package org.libnoctis.layout;
 
 import java.util.List;
+
 import org.libnoctis.components.NComponent;
 import org.libnoctis.components.NContainer;
-import org.libnoctis.util.Vector2i;
 
 /**
  * The Noctis Layout
