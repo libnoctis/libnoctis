@@ -43,6 +43,7 @@ public final class Libnoctis
      */
     public static final String VERSION = "1.0.0";
 
+    @SuppressWarnings("unused")
     private static void deleteAndResize(File[] files, int diviser) throws IOException
     {
         for (File file : files)
@@ -66,6 +67,7 @@ public final class Libnoctis
         }
     }
 
+    @SuppressWarnings("unused")
     private static void multiplyNinePatch(File[] files, File ninePatch) throws IOException
     {
         for (File file : files)

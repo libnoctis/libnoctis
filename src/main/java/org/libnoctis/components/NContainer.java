@@ -21,11 +21,11 @@ package org.libnoctis.components;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.libnoctis.input.NEvent;
 import org.libnoctis.layout.NLayout;
 import org.libnoctis.render.Drawer;
-import org.libnoctis.util.Vector2i;
 
 
 /**
@@ -50,6 +50,11 @@ public abstract class NContainer extends NComponent
      * The container layout
      */
     private NLayout layout;
+    
+    public List<NComponent> getChildren()
+    {
+        return components;
+    }
 
     /**
      * @return The number of component in this container
@@ -82,7 +87,7 @@ public abstract class NContainer extends NComponent
         component.onAdded(this);
 
         if (layout != null)
-            layout.updateElements(this.components);
+            layout.layoutContainer(this);
 
         repaint();
 

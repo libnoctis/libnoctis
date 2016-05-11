@@ -24,7 +24,7 @@ import java.util.Map;
 import org.libnoctis.input.EventManager;
 import org.libnoctis.input.NEvent;
 import org.libnoctis.input.NListener;
-import org.libnoctis.layout.LayoutProperty;
+import org.libnoctis.layout.LayoutConstraints;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.theme.NoctisTheme;
 import org.libnoctis.util.Vector2i;
@@ -69,7 +69,7 @@ public abstract class NComponent
     /**
      * The component layout property, depending of the current layout.
      */
-    private LayoutProperty property;
+    private LayoutConstraints property;
 
     /**
      * The parent container (that contains this component)
@@ -97,6 +97,8 @@ public abstract class NComponent
     private NFrame frame;
 
     private boolean isHovered;
+    
+    private Vector2i preferredSize;
 
     public NComponent()
     {
@@ -369,7 +371,7 @@ public abstract class NComponent
     /**
      * @return The component layout property, corresponding to the current layout
      */
-    public LayoutProperty getProperty()
+    public LayoutConstraints getLayoutConstraints()
     {
         return property;
     }
@@ -380,7 +382,7 @@ public abstract class NComponent
      *
      * @param property The property, depending to the current layout
      */
-    public void setLayoutProperty(LayoutProperty property)
+    public void setLayoutProperty(LayoutConstraints property)
     {
         this.property = property;
 
@@ -470,5 +472,16 @@ public abstract class NComponent
     public void dispatchEvent(NEvent event)
     {
         manager.callEvent(event);
+    }
+    
+    public void setPreferredSize(Vector2i preferredSize)
+    {
+        this.preferredSize = preferredSize;
+        parent.invalidate();
+    }
+
+    public Vector2i getPreferredSize()
+    {
+        return preferredSize;
     }
 }
