@@ -44,6 +44,6 @@ public class IllegalLayoutPropertyException extends RuntimeException
      */
     public IllegalLayoutPropertyException(NComponent component, String shouldBe)
     {
-        super("A component has as position a " + (component.getProperty() == null ? "null" : component.getProperty().getClass().getSimpleName()) + " but should have a " + shouldBe);
+        super("A component has as position a " + (component.getLayoutConstraints() == null ? "null" : component.getLayoutConstraints().getClass().getSimpleName()) + " but should have a " + shouldBe);
     }
 }

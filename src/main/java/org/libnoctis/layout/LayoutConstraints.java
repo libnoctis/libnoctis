@@ -30,6 +30,6 @@ package org.libnoctis.layout;
  * @version 1.0.0
  * @since 1.0.0
  */
-public abstract class LayoutProperty
+public abstract class LayoutConstraints
 {
 }
