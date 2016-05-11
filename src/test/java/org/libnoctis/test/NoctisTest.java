@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import org.libnoctis.components.NFrame;
 import org.libnoctis.components.base.NTextField;
-import org.libnoctis.layout.base.YoloLayout;
 import org.libnoctis.theme.ThemeLoadingException;
 import org.lwjgl.LWJGLUtil;
 
@@ -29,7 +28,6 @@ public class NoctisTest
         NFrame frame = new NFrame("Salut");
         
         frame.loadTheme(new File("/home/victor/Ylinor/test/ylinor.zip"));
-        frame.setLayout(new YoloLayout());
 
         frame.add(new NTextField());
 
