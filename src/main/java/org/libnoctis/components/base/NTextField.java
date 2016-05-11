@@ -146,7 +146,6 @@ public class NTextField extends NComponent
             if (!focus)
                 return;
 
-            System.out.println("Penis !");
             if (event.getKey().isCharacter())
             {
                 setText(getText().substring(0, cursorPos) + ((currentShift != null || capsLock) && event.getKey().hasUpperCharacter() ? event.getKey().getUpperCharacter() : event.getKey().getCharacter()) + getText().substring(cursorPos, getText().length()));
