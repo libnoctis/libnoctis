@@ -223,6 +223,7 @@ public class NButton extends NComponent implements NListener
             super.setWidth(width);
 
         updateNinePatches();
+        invalidate();
     }
 
     @Override
@@ -232,6 +233,7 @@ public class NButton extends NComponent implements NListener
             super.setHeight(height);
 
         updateNinePatches();
+        invalidate();
     }
 
     /**
