@@ -16,11 +16,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.libnoctis.util;
+package org.libnoctis.ninepatch;
 
 import java.util.HashMap;
 import org.libnoctis.theme.NoctisTheme;
-import org.libnoctis.util.NoctisNinePatch;
 
 /**
  * The Noctis Nine Patch Cache

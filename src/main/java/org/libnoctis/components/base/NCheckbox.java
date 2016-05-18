@@ -21,10 +21,10 @@ package org.libnoctis.components.base;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.libnoctis.components.NComponent;
+import org.libnoctis.ninepatch.NoctisNinePatch;
+import org.libnoctis.ninepatch.NoctisNinePatchCache;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
-import org.libnoctis.util.NoctisNinePatch;
-import org.libnoctis.util.NoctisNinePatchCache;
 import org.libnoctis.util.Vector2i;
 
 /**

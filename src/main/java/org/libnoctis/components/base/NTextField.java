@@ -28,10 +28,10 @@ import org.libnoctis.input.keyboard.Key;
 import org.libnoctis.input.keyboard.KeyPressedEvent;
 import org.libnoctis.input.keyboard.KeyReleasedEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
+import org.libnoctis.ninepatch.NoctisNinePatch;
+import org.libnoctis.ninepatch.NoctisNinePatchCache;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
-import org.libnoctis.util.NoctisNinePatch;
-import org.libnoctis.util.NoctisNinePatchCache;
 import org.libnoctis.util.Vector2i;
 
 /**

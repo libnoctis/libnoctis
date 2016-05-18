@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.libnoctis.util;
+package org.libnoctis.ninepatch;
 
 import com.android.ninepatch.GraphicsUtilities;
 import com.android.ninepatch.NinePatch;
@@ -24,6 +24,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import org.libnoctis.render.gl.GlTexture;
+import org.libnoctis.util.Vector2i;
 
 /**
  * The Noctis Nine Patch
