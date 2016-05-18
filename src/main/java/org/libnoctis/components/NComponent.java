@@ -46,42 +46,52 @@ import org.libnoctis.util.Vector2i;
 public abstract class NComponent
 {
     public static final String COMPONENTS_SECTION = "component";
+
     /**
      * Display list id, used for rendering.
      */
-    public              int    displayList        = -1;
+    public int displayList = -1;
+
     /**
      * This component width, in pixels.
      */
     private int width;
+
     /**
      * This component height, in pixels.
      */
     private int height;
+
     /**
      * This component X coordinate, in pixels, relative to parent orthonormal.
      */
     private int x;
+
     /**
      * This component Y coordinate, in pixels, relative to parent orthonormal.
      */
     private int y;
+
     /**
      * The component layout property, depending of the current layout.
      */
     private LayoutConstraints property;
+
     /**
      * The parent container (that contains this component)
      */
     private NContainer parent;
+
     /**
      * The event manager.
      */
     private EventManager manager;
+
     /**
      * The object properties
      */
     private Map<String, Object> properties;
+
     /**
      * This component parent frame.
      */
@@ -229,7 +239,8 @@ public abstract class NComponent
         if (getFrame() == null)
             return;
 
-        schedulRenderTask(new Runnable() {
+        schedulRenderTask(new Runnable()
+        {
             @Override
             public void run()
             {
@@ -272,7 +283,8 @@ public abstract class NComponent
             }
         }
 
-        schedulRenderTask(new Runnable() {
+        schedulRenderTask(new Runnable()
+        {
             @Override
             public void run()
             {
@@ -414,7 +426,7 @@ public abstract class NComponent
     /**
      * Set the component size
      *
-     * @param width The new width of the component
+     * @param width  The new width of the component
      * @param height The new height of the component
      */
     public void setSize(int width, int height)
@@ -477,7 +489,7 @@ public abstract class NComponent
     {
         return preferredSize;
     }
-    
+
     public void setPreferredSize(Vector2i preferredSize)
     {
         this.preferredSize = preferredSize;
