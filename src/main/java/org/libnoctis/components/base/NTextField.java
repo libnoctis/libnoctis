@@ -50,9 +50,10 @@ import org.libnoctis.util.Vector2i;
  */
 public class NTextField extends NComponent
 {
-    public static final String TEXTFIELD_SECTION = COMPONENTS_SECTION + ".textfield";
-    public static final String TEXTFIELD_TEXTURE = TEXTFIELD_SECTION + ".texture";
-    public static final String TEXTFIELD_TEXTURE_HOVER = TEXTFIELD_SECTION + ".texture.hover";
+    public static final String TEXTFIELD_SECTION          = COMPONENTS_SECTION + ".textfield";
+    public static final String TEXTFIELD_TEXTURE          = TEXTFIELD_SECTION + ".texture";
+    public static final String TEXTFIELD_TEXTURE_FOCUSED  = TEXTFIELD_TEXTURE + ".focused";
+    public static final String TEXTFIELD_TEXTURE_DISABLED = TEXTFIELD_TEXTURE + ".disabled";
 
     /**
      * The current text field text
@@ -75,28 +76,40 @@ public class NTextField extends NComponent
     private boolean capsLock = false;
 
     /**
-     * The background nine patch, null if #background is not
+     * The background texture as a nine patch
      */
     @Nullable
     private NoctisNinePatch backgroundPatch;
 
     /**
-     * The background when focused, as a nine patch.
+     * The background texture when focused, as a nine patch.
      */
     @Nullable
     private NoctisNinePatch focusBackgroundPatch;
 
     /**
-     * The background nine patch, null if #backgroundPatch is not
+     * The background texture when disabled, as a nine patch.
+     */
+    @Nullable
+    private NoctisNinePatch disabledBackgroundPatch;
+
+    /**
+     * The background texture
      */
     @NotNull
     private GlTexture background;
 
     /**
-     * The background when focused
+     * The background texture when focused
      */
     @Nullable
     private GlTexture focusBackground;
+
+    /**
+     * The background texture when disabled
+     */
+    @Nullable
+    private GlTexture disabledBackground;
 
     /**
      * The coords of the field where is the text
@@ -104,7 +117,7 @@ public class NTextField extends NComponent
     private Vector2i textPadding;
 
     /**
-     * Focus sur le text field (en cours d'ecriture)
+     * If the user is typing in the text field
      */
     private boolean focus = false;
 
@@ -114,7 +127,8 @@ public class NTextField extends NComponent
         super.init();
 
         String background = theme().requireProp(TEXTFIELD_TEXTURE);
-        String backgroundFocused = theme().prop(TEXTFIELD_TEXTURE_HOVER);
+        String backgroundFocused = theme().prop(TEXTFIELD_TEXTURE_FOCUSED);
+        String backgroundDisabled = theme().prop(TEXTFIELD_TEXTURE_DISABLED);
 
         if (background.endsWith(".9.png"))
             this.backgroundPatch = NoctisNinePatchCache.fromPath(theme(), background);
@@ -126,6 +140,12 @@ public class NTextField extends NComponent
                 this.focusBackgroundPatch = NoctisNinePatchCache.fromPath(theme(), backgroundFocused);
             else
                 this.focusBackground = theme().requireTexture(backgroundFocused);
+
+        if (backgroundDisabled != null)
+            if (backgroundDisabled.endsWith(".9.png"))
+                this.disabledBackgroundPatch = NoctisNinePatchCache.fromPath(theme(), backgroundDisabled);
+            else
+                this.disabledBackground = theme().requireTexture(backgroundDisabled);
 
         int xPadding = Integer.parseInt(theme().requireProp("component.textfield.textpadding.x"));
         int yPadding = Integer.parseInt(theme().requireProp("component.textfield.textpadding.y"));
@@ -199,7 +219,20 @@ public class NTextField extends NComponent
         Vector2i dimensions = new Vector2i(this.getWidth(), this.getHeight());
 
         background = backgroundPatch.generateFor(dimensions);
-        focusBackground = focusBackgroundPatch.generateFor(dimensions);
+
+        if (focusBackgroundPatch != null)
+            focusBackground = focusBackgroundPatch.generateFor(dimensions);
+
+        if (disabledBackgroundPatch != null)
+            disabledBackground = disabledBackgroundPatch.generateFor(dimensions);
+    }
+
+    @Override
+    public void repaintChildren()
+    {
+        updateNinePatches();
+
+        super.repaintChildren();
     }
 
     @Override
@@ -221,7 +254,7 @@ public class NTextField extends NComponent
     {
         super.setWidth(width);
 
-        updateNinePatches();
+        invalidate();
     }
 
     @Override
@@ -229,7 +262,7 @@ public class NTextField extends NComponent
     {
         super.setHeight(height);
 
-        updateNinePatches();
+        invalidate();
     }
 
     /**
@@ -248,7 +281,8 @@ public class NTextField extends NComponent
     public void setText(String text)
     {
         this.text = text;
-        repaint();
+
+        invalidate();
     }
 
     /**
