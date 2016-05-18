@@ -40,11 +40,11 @@ import org.libnoctis.util.Vector2i;
  */
 public class NCheckbox extends NComponent
 {
-    public static final String CHECKBOX_SECTION = COMPONENTS_SECTION + ".checkbox";
-    public static final String CHECKBOX_TEXTURE = CHECKBOX_SECTION + ".texture";
-    public static final String CHECKBOX_TEXTURE_HOVER = CHECKBOX_TEXTURE + ".hover";
+    public static final String CHECKBOX_SECTION          = COMPONENTS_SECTION + ".checkbox";
+    public static final String CHECKBOX_TEXTURE          = CHECKBOX_SECTION + ".texture";
+    public static final String CHECKBOX_TEXTURE_HOVER    = CHECKBOX_TEXTURE + ".hover";
     public static final String CHECKBOX_TEXTURE_DISABLED = CHECKBOX_TEXTURE + ".disabled";
-    public static final String CHECKBOX_TEXTURE_CHECK = CHECKBOX_TEXTURE + ".check";
+    public static final String CHECKBOX_TEXTURE_CHECK    = CHECKBOX_TEXTURE + ".check";
 
     /**
      * If the checkbox is checked
@@ -100,11 +100,6 @@ public class NCheckbox extends NComponent
     private NoctisNinePatch checkPatch;
 
     /**
-     * If the mouse is over the checkbox
-     */
-    private boolean hover = false;
-
-    /**
      * If the checkbox is disabled
      */
     private boolean disabled = false;
@@ -152,6 +147,7 @@ public class NCheckbox extends NComponent
         Vector2i dimensions = new Vector2i(this.getWidth(), this.getHeight());
 
         texture = texturePatch.generateFor(dimensions);
+        checkTexture = checkPatch.generateFor(dimensions);
 
         if (hoverTexturePatch != null)
             hoverTexture = hoverTexturePatch.generateFor(dimensions);
@@ -173,7 +169,7 @@ public class NCheckbox extends NComponent
     {
         super.paintComponent(drawer);
 
-        drawer.drawTexture(this.getX(), this.getY(), this.getWidth(), this.getHeight(), disabled ? disabledTexture : (hover && hoverTexture != null ? hoverTexture : texture));
+        drawer.drawTexture(this.getX(), this.getY(), this.getWidth(), this.getHeight(), disabled ? disabledTexture : (isHovered() && hoverTexture != null ? hoverTexture : texture));
 
         if (isChecked())
             drawer.drawTexture(this.getX(), this.getY(), this.getWidth(), this.getHeight(), checkTexture);
@@ -185,6 +181,18 @@ public class NCheckbox extends NComponent
     public boolean isChecked()
     {
         return checked;
+    }
+
+    /**
+     * Set the checkbox checked or not
+     *
+     * @param checked If the checkbox is checked or not
+     */
+    public void setChecked(boolean checked)
+    {
+        this.checked = checked;
+
+        invalidate();
     }
 
     /**
@@ -203,26 +211,6 @@ public class NCheckbox extends NComponent
     public void setDisabled(boolean disabled)
     {
         this.disabled = disabled;
-
-        invalidate();
-    }
-
-    /**
-     * @return If the mouse is over the checkbox
-     */
-    public boolean isHover()
-    {
-        return hover;
-    }
-
-    /**
-     * Set the checkbox checked or not
-     *
-     * @param checked If the checkbox is checked or not
-     */
-    public void setChecked(boolean checked)
-    {
-        this.checked = checked;
 
         invalidate();
     }

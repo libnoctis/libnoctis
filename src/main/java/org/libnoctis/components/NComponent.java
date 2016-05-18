@@ -20,10 +20,11 @@ package org.libnoctis.components;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.libnoctis.input.EventManager;
 import org.libnoctis.input.NEvent;
 import org.libnoctis.input.NListener;
+import org.libnoctis.input.NoctisEvent;
+import org.libnoctis.input.mouse.MouseMoveEvent;
 import org.libnoctis.layout.LayoutConstraints;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.theme.NoctisTheme;
@@ -45,72 +46,71 @@ import org.libnoctis.util.Vector2i;
 public abstract class NComponent
 {
     public static final String COMPONENTS_SECTION = "component";
-    
+    /**
+     * Display list id, used for rendering.
+     */
+    public              int    displayList        = -1;
     /**
      * This component width, in pixels.
      */
     private int width;
-
     /**
      * This component height, in pixels.
      */
     private int height;
-
     /**
      * This component X coordinate, in pixels, relative to parent orthonormal.
      */
     private int x;
-
     /**
      * This component Y coordinate, in pixels, relative to parent orthonormal.
      */
     private int y;
-
     /**
      * The component layout property, depending of the current layout.
      */
     private LayoutConstraints property;
-
     /**
      * The parent container (that contains this component)
      */
     private NContainer parent;
-
     /**
      * The event manager.
      */
     private EventManager manager;
-
     /**
      * The object properties
      */
     private Map<String, Object> properties;
-
-    /**
-     * Display list id, used for rendering.
-     */
-    public int displayList = -1;
-
     /**
      * This component parent frame.
      */
     private NFrame frame;
 
+    /**
+     * If the mouse is over this component
+     */
     private boolean isHovered;
-    
+
+    /**
+     * This component preferred size
+     */
     private Vector2i preferredSize;
 
+    /**
+     * The Noctis Component
+     */
     public NComponent()
     {
         manager = new EventManager();
         properties = new HashMap<String, Object>();
+
+        this.registerListener(new NComponentListener());
     }
 
-    public void setHovered(boolean isHovered)
-    {
-        this.isHovered = isHovered;
-    }
-
+    /**
+     * @return If the mouse is over this component
+     */
     public boolean isHovered()
     {
         return isHovered;
@@ -300,14 +300,14 @@ public abstract class NComponent
         return x;
     }
 
-    public int getY()
-    {
-        return y;
-    }
-
     public void setX(int x)
     {
         this.x = x;
+    }
+
+    public int getY()
+    {
+        return y;
     }
 
     public void setY(int y)
@@ -426,8 +426,7 @@ public abstract class NComponent
     /**
      * Set the component size
      *
-     * @param width The new width of the component
-     * @param height The new height of the component
+     * @param dimensions The new dimensions=
      */
     public void setSize(Vector2i dimensions)
     {
@@ -437,7 +436,7 @@ public abstract class NComponent
 
     /**
      * Schedule the given task to be executed in the render Thread.
-     * 
+     *
      * @param runnable The task to be executed in the render Thread.
      */
     protected void schedulRenderTask(Runnable runnable)
@@ -447,7 +446,7 @@ public abstract class NComponent
 
     /**
      * Gets the frame that contains this component.
-     * 
+     *
      * @return The frame that contains this component.
      */
     public NFrame getFrame()
@@ -461,7 +460,7 @@ public abstract class NComponent
      */
     protected void init()
     {
-        
+
     }
 
     /**
@@ -473,6 +472,11 @@ public abstract class NComponent
     {
         manager.callEvent(event);
     }
+
+    public Vector2i getPreferredSize()
+    {
+        return preferredSize;
+    }
     
     public void setPreferredSize(Vector2i preferredSize)
     {
@@ -480,8 +484,19 @@ public abstract class NComponent
         parent.invalidate();
     }
 
-    public Vector2i getPreferredSize()
+    /**
+     * Used to update the hover state
+     */
+    private class NComponentListener implements NListener
     {
-        return preferredSize;
+        @NoctisEvent
+        private void move(MouseMoveEvent event)
+        {
+            isHovered = event.getPos().getX() > getX() &&
+                        event.getPos().getX() < getX() + getWidth() &&
+
+                        event.getPos().getY() > getY() &&
+                        event.getPos().getY() < getY() + getHeight();
+        }
     }
 }

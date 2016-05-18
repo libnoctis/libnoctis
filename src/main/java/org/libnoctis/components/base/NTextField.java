@@ -18,8 +18,6 @@
  */
 package org.libnoctis.components.base;
 
-import java.awt.Rectangle;
-
 import java.awt.geom.Rectangle2D;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -155,58 +153,6 @@ public class NTextField extends NComponent
         this.registerListener(new NTextFieldListener());
 
         updateNinePatches();
-    }
-
-    public class NTextFieldListener implements NListener
-    {
-        @NoctisEvent
-        private void keyPress(KeyPressedEvent event)
-        {
-            if (!focus)
-                return;
-
-            if (event.getKey().isCharacter())
-            {
-                String newText = getText().substring(0, cursorPos) +
-                                 ((currentShift != null || capsLock) && event.getKey().hasUpperCharacter() ? event.getKey().getUpperCharacter() : event.getKey().getCharacter()) +
-                                 getText().substring(cursorPos, getText().length());
-
-                Rectangle2D bounds = getDrawer().getFont().getStringBounds(newText, 0, 0);
-                if (bounds.getWidth() > getWidth() - getTextPadding().getX() * 2 ||
-                    bounds.getHeight() > getHeight() - getTextPadding().getY() * 2)
-                    return;
-
-                setText(newText);
-                setCursorPos(getCursorPos() + 1);
-            }
-            else if (event.getKey() == Key.KEY_RIGHT)
-                setCursorPos(getCursorPos() + 1);
-            else if (event.getKey() == Key.KEY_LEFT && cursorPos != 0)
-                setCursorPos(getCursorPos() - 1);
-            else if (event.getKey() == Key.KEY_BACK && cursorPos != 0)
-            {
-                setText(getText().substring(0, cursorPos - 1) + getText().substring(cursorPos, getText().length()));
-                setCursorPos(getCursorPos() - 1);
-            }
-            else if (event.getKey() == Key.KEY_LSHIFT && event.getKey() == Key.KEY_RSHIFT)
-                currentShift = event.getKey();
-            else if (event.getKey() == Key.KEY_CAPITAL)
-                capsLock = !capsLock;
-        }
-
-        @NoctisEvent
-        private void mousePress(MousePressedEvent event)
-        {
-            Rectangle rectangle = new Rectangle(getX() + textPadding.getX(), getY() + textPadding.getY(), getWidth() - textPadding.getX(), getHeight() - textPadding.getY());
-            focus = rectangle.contains(event.getPos().getX(), event.getPos().getY());
-        }
-
-        @NoctisEvent
-        private void keyRelease(KeyReleasedEvent event)
-        {
-            if (event.getKey() == currentShift)
-                currentShift = null;
-        }
     }
 
     private void updateNinePatches()
@@ -367,5 +313,55 @@ public class NTextField extends NComponent
     public boolean isFocused()
     {
         return focus;
+    }
+
+    public class NTextFieldListener implements NListener
+    {
+        @NoctisEvent
+        private void keyPress(KeyPressedEvent event)
+        {
+            if (!focus)
+                return;
+
+            if (event.getKey().isCharacter())
+            {
+                String newText = getText().substring(0, cursorPos) +
+                                 ((currentShift != null || capsLock) && event.getKey().hasUpperCharacter() ? event.getKey().getUpperCharacter() : event.getKey().getCharacter()) +
+                                 getText().substring(cursorPos, getText().length());
+
+                Rectangle2D bounds = getDrawer().getFont().getStringBounds(newText, 0, 0);
+                if (bounds.getWidth() > getWidth() - getTextPadding().getX() * 2 || bounds.getHeight() > getHeight() - getTextPadding().getY() * 2)
+                    return;
+
+                setText(newText);
+                setCursorPos(getCursorPos() + 1);
+            }
+            else if (event.getKey() == Key.KEY_RIGHT)
+                setCursorPos(getCursorPos() + 1);
+            else if (event.getKey() == Key.KEY_LEFT && cursorPos != 0)
+                setCursorPos(getCursorPos() - 1);
+            else if (event.getKey() == Key.KEY_BACK && cursorPos != 0)
+            {
+                setText(getText().substring(0, cursorPos - 1) + getText().substring(cursorPos, getText().length()));
+                setCursorPos(getCursorPos() - 1);
+            }
+            else if (event.getKey() == Key.KEY_LSHIFT && event.getKey() == Key.KEY_RSHIFT)
+                currentShift = event.getKey();
+            else if (event.getKey() == Key.KEY_CAPITAL)
+                capsLock = !capsLock;
+        }
+
+        @NoctisEvent
+        private void mousePress(MousePressedEvent event)
+        {
+            focus = isHovered();
+        }
+
+        @NoctisEvent
+        private void keyRelease(KeyReleasedEvent event)
+        {
+            if (event.getKey() == currentShift)
+                currentShift = null;
+        }
     }
 }

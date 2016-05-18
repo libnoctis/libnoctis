@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import org.libnoctis.components.NComponent;
 import org.libnoctis.input.NListener;
 import org.libnoctis.input.NoctisEvent;
-import org.libnoctis.input.mouse.MouseMoveEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
 import org.libnoctis.input.mouse.MouseReleasedEvent;
 import org.libnoctis.render.Drawer;
@@ -103,11 +102,6 @@ public class NButton extends NComponent implements NListener
     private NoctisNinePatch disabledTexturePatch;
 
     /**
-     * True if the mouse is over this button
-     */
-    private boolean hover = false;
-
-    /**
      * True if the button is clicked
      */
     private boolean clicked = false;
@@ -132,33 +126,6 @@ public class NButton extends NComponent implements NListener
         this.text = text;
 
         this.registerListener(new NButtonMouseListener());
-    }
-
-    class NButtonMouseListener implements NListener
-    {
-        @NoctisEvent
-        private void move(MouseMoveEvent event)
-        {
-            hover = event.getPos().getX() > getX() && event.getPos().getX() < getX() + getWidth() && event.getPos().getY() > getY() && event.getPos().getY() < getY() + getHeight();
-        }
-
-        @NoctisEvent
-        private void pressed(MousePressedEvent event)
-        {
-            clicked = hover;
-
-            if (clicked)
-                System.out.println("Click click");
-        }
-
-        @NoctisEvent
-        private void released(MouseReleasedEvent event)
-        {
-            if (clicked)
-                System.out.println("Plus de click :(");
-
-            clicked = false;
-        }
     }
 
     @Override
@@ -260,14 +227,6 @@ public class NButton extends NComponent implements NListener
     public boolean isClicked()
     {
         return clicked;
-    }
-
-    /**
-     * @return If the mouse is hover the button
-     */
-    public boolean isHover()
-    {
-        return hover;
     }
 
     /**
@@ -380,9 +339,30 @@ public class NButton extends NComponent implements NListener
             throw new RuntimeException("Can't set the button disabled because there isn't any disabled texture");
         }
 
-        GlTexture toDraw = disabled ? disabledTexture : (hover ? hoverTexture : texture);
+        GlTexture toDraw = disabled ? disabledTexture : (isHovered() ? hoverTexture : texture);
 
         drawer.drawTexture(getX(), getY(), this.getWidth(), this.getHeight(), toDraw);
         drawer.drawCenteredString(text, getX() + getWidth() / 2, getY() + getHeight() / 2);
+    }
+
+    class NButtonMouseListener implements NListener
+    {
+        @NoctisEvent
+        private void pressed(MousePressedEvent event)
+        {
+            clicked = isHovered();
+
+            if (clicked)
+                System.out.println("Click click");
+        }
+
+        @NoctisEvent
+        private void released(MouseReleasedEvent event)
+        {
+            if (clicked)
+                System.out.println("Plus de click :(");
+
+            clicked = false;
+        }
     }
 }
