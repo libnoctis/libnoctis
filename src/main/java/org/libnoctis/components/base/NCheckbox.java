@@ -21,11 +21,12 @@ package org.libnoctis.components.base;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.libnoctis.components.NComponent;
+import org.libnoctis.ninepatch.LinkedNinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
-import org.libnoctis.ninepatch.NoctisNinePatchCache;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
-import org.libnoctis.util.Vector2i;
+import org.libnoctis.theme.ThemeProperty;
+import org.libnoctis.theme.ThemeRequireProperty;
 
 /**
  * The NCheckbox
@@ -79,90 +80,38 @@ public class NCheckbox extends NComponent
      * The texture as a nine patch
      */
     @Nullable
+    @LinkedNinePatch("texture")
+    @ThemeRequireProperty(CHECKBOX_TEXTURE)
     private NoctisNinePatch texturePatch;
 
     /**
      * The texture when the mouse is on, as a nine patch.
      */
     @Nullable
+    @LinkedNinePatch("hoverTexture")
+    @ThemeProperty(CHECKBOX_TEXTURE_HOVER)
     private NoctisNinePatch hoverTexturePatch;
 
     /**
      * The texture when disabled, as a nine patch.
      */
     @Nullable
+    @LinkedNinePatch("disabledTexture")
+    @ThemeProperty(CHECKBOX_TEXTURE_DISABLED)
     private NoctisNinePatch disabledTexturePatch;
 
     /**
      * The check texture, as a nine patch
      */
     @Nullable
+    @LinkedNinePatch("check")
+    @ThemeRequireProperty(CHECKBOX_TEXTURE_CHECK)
     private NoctisNinePatch checkPatch;
 
     /**
      * If the checkbox is disabled
      */
     private boolean disabled = false;
-
-    @Override
-    protected void init()
-    {
-        super.init();
-
-        String texture = theme().requireProp(CHECKBOX_TEXTURE);
-        String textureHover = theme().prop(CHECKBOX_TEXTURE_HOVER);
-        String textureDisabled = theme().prop(CHECKBOX_TEXTURE_DISABLED);
-        String check = theme().requireProp(CHECKBOX_TEXTURE_CHECK);
-
-        if (texture.endsWith(".9.png"))
-            this.texturePatch = NoctisNinePatchCache.fromPath(theme(), texture);
-        else
-            this.texture = theme().requireTexture(texture);
-
-        if (check.endsWith(".9.png"))
-            this.checkPatch = NoctisNinePatchCache.fromPath(theme(), check);
-        else
-            this.checkTexture = theme().requireTexture(check);
-
-        if (textureHover != null)
-            if (textureHover.endsWith(".9.png"))
-                this.hoverTexturePatch = NoctisNinePatchCache.fromPath(theme(), textureHover);
-            else
-                this.hoverTexture = theme().requireTexture(textureHover);
-
-        if (textureDisabled != null)
-            if (textureDisabled.endsWith(".9.png"))
-                this.disabledTexturePatch = NoctisNinePatchCache.fromPath(theme(), textureDisabled);
-            else
-                this.disabledTexture = theme().requireTexture(textureDisabled);
-    }
-
-    private void updateNinePatches()
-    {
-        if (texturePatch == null)
-        {
-            return;
-        }
-
-        Vector2i dimensions = new Vector2i(this.getWidth(), this.getHeight());
-
-        texture = texturePatch.generateFor(dimensions);
-        checkTexture = checkPatch.generateFor(dimensions);
-
-        if (hoverTexturePatch != null)
-            hoverTexture = hoverTexturePatch.generateFor(dimensions);
-
-        if (disabledTexturePatch != null)
-            disabledTexture = disabledTexturePatch.generateFor(dimensions);
-    }
-
-    @Override
-    public void repaintChildren()
-    {
-        updateNinePatches();
-
-        super.repaintChildren();
-    }
 
     @Override
     protected void paintComponent(Drawer drawer)

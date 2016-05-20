@@ -32,6 +32,8 @@ import org.libnoctis.ninepatch.LinkedNinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
+import org.libnoctis.theme.ThemeProperty;
+import org.libnoctis.theme.ThemeRequireProperty;
 import org.libnoctis.util.Vector2i;
 
 /**
@@ -78,6 +80,7 @@ public class NTextField extends NComponent
      */
     @Nullable
     @LinkedNinePatch("background")
+    @ThemeRequireProperty(TEXTFIELD_TEXTURE)
     private NoctisNinePatch backgroundPatch;
 
     /**
@@ -85,6 +88,7 @@ public class NTextField extends NComponent
      */
     @Nullable
     @LinkedNinePatch("focusBackground")
+    @ThemeProperty(TEXTFIELD_TEXTURE_FOCUSED)
     private NoctisNinePatch focusBackgroundPatch;
 
     /**
@@ -92,6 +96,7 @@ public class NTextField extends NComponent
      */
     @Nullable
     @LinkedNinePatch("disabledBackground")
+    @ThemeProperty(TEXTFIELD_TEXTURE_DISABLED)
     private NoctisNinePatch disabledBackgroundPatch;
 
     /**
@@ -126,14 +131,6 @@ public class NTextField extends NComponent
     protected void init()
     {
         super.init();
-
-        String background = theme().requireProp(TEXTFIELD_TEXTURE);
-        String backgroundFocused = theme().prop(TEXTFIELD_TEXTURE_FOCUSED);
-        String backgroundDisabled = theme().prop(TEXTFIELD_TEXTURE_DISABLED);
-
-        this.registerNinePatch("backgroundPatch", background);
-        this.registerNinePatch("focusBackgroundPatch", backgroundFocused);
-        this.registerNinePatch("disabledBackgroundPatch", backgroundDisabled);
 
         int xPadding = Integer.parseInt(theme().requireProp("component.textfield.textpadding.x"));
         int yPadding = Integer.parseInt(theme().requireProp("component.textfield.textpadding.y"));
