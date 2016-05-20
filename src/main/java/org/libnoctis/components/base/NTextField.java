@@ -146,7 +146,7 @@ public class NTextField extends NComponent
         super.paintComponent(drawer);
 
         // Drawing background (or focused background)
-        drawer.drawTexture(getX(), getY(), this.getWidth(), this.getHeight(),  focus && focusBackground != null ? focusBackground : background);
+        drawer.drawTexture(getX(), getY(), this.getWidth(), this.getHeight(), focus && focusBackground != null ? focusBackground : background);
 
         // Drawing the text
         drawer.drawString(this.getText() + /* The caret */ (focus ? "_" : ""), getX() + this.textPadding.getX(), getY() + this.textPadding.getY());
@@ -256,7 +256,7 @@ public class NTextField extends NComponent
         return focus;
     }
 
-    public class NTextFieldListener implements NListener
+    private class NTextFieldListener implements NListener
     {
         @NoctisEvent
         private void keyPress(KeyPressedEvent event)
@@ -271,7 +271,8 @@ public class NTextField extends NComponent
                                  getText().substring(cursorPos, getText().length());
 
                 Rectangle2D bounds = getDrawer().getFont().getStringBounds(newText, 0, 0);
-                if (bounds.getWidth() > getWidth() - getTextPadding().getX() * 2 || bounds.getHeight() > getHeight() - getTextPadding().getY() * 2)
+
+                if (bounds.getWidth() > getWidth() - getTextPadding().getX() * 2 )
                     return;
 
                 setText(newText);

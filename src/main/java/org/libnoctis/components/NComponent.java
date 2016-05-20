@@ -223,7 +223,6 @@ public abstract class NComponent
             texture.setAccessible(true);
             {
                 texture.set(this, ninePatch.generateFor(this.getWidth(), this.getHeight()));
-                System.out.println("The field " + texture.getName() + " (type : " + texture.getType() + ") from the class " + texture.getDeclaringClass().getName() + " is now set !");
             }
             texture.setAccessible(false);
         }
