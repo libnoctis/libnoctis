@@ -30,6 +30,7 @@ import org.libnoctis.input.mouse.MouseMoveEvent;
 import org.libnoctis.layout.LayoutConstraints;
 import org.libnoctis.ninepatch.LinkedNinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
+import org.libnoctis.ninepatch.NoctisNinePatchCache;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
 import org.libnoctis.theme.NoctisTheme;
@@ -162,8 +163,6 @@ public abstract class NComponent
         if (annotation == null)
             throw new IllegalArgumentException("The field '" + field + " in the component " + getClass().getName() + " hasn't the LinkedNinePatch annotation");
 
-        System.out.println("LinkedNinePatch annotation ? " + annotation.value());
-
         Field texture;
         try
         {
@@ -177,6 +176,20 @@ public abstract class NComponent
         if (pathInTheme.endsWith(".9.png"))
         {
             this.linkedPatches.put(theField, texture);
+
+            theField.setAccessible(true);
+            {
+                try
+                {
+                    theField.set(this, NoctisNinePatchCache.fromPath(theme(), pathInTheme));
+                }
+                catch (IllegalAccessException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            theField.setAccessible(false);
+
             updatePatch(theField, texture);
         }
         else
@@ -184,6 +197,7 @@ public abstract class NComponent
             {
                 texture.setAccessible(true);
                 {
+                    System.out.println("Setting to  the texture from " + pathInTheme);
                     texture.set(this, theme().requireTexture(pathInTheme));
                 }
                 texture.setAccessible(false);
@@ -198,17 +212,23 @@ public abstract class NComponent
     {
         try
         {
-            NoctisNinePatch ninePatch = (NoctisNinePatch) patch.get(this);
+            NoctisNinePatch ninePatch;
+
+            patch.setAccessible(true);
+            {
+                ninePatch = (NoctisNinePatch) patch.get(this);
+            }
+            patch.setAccessible(false);
 
             texture.setAccessible(true);
             {
                 texture.set(this, ninePatch.generateFor(this.getWidth(), this.getHeight()));
+                System.out.println("The field " + texture.getName() + " (type : " + texture.getType() + ") from the class " + texture.getDeclaringClass().getName() + " is now set !");
             }
             texture.setAccessible(false);
         }
         catch (IllegalAccessException ignored)
         {
-            ignored.printStackTrace();
             // Can't happen
         }
     }
@@ -392,10 +412,8 @@ public abstract class NComponent
                 for (Field field : NComponent.this.getClass().getDeclaredFields())
                 {
                     fillProperty(field);
-                    System.out.println("NEXT");
                 }
 
-                System.out.println("FINISHED");
                 init();
             }
         });
