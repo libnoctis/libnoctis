@@ -28,8 +28,8 @@ import org.libnoctis.input.keyboard.Key;
 import org.libnoctis.input.keyboard.KeyPressedEvent;
 import org.libnoctis.input.keyboard.KeyReleasedEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
+import org.libnoctis.ninepatch.LinkedNinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
-import org.libnoctis.ninepatch.NoctisNinePatchCache;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
 import org.libnoctis.util.Vector2i;
@@ -77,18 +77,21 @@ public class NTextField extends NComponent
      * The background texture as a nine patch
      */
     @Nullable
+    @LinkedNinePatch("background")
     private NoctisNinePatch backgroundPatch;
 
     /**
      * The background texture when focused, as a nine patch.
      */
     @Nullable
+    @LinkedNinePatch("focusBackground")
     private NoctisNinePatch focusBackgroundPatch;
 
     /**
      * The background texture when disabled, as a nine patch.
      */
     @Nullable
+    @LinkedNinePatch("disabledBackground")
     private NoctisNinePatch disabledBackgroundPatch;
 
     /**
@@ -128,22 +131,9 @@ public class NTextField extends NComponent
         String backgroundFocused = theme().prop(TEXTFIELD_TEXTURE_FOCUSED);
         String backgroundDisabled = theme().prop(TEXTFIELD_TEXTURE_DISABLED);
 
-        if (background.endsWith(".9.png"))
-            this.backgroundPatch = NoctisNinePatchCache.fromPath(theme(), background);
-        else
-            this.background = theme().requireTexture(background);
-
-        if (backgroundFocused != null)
-            if (backgroundFocused.endsWith(".9.png"))
-                this.focusBackgroundPatch = NoctisNinePatchCache.fromPath(theme(), backgroundFocused);
-            else
-                this.focusBackground = theme().requireTexture(backgroundFocused);
-
-        if (backgroundDisabled != null)
-            if (backgroundDisabled.endsWith(".9.png"))
-                this.disabledBackgroundPatch = NoctisNinePatchCache.fromPath(theme(), backgroundDisabled);
-            else
-                this.disabledBackground = theme().requireTexture(backgroundDisabled);
+        this.registerNinePatch("backgroundPatch", background);
+        this.registerNinePatch("focusBackgroundPatch", backgroundFocused);
+        this.registerNinePatch("disabledBackgroundPatch", backgroundDisabled);
 
         int xPadding = Integer.parseInt(theme().requireProp("component.textfield.textpadding.x"));
         int yPadding = Integer.parseInt(theme().requireProp("component.textfield.textpadding.y"));
@@ -151,34 +141,6 @@ public class NTextField extends NComponent
         this.textPadding = new Vector2i(xPadding, yPadding);
 
         this.registerListener(new NTextFieldListener());
-
-        updateNinePatches();
-    }
-
-    private void updateNinePatches()
-    {
-        if (backgroundPatch == null)
-        {
-            return;
-        }
-
-        Vector2i dimensions = new Vector2i(this.getWidth(), this.getHeight());
-
-        background = backgroundPatch.generateFor(dimensions);
-
-        if (focusBackgroundPatch != null)
-            focusBackground = focusBackgroundPatch.generateFor(dimensions);
-
-        if (disabledBackgroundPatch != null)
-            disabledBackground = disabledBackgroundPatch.generateFor(dimensions);
-    }
-
-    @Override
-    public void repaintChildren()
-    {
-        updateNinePatches();
-
-        super.repaintChildren();
     }
 
     @Override
@@ -187,28 +149,10 @@ public class NTextField extends NComponent
         super.paintComponent(drawer);
 
         // Drawing background (or focused background)
-        GlTexture texture = focus && focusBackground != null ? focusBackground : background;
-
-        drawer.drawTexture(getX(), getY(), this.getWidth(), this.getHeight(), texture);
+        drawer.drawTexture(getX(), getY(), this.getWidth(), this.getHeight(),  focus && focusBackground != null ? focusBackground : background);
 
         // Drawing the text
         drawer.drawString(this.getText() + /* The caret */ (focus ? "_" : ""), getX() + this.textPadding.getX(), getY() + this.textPadding.getY());
-    }
-
-    @Override
-    public void setWidth(int width)
-    {
-        super.setWidth(width);
-
-        invalidate();
-    }
-
-    @Override
-    public void setHeight(int height)
-    {
-        super.setHeight(height);
-
-        invalidate();
     }
 
     /**

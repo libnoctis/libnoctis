@@ -166,7 +166,17 @@ public abstract class NComponent
             throw new IllegalArgumentException("Can't find the field '" + annotation.value() + " in the component " + getClass().getName() + " given in its LinkedNinePatch annotation");
         }
 
-        this.linkedPatches.put(theField, texture);
+        if (pathInTheme.endsWith(".9.png"))
+            this.linkedPatches.put(theField, texture);
+        else
+            try
+            {
+                texture.set(this, theme().requireTexture(pathInTheme));
+            }
+            catch (IllegalAccessException e)
+            {
+                throw new IllegalArgumentException("Can't access the texture field '" + texture.getName() + "' in the class '" + getClass().getName() + "'");
+            }
 
         updatePatch(theField, texture);
     }
@@ -180,7 +190,7 @@ public abstract class NComponent
         }
         catch (IllegalAccessException e)
         {
-            e.printStackTrace();
+            throw new IllegalArgumentException("Can't access the texture field '" + texture.getName() + "' in the class '" + getClass().getName() + "'");
         }
     }
 

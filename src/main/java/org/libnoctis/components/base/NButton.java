@@ -25,11 +25,10 @@ import org.libnoctis.input.NListener;
 import org.libnoctis.input.NoctisEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
 import org.libnoctis.input.mouse.MouseReleasedEvent;
+import org.libnoctis.ninepatch.LinkedNinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
-import org.libnoctis.ninepatch.NoctisNinePatchCache;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
-import org.libnoctis.util.Vector2i;
 
 
 /**
@@ -75,6 +74,7 @@ public class NButton extends NComponent implements NListener
      * The button texture as a nine patch, optional
      */
     @Nullable
+    @LinkedNinePatch("texture")
     private NoctisNinePatch texturePatch;
 
     /**
@@ -87,6 +87,7 @@ public class NButton extends NComponent implements NListener
      * The texture when the mouse is on the button, as a nine patch, optional
      */
     @Nullable
+    @LinkedNinePatch("hoverTexture")
     private NoctisNinePatch hoverTexturePatch;
 
     /**
@@ -99,6 +100,7 @@ public class NButton extends NComponent implements NListener
      * The texture when the button is disabled, as a nine patch, optional
      */
     @Nullable
+    @LinkedNinePatch("disabledTexture")
     private NoctisNinePatch disabledTexturePatch;
 
     /**
@@ -110,11 +112,6 @@ public class NButton extends NComponent implements NListener
      * True if the button is disabled
      */
     private boolean disabled = false;
-
-    /**
-     * If the button's textures are nine patches
-     */
-    private boolean textureAreNinePatches;
 
     /**
      * The Noctis Button
@@ -139,68 +136,15 @@ public class NButton extends NComponent implements NListener
         String textureHover = theme().requireProp(BUTTON_HOVER_TEXTURE_PROPERTY);
         String textureDisabled = theme().hasProperty(BUTTON_DISABLED_TEXTURE_PROPERTY) ? theme().requireProp(BUTTON_DISABLED_TEXTURE_PROPERTY) : null;
 
-        if (texture.endsWith(".9.png"))
-            textureAreNinePatches = true;
-
-        if (textureAreNinePatches)
-        {
-            this.texturePatch = NoctisNinePatchCache.fromPath(theme(), texture);
-            this.hoverTexturePatch = NoctisNinePatchCache.fromPath(theme(), textureHover);
-
-            if (textureDisabled != null)
-                this.disabledTexturePatch = NoctisNinePatchCache.fromPath(theme(), textureDisabled);
-        }
-        else
-        {
-
-            this.texture = theme().requireTexture(texture);
-            this.hoverTexture = theme().requireTexture(textureHover);
-
-            if (textureDisabled != null)
-                this.disabledTexture = theme().requireTexture(textureDisabled);
-        }
+        this.registerNinePatch("texturePatch", texture);
+        this.registerNinePatch("hoverTexturePatch", textureHover);
+        this.registerNinePatch("disabledTexturePatch", textureDisabled);
 
         if (fixed)
         {
             this.setWidth(Integer.parseInt(theme().requireProp("component.button.size.width")));
             this.setHeight(Integer.parseInt(theme().requireProp("component.button.size.height")));
         }
-
-        updateNinePatches();
-    }
-
-    private void updateNinePatches()
-    {
-        if (!textureAreNinePatches)
-        {
-            return;
-        }
-
-        Vector2i dimensions = new Vector2i(this.getWidth(), this.getHeight());
-
-        texture = texturePatch.generateFor(dimensions);
-        hoverTexture = hoverTexturePatch.generateFor(dimensions);
-        disabledTexture = disabledTexturePatch.generateFor(dimensions);
-    }
-
-    @Override
-    public void setWidth(int width)
-    {
-        if (!fixed)
-            super.setWidth(width);
-
-        updateNinePatches();
-        invalidate();
-    }
-
-    @Override
-    public void setHeight(int height)
-    {
-        if (!fixed)
-            super.setHeight(height);
-
-        updateNinePatches();
-        invalidate();
     }
 
     /**
@@ -302,14 +246,6 @@ public class NButton extends NComponent implements NListener
     }
 
     /**
-     * @return If the textures are nine patch
-     */
-    public boolean areTexturesNinePatches()
-    {
-        return textureAreNinePatches;
-    }
-
-    /**
      * @return The button text
      */
     public String getText()
@@ -339,29 +275,21 @@ public class NButton extends NComponent implements NListener
             throw new RuntimeException("Can't set the button disabled because there isn't any disabled texture");
         }
 
-        GlTexture toDraw = disabled ? disabledTexture : (isHovered() ? hoverTexture : texture);
-
-        drawer.drawTexture(getX(), getY(), this.getWidth(), this.getHeight(), toDraw);
+        drawer.drawTexture(getX(), getY(), this.getWidth(), this.getHeight(), disabled ? disabledTexture : (isHovered() ? hoverTexture : texture));
         drawer.drawCenteredString(text, getX() + getWidth() / 2, getY() + getHeight() / 2);
     }
 
-    class NButtonMouseListener implements NListener
+    private class NButtonMouseListener implements NListener
     {
         @NoctisEvent
         private void pressed(MousePressedEvent event)
         {
             clicked = isHovered();
-
-            if (clicked)
-                System.out.println("Click click");
         }
 
         @NoctisEvent
         private void released(MouseReleasedEvent event)
         {
-            if (clicked)
-                System.out.println("Plus de click :(");
-
             clicked = false;
         }
     }
