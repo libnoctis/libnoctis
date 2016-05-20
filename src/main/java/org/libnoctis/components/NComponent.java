@@ -31,6 +31,7 @@ import org.libnoctis.layout.LayoutConstraints;
 import org.libnoctis.ninepatch.LinkedNinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
+import org.libnoctis.render.gl.GlTexture;
 import org.libnoctis.theme.NoctisTheme;
 import org.libnoctis.theme.ThemeProperty;
 import org.libnoctis.theme.ThemeRequireProperty;
@@ -144,6 +145,9 @@ public abstract class NComponent
 
     protected void registerNinePatch(String field, String pathInTheme)
     {
+        if (pathInTheme == null)
+            return;
+
         Field theField;
         try
         {
@@ -453,9 +457,13 @@ public abstract class NComponent
                 {
                     field.set(this, Long.parseLong(value));
                 }
-                if (!field.getType().equals(NoctisNinePatch.class))
+                else if (!field.getType().equals(NoctisNinePatch.class))
                 {
                     registerNinePatch(field.getName(), value);
+                }
+                else if (!field.getType().equals(GlTexture.class))
+                {
+                    field.set(this, theme().requireTexture(value));
                 }
                 else
                 {
@@ -477,24 +485,39 @@ public abstract class NComponent
      */
     protected void onComponentAdded(NContainer parent)
     {
-
     }
 
+    /**
+     * @return The component X position
+     */
     public int getX()
     {
         return x;
     }
 
+    /**
+     * Set the component X position
+     *
+     * @param x The new X position of the component
+     */
     public void setX(int x)
     {
         this.x = x;
     }
 
+    /**
+     * @return The component Y position
+     */
     public int getY()
     {
         return y;
     }
 
+    /**
+     * Set the component Y position
+     *
+     * @param y The new Y position of the component
+     */
     public void setY(int y)
     {
         this.y = y;

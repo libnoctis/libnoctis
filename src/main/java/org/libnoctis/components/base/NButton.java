@@ -29,6 +29,8 @@ import org.libnoctis.ninepatch.LinkedNinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
+import org.libnoctis.theme.ThemeProperty;
+import org.libnoctis.theme.ThemeRequireProperty;
 
 
 /**
@@ -45,9 +47,11 @@ import org.libnoctis.render.gl.GlTexture;
  */
 public class NButton extends NComponent implements NListener
 {
-    public static final String BUTTON_TEXTURE_PROPERTY = "component.button.texture";
-    public static final String BUTTON_HOVER_TEXTURE_PROPERTY = "component.button.texture.hover";
-    public static final String BUTTON_DISABLED_TEXTURE_PROPERTY = "component.button.texture.disabled";
+    public static final String BUTTON_PROPERTY_GROUP = "component.button";
+    public static final String BUTTON_TEXTURE_PROPERTY = BUTTON_PROPERTY_GROUP + ".texture";
+    public static final String BUTTON_HOVER_TEXTURE_PROPERTY = BUTTON_TEXTURE_PROPERTY + ".hover";
+    public static final String BUTTON_DISABLED_TEXTURE_PROPERTY = BUTTON_TEXTURE_PROPERTY + ".disabled";
+    public static final String BUTTON_FIXED_PROPERTY = BUTTON_PROPERTY_GROUP + ".size.fixed";
 
     /**
      * The button text
@@ -62,6 +66,7 @@ public class NButton extends NComponent implements NListener
     /**
      * If the button has fixed size
      */
+    @ThemeRequireProperty(BUTTON_FIXED_PROPERTY)
     private boolean fixed;
 
     /**
@@ -75,6 +80,7 @@ public class NButton extends NComponent implements NListener
      */
     @Nullable
     @LinkedNinePatch("texture")
+    @ThemeRequireProperty(BUTTON_TEXTURE_PROPERTY)
     private NoctisNinePatch texturePatch;
 
     /**
@@ -88,6 +94,7 @@ public class NButton extends NComponent implements NListener
      */
     @Nullable
     @LinkedNinePatch("hoverTexture")
+    @ThemeRequireProperty(BUTTON_HOVER_TEXTURE_PROPERTY)
     private NoctisNinePatch hoverTexturePatch;
 
     /**
@@ -101,6 +108,7 @@ public class NButton extends NComponent implements NListener
      */
     @Nullable
     @LinkedNinePatch("disabledTexture")
+    @ThemeProperty(BUTTON_DISABLED_TEXTURE_PROPERTY)
     private NoctisNinePatch disabledTexturePatch;
 
     /**
@@ -129,16 +137,6 @@ public class NButton extends NComponent implements NListener
     protected void init()
     {
         super.init();
-
-        this.fixed = Boolean.parseBoolean(theme().requireProp("component.button.size.fixed"));
-
-        String texture = theme().requireProp(BUTTON_TEXTURE_PROPERTY);
-        String textureHover = theme().requireProp(BUTTON_HOVER_TEXTURE_PROPERTY);
-        String textureDisabled = theme().hasProperty(BUTTON_DISABLED_TEXTURE_PROPERTY) ? theme().requireProp(BUTTON_DISABLED_TEXTURE_PROPERTY) : null;
-
-        this.registerNinePatch("texturePatch", texture);
-        this.registerNinePatch("hoverTexturePatch", textureHover);
-        this.registerNinePatch("disabledTexturePatch", textureDisabled);
 
         if (fixed)
         {
