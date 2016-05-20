@@ -162,6 +162,8 @@ public abstract class NComponent
         if (annotation == null)
             throw new IllegalArgumentException("The field '" + field + " in the component " + getClass().getName() + " hasn't the LinkedNinePatch annotation");
 
+        System.out.println("LinkedNinePatch annotation ? " + annotation.value());
+
         Field texture;
         try
         {
@@ -173,7 +175,10 @@ public abstract class NComponent
         }
 
         if (pathInTheme.endsWith(".9.png"))
+        {
             this.linkedPatches.put(theField, texture);
+            updatePatch(theField, texture);
+        }
         else
             try
             {
@@ -187,8 +192,6 @@ public abstract class NComponent
             {
                 // Can't happen
             }
-
-        updatePatch(theField, texture);
     }
 
     private void updatePatch(Field patch, Field texture)
@@ -205,6 +208,7 @@ public abstract class NComponent
         }
         catch (IllegalAccessException ignored)
         {
+            ignored.printStackTrace();
             // Can't happen
         }
     }
@@ -380,16 +384,18 @@ public abstract class NComponent
             }
         }
 
-        for (Field field : this.getClass().getFields())
-        {
-            fillProperty(field);
-        }
-
         schedulRenderTask(new Runnable()
         {
             @Override
             public void run()
             {
+                for (Field field : NComponent.this.getClass().getDeclaredFields())
+                {
+                    fillProperty(field);
+                    System.out.println("NEXT");
+                }
+
+                System.out.println("FINISHED");
                 init();
             }
         });
@@ -429,39 +435,39 @@ public abstract class NComponent
         {
             try
             {
-                if (field.getType().equals(Boolean.class))
+                if (field.getType().equals(boolean.class))
                 {
                     field.set(this, Boolean.parseBoolean(value));
                 }
-                else if (field.getType().equals(Integer.class))
+                else if (field.getType().equals(int.class))
                 {
                     field.set(this, Integer.parseInt(value));
                 }
-                else if (field.getType().equals(Byte.class))
+                else if (field.getType().equals(byte.class))
                 {
                     field.set(this, Byte.parseByte(value));
                 }
-                else if (field.getType().equals(Float.class))
+                else if (field.getType().equals(float.class))
                 {
                     field.set(this, Float.parseFloat(value));
                 }
-                else if (field.getType().equals(Double.class))
+                else if (field.getType().equals(double.class))
                 {
                     field.set(this, Double.parseDouble(value));
                 }
-                else if (field.getType().equals(Short.class))
+                else if (field.getType().equals(short.class))
                 {
                     field.set(this, Short.parseShort(value));
                 }
-                else if (field.getType().equals(Long.class))
+                else if (field.getType().equals(long.class))
                 {
                     field.set(this, Long.parseLong(value));
                 }
-                else if (!field.getType().equals(NoctisNinePatch.class))
+                else if (field.getType().equals(NoctisNinePatch.class))
                 {
                     registerNinePatch(field.getName(), value);
                 }
-                else if (!field.getType().equals(GlTexture.class))
+                else if (field.getType().equals(GlTexture.class))
                 {
                     field.set(this, theme().requireTexture(value));
                 }
