@@ -32,6 +32,8 @@ import org.libnoctis.ninepatch.LinkedNinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.theme.NoctisTheme;
+import org.libnoctis.theme.ThemeProperty;
+import org.libnoctis.theme.ThemeRequireProperty;
 import org.libnoctis.util.Vector2i;
 
 /**
@@ -171,11 +173,15 @@ public abstract class NComponent
         else
             try
             {
-                texture.set(this, theme().requireTexture(pathInTheme));
+                texture.setAccessible(true);
+                {
+                    texture.set(this, theme().requireTexture(pathInTheme));
+                }
+                texture.setAccessible(false);
             }
-            catch (IllegalAccessException e)
+            catch (IllegalAccessException ignored)
             {
-                throw new IllegalArgumentException("Can't access the texture field '" + texture.getName() + "' in the class '" + getClass().getName() + "'");
+                // Can't happen
             }
 
         updatePatch(theField, texture);
@@ -186,11 +192,16 @@ public abstract class NComponent
         try
         {
             NoctisNinePatch ninePatch = (NoctisNinePatch) patch.get(this);
-            texture.set(this, ninePatch.generateFor(this.getWidth(), this.getHeight()));
+
+            texture.setAccessible(true);
+            {
+                texture.set(this, ninePatch.generateFor(this.getWidth(), this.getHeight()));
+            }
+            texture.setAccessible(false);
         }
-        catch (IllegalAccessException e)
+        catch (IllegalAccessException ignored)
         {
-            throw new IllegalArgumentException("Can't access the texture field '" + texture.getName() + "' in the class '" + getClass().getName() + "'");
+            // Can't happen
         }
     }
 
@@ -245,7 +256,10 @@ public abstract class NComponent
         if (drawer != null)
         {
             if (drawer.shouldPaintEveryFrame())
+            {
                 paintComponent(drawer);
+            }
+
             render(drawer);
         }
     }
@@ -296,7 +310,9 @@ public abstract class NComponent
     protected final void repaint(Drawer drawer)
     {
         drawer.prePaint(this);
-        paintComponent(drawer);
+        {
+            paintComponent(drawer);
+        }
         drawer.postPaint(this);
     }
 
@@ -360,6 +376,11 @@ public abstract class NComponent
             }
         }
 
+        for (Field field : this.getClass().getFields())
+        {
+            fillProperty(field);
+        }
+
         schedulRenderTask(new Runnable()
         {
             @Override
@@ -372,6 +393,81 @@ public abstract class NComponent
         repaint();
 
         onComponentAdded(parent);
+    }
+
+    private String loadValueFromField(Field field)
+    {
+        String value = null;
+
+        ThemeProperty annotation;
+        if ((annotation = field.getAnnotation(ThemeProperty.class)) != null)
+        {
+            value = theme().prop(annotation.value());
+        }
+
+        ThemeRequireProperty requireAnnotation;
+        if ((requireAnnotation = field.getAnnotation(ThemeRequireProperty.class)) != null)
+        {
+            value = theme().requireProp(requireAnnotation.value());
+        }
+
+        return value;
+    }
+
+    private void fillProperty(Field field)
+    {
+        String value = loadValueFromField(field);
+
+        if (value == null)
+            return;
+
+        field.setAccessible(true);
+        {
+            try
+            {
+                if (field.getType().equals(Boolean.class))
+                {
+                    field.set(this, Boolean.parseBoolean(value));
+                }
+                else if (field.getType().equals(Integer.class))
+                {
+                    field.set(this, Integer.parseInt(value));
+                }
+                else if (field.getType().equals(Byte.class))
+                {
+                    field.set(this, Byte.parseByte(value));
+                }
+                else if (field.getType().equals(Float.class))
+                {
+                    field.set(this, Float.parseFloat(value));
+                }
+                else if (field.getType().equals(Double.class))
+                {
+                    field.set(this, Double.parseDouble(value));
+                }
+                else if (field.getType().equals(Short.class))
+                {
+                    field.set(this, Short.parseShort(value));
+                }
+                else if (field.getType().equals(Long.class))
+                {
+                    field.set(this, Long.parseLong(value));
+                }
+                if (!field.getType().equals(NoctisNinePatch.class))
+                {
+                    registerNinePatch(field.getName(), value);
+                }
+                else
+                {
+                    field.set(this, value);
+                }
+            }
+            catch (IllegalAccessException ignored)
+            {
+                // Can't happen
+            }
+        }
+        field.setAccessible(false);
     }
 
     /**
