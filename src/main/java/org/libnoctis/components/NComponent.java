@@ -18,14 +18,18 @@
  */
 package org.libnoctis.components;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.libnoctis.input.EventManager;
 import org.libnoctis.input.NEvent;
 import org.libnoctis.input.NListener;
 import org.libnoctis.input.NoctisEvent;
 import org.libnoctis.input.mouse.MouseMoveEvent;
 import org.libnoctis.layout.LayoutConstraints;
+import org.libnoctis.ninepatch.LinkedNinePatch;
+import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.theme.NoctisTheme;
 import org.libnoctis.util.Vector2i;
@@ -108,6 +112,11 @@ public abstract class NComponent
     private Vector2i preferredSize;
 
     /**
+     * The nine patches linked to textures, automatically managed
+     */
+    private HashMap<Field, Field> linkedPatches = new HashMap<Field, Field>();
+
+    /**
      * The Noctis Component
      */
     public NComponent()
@@ -129,6 +138,56 @@ public abstract class NComponent
     public Map<String, Object> getProperties()
     {
         return properties;
+    }
+
+    protected void registerNinePatch(String field, String pathInTheme)
+    {
+        Field theField;
+        try
+        {
+            theField = getClass().getDeclaredField(field);
+        }
+        catch (NoSuchFieldException e)
+        {
+            throw new IllegalArgumentException("Can't find the field '" + field + " in the component " + getClass().getName());
+        }
+
+        LinkedNinePatch annotation = theField.getAnnotation(LinkedNinePatch.class);
+        if (annotation == null)
+            throw new IllegalArgumentException("The field '" + field + " in the component " + getClass().getName() + " hasn't the LinkedNinePatch annotation");
+
+        Field texture;
+        try
+        {
+            texture = getClass().getDeclaredField(annotation.value());
+        }
+        catch (NoSuchFieldException e)
+        {
+            throw new IllegalArgumentException("Can't find the field '" + annotation.value() + " in the component " + getClass().getName() + " given in its LinkedNinePatch annotation");
+        }
+
+        this.linkedPatches.put(theField, texture);
+
+        updatePatch(theField, texture);
+    }
+
+    private void updatePatch(Field patch, Field texture)
+    {
+        try
+        {
+            NoctisNinePatch ninePatch = (NoctisNinePatch) patch.get(this);
+            texture.set(this, ninePatch.generateFor(this.getWidth(), this.getHeight()));
+        }
+        catch (IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private void updatePatches()
+    {
+        for (Entry<Field, Field> entry : linkedPatches.entrySet())
+            updatePatch(entry.getKey(), entry.getValue());
     }
 
     /**
@@ -244,11 +303,19 @@ public abstract class NComponent
             @Override
             public void run()
             {
+                onRepaint();
                 repaint(getDrawer());
             }
         });
 
         repaintChildren();
+    }
+
+    /**
+     * Event called just befoire repainting
+     */
+    protected void onRepaint()
+    {
     }
 
     /**
@@ -345,6 +412,8 @@ public abstract class NComponent
     public void setWidth(int width)
     {
         this.width = width;
+
+        updatePatches();
         invalidate();
     }
 
@@ -366,6 +435,8 @@ public abstract class NComponent
     public void setHeight(int height)
     {
         this.height = height;
+
+        updatePatches();
         invalidate();
     }
 

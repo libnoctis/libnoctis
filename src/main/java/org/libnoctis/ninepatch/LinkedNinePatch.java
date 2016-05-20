@@ -27,15 +27,17 @@ import java.lang.annotation.Target;
  * The Linked Nine Patch Annotation
  *
  * <p>
- * This annotation can be added on a NComponent field
- * (should be a NoctisNinePatch) to mark it internally
- * managed. It will be linked to a GlTexture with the
- * same key given in a {@link LinkedTexture} annotation,
- * where the nine patch will be generated.
+ *     This annotation can be added on a NComponent field
+ *     (should be a NoctisNinePatch) to mark it internally managed.
+ *     It will be linked to a GlTexture with the same given name.
+ *     (Give the name of the field of the GLTexture).
  *
- * To register it then, use the
- * {@link org.libnoctis.components.NComponent#registerNinePatch}
- * method.
+ *     To register it then, use the
+ *     {@link org.libnoctis.components.NComponent#registerNinePatch}
+ *     method.
+ *
+ *     Also it will be automatically updated when the component change
+ *     it size.
  * </p>
  *
  * @author Litarvan
@@ -46,5 +48,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface LinkedNinePatch
 {
+    /**
+     * This should be the name of the GlTexture field linked to this NinePatch
+     * where it will be generated.
+     *
+     * @return The name of the GlTexture field linked to this patch.
+     */
     String value();
 }
