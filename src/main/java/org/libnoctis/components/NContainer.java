@@ -18,24 +18,22 @@
  */
 package org.libnoctis.components;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.libnoctis.input.NEvent;
 import org.libnoctis.layout.NLayout;
 import org.libnoctis.render.Drawer;
 
-
 /**
  * The Noctis Container
+ *
  * <p>
- * The Noctis Container is a component that can contains other components.
- * For example, NPanel is a NContainer.
+ *     The Noctis Container is a component that can contains other components.
+ *     For example, NPanel is a NContainer.
  * </p>
  *
- * @author Litarvan
+ * @author Litarvan & Wytrem
  * @version 1.0.0
  * @since 1.0.0
  */
@@ -50,7 +48,10 @@ public abstract class NContainer extends NComponent
      * The container layout
      */
     private NLayout layout;
-    
+
+    /**
+     * @return The components in this container
+     */
     public List<NComponent> getChildren()
     {
         return components;

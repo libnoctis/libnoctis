@@ -18,6 +18,7 @@
  */
 package org.libnoctis.components;
 
+import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +48,7 @@ import org.libnoctis.util.Vector2i;
  *     color, etc...
  * </p>
  *
- * @author Litarvan
+ * @author Litarvan & Wytrem
  * @version 1.0.0
  * @since 1.0.0
  */
@@ -486,6 +487,10 @@ public abstract class NComponent
                 else if (field.getType().equals(GlTexture.class))
                 {
                     field.set(this, theme().requireTexture(value));
+                }
+                else if (field.getType().equals(BufferedImage.class))
+                {
+                    field.set(this, theme().requireImage(value));
                 }
                 else
                 {
