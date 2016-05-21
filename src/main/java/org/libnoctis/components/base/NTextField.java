@@ -297,6 +297,7 @@ public class NTextField extends NComponent
         private void mousePress(MousePressedEvent event)
         {
             focus = isHovered();
+            invalidate();
         }
 
         @NoctisEvent

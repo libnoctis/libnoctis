@@ -21,6 +21,9 @@ package org.libnoctis.components.base;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.libnoctis.components.NComponent;
+import org.libnoctis.input.NListener;
+import org.libnoctis.input.NoctisEvent;
+import org.libnoctis.input.mouse.MousePressedEvent;
 import org.libnoctis.ninepatch.LinkedNinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
@@ -104,7 +107,7 @@ public class NCheckbox extends NComponent
      * The check texture, as a nine patch
      */
     @Nullable
-    @LinkedNinePatch("check")
+    @LinkedNinePatch("checkTexture")
     @ThemeRequireProperty(CHECKBOX_TEXTURE_CHECK)
     private NoctisNinePatch checkPatch;
 
@@ -112,6 +115,14 @@ public class NCheckbox extends NComponent
      * If the checkbox is disabled
      */
     private boolean disabled = false;
+
+    @Override
+    protected void init()
+    {
+        super.init();
+
+        this.registerListener(new NCheckboxEventListener());
+    }
 
     @Override
     protected void paintComponent(Drawer drawer)
@@ -122,6 +133,16 @@ public class NCheckbox extends NComponent
 
         if (isChecked())
             drawer.drawTexture(this.getX(), this.getY(), this.getWidth(), this.getHeight(), checkTexture);
+    }
+
+    private class NCheckboxEventListener implements NListener
+    {
+        @NoctisEvent
+        private void click(MousePressedEvent event)
+        {
+            if (isHovered())
+                setChecked(!checked);
+        }
     }
 
     /**

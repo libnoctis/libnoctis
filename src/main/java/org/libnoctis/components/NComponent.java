@@ -170,7 +170,7 @@ public abstract class NComponent
         }
         catch (NoSuchFieldException e)
         {
-            throw new IllegalArgumentException("Can't find the field '" + annotation.value() + " in the component " + getClass().getName() + " given in its LinkedNinePatch annotation");
+            throw new IllegalArgumentException("Can't find the field '" + annotation.value() + "' in the component " + getClass().getName() + " given in its LinkedNinePatch annotation");
         }
 
         if (pathInTheme.endsWith(".9.png"))
@@ -197,7 +197,6 @@ public abstract class NComponent
             {
                 texture.setAccessible(true);
                 {
-                    System.out.println("Setting to  the texture from " + pathInTheme);
                     texture.set(this, theme().requireTexture(pathInTheme));
                 }
                 texture.setAccessible(false);

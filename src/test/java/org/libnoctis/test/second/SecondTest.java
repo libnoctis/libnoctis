@@ -2,17 +2,14 @@ package org.libnoctis.test.second;
 
 import java.io.File;
 import java.io.IOException;
-
 import org.libnoctis.components.NFrame;
 import org.libnoctis.components.base.NButton;
+import org.libnoctis.components.base.NCheckbox;
 import org.libnoctis.components.base.NTextField;
-import org.libnoctis.input.NListener;
-import org.libnoctis.input.NoctisEvent;
-import org.libnoctis.input.mouse.MousePressedEvent;
 import org.libnoctis.test.LWJGLSetup;
 import org.libnoctis.theme.ThemeLoadingException;
 
-public class SecondTest extends NFrame implements NListener
+public class SecondTest extends NFrame
 {
     private NButton button = new NButton("Yolo !");
     private NButton button2 = new NButton("MDR !");
@@ -20,40 +17,33 @@ public class SecondTest extends NFrame implements NListener
 
     private NTextField field = new NTextField();
 
+    private NCheckbox box = new NCheckbox();
+
     public SecondTest(String title)
     {
         super(title);
 
-        this.setWidth(750);
-        this.setHeight(750);
+        this.setSize(750, 750);
 
         button.setPosition(75, 50);
-        button.setWidth(450);
-        button.setHeight(50);
+        button.setSize(450, 50);
         this.add(button);
 
         button1.setPosition(75, 150);
-        button1.setWidth(550);
-        button1.setHeight(150);
+        button1.setSize(550, 150);
         this.add(button1);
 
         field.setPosition(75, 350);
-        field.setWidth(500);
-        field.setHeight(50);
+        field.setSize(500, 50);
         this.add(field);
 
         button2.setPosition(75, 500);
-        button2.setWidth(650);
-        button2.setHeight(50);
+        button2.setSize(650, 50);
         this.add(button2);
 
-        this.registerListener(this);
-    }
-
-    @NoctisEvent
-    public void monEventMousePressed(MousePressedEvent event)
-    {
-        System.out.println("Et c'est le click =)");
+        box.setPosition(5, 575);
+        box.setSize(50, 50);
+        this.add(box);
     }
 
     public static void main(String[] args) throws IOException
