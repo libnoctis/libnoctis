@@ -222,7 +222,10 @@ public abstract class NComponent
 
             texture.setAccessible(true);
             {
-                texture.set(this, ninePatch.generateFor(this.getWidth(), this.getHeight()));
+                if (texture.getType() == GlTexture.class)
+                    texture.set(this, ninePatch.generateFor(this.getWidth(), this.getHeight()));
+                else if (texture.getType() == BufferedImage.class)
+                    texture.set(this, ninePatch.raw(this.getWidth(), this.getHeight()));
             }
             texture.setAccessible(false);
         }

@@ -70,16 +70,43 @@ public class NoctisNinePatch extends NinePatch
         if (cache.containsKey(dimensions))
             return cache.get(dimensions);
 
+        GlTexture texture = new GlTexture(raw(dimensions));
+        cache.put(dimensions, texture);
+
+        return texture;
+    }
+
+    /**
+     * Raw generating of the nine patch, not using the cache, and
+     * returning a BufferedImage
+     *
+     * @param dimensions The dimensions of the image to generate
+     *
+     * @return The generated image
+     */
+    public BufferedImage raw(Vector2i dimensions)
+    {
         int width = dimensions.getX();
         int height = dimensions.getY();
 
         BufferedImage image = GraphicsUtilities.createCompatibleImage(width, height);
         this.draw((Graphics2D) image.getGraphics(), 0, 0, width, height);
 
-        GlTexture texture = new GlTexture(image);
-        cache.put(dimensions, texture);
+        return image;
+    }
 
-        return texture;
+    /**
+     * Raw generating of the nine patch, not using the cache, and
+     * returning a BufferedImage
+     *
+     * @param width The width of the image to generate
+     * @param height The height of the image to generate
+     *
+     * @return The generated image
+     */
+    public BufferedImage raw(int width, int height)
+    {
+        return raw(new Vector2i(width, height));
     }
 
     /**

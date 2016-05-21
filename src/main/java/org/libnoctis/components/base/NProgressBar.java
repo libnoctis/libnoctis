@@ -61,11 +61,18 @@ public class NProgressBar extends NComponent
     private GlTexture backgroundTexture;
 
     /**
+     * The filling texture of the bar, as a nine patch
+     */
+    @Nullable
+    @LinkedNinePatch("filledTexture")
+    @ThemeRequireProperty(BAR_FILLED_TEXTURE_PROPERTY)
+    private NoctisNinePatch fillingPatch;
+
+    /**
      * The filling of the bar, cut depending on the value
      * and the maximum.
      */
     @NotNull
-    @ThemeRequireProperty(BAR_FILLED_TEXTURE_PROPERTY)
     private BufferedImage filledTexture;
 
     /**
@@ -93,6 +100,7 @@ public class NProgressBar extends NComponent
     @Override
     public void init()
     {
+        lastGeneratedTexture = new GlTexture(new BufferedImage(1, 1, BufferedImage.TYPE_3BYTE_BGR));
         updateFill();
     }
 
@@ -109,16 +117,17 @@ public class NProgressBar extends NComponent
     {
         Vector2i dimensions = new Vector2i(getFillingWidth(), this.getHeight());
 
-        if (dimensions.getX() == this.lastGeneratedDimensions.getX() && dimensions.getY() == this.lastGeneratedDimensions.getY())
+        if (this.lastGeneratedDimensions != null && dimensions.getX() == this.lastGeneratedDimensions.getX() && dimensions.getY() == this.lastGeneratedDimensions.getY())
             return;
 
-        this.lastGeneratedTexture = new GlTexture(filledTexture.getSubimage(0, 0, dimensions.getX(), dimensions.getY()));
+        if (dimensions.getX() != 0)
+            this.lastGeneratedTexture = new GlTexture(filledTexture.getSubimage(0, 0, dimensions.getX(), dimensions.getY()));
         this.lastGeneratedDimensions = dimensions;
     }
 
     private int getFillingWidth()
     {
-        return (int) (((float) this.value / (float) this.maximum) * 100);
+        return (int) (((float) this.value / (float) this.maximum) * this.getWidth());
     }
 
     @Override
@@ -126,7 +135,8 @@ public class NProgressBar extends NComponent
     {
         super.setWidth(width);
 
-        updateFill();
+        if (getFrame() != null)
+            updateFill();
     }
 
     @Override
@@ -134,7 +144,8 @@ public class NProgressBar extends NComponent
     {
         super.setHeight(height);
 
-        updateFill();
+        if (getFrame() != null)
+            updateFill();
     }
 
     /**
@@ -155,6 +166,7 @@ public class NProgressBar extends NComponent
     public void setValue(int value)
     {
         this.value = value;
+        invalidate();
     }
 
     /**
@@ -175,5 +187,6 @@ public class NProgressBar extends NComponent
     public void setMaximum(int maximum)
     {
         this.maximum = maximum;
+        invalidate();
     }
 }

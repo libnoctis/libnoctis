@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.libnoctis.components.NFrame;
 import org.libnoctis.components.base.NButton;
 import org.libnoctis.components.base.NCheckbox;
+import org.libnoctis.components.base.NProgressBar;
 import org.libnoctis.components.base.NTextField;
 import org.libnoctis.test.LWJGLSetup;
 import org.libnoctis.theme.ThemeLoadingException;
@@ -18,6 +19,8 @@ public class SecondTest extends NFrame
     private NTextField field = new NTextField();
 
     private NCheckbox box = new NCheckbox();
+
+    private NProgressBar bar = new NProgressBar();
 
     public SecondTest(String title)
     {
@@ -44,6 +47,12 @@ public class SecondTest extends NFrame
         box.setPosition(5, 575);
         box.setSize(50, 50);
         this.add(box);
+
+        bar.setValue(50);
+        bar.setMaximum(100);
+        bar.setPosition(5, 650);
+        bar.setSize(500, 50);
+        this.add(bar);
     }
 
     public static void main(String[] args) throws IOException
