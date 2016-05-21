@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+apply plugin: 'maven-publish'
 
 group = 'org.libnoctis'
 version = '0.0.1'
@@ -24,5 +25,17 @@ dependencies {
     compile 'org.lwjgl.lwjgl:lwjgl:2.9.3'
     compile 'org.lwjgl.lwjgl:lwjgl_util:2.9.3'
     compile 'org.jetbrains:annotations:15.0'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId group
+            artifactId archivesBaseName
+            version = version
+
+            from components.java
+        }
+    }
 }
 
