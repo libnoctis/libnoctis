@@ -32,8 +32,6 @@ import org.libnoctis.ninepatch.LinkedNinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
-import org.libnoctis.theme.ThemeProperty;
-import org.libnoctis.theme.ThemeRequireProperty;
 import org.libnoctis.util.Vector2i;
 
 /**
@@ -80,7 +78,6 @@ public class NTextField extends NComponent
      */
     @Nullable
     @LinkedNinePatch("background")
-    @ThemeRequireProperty(TEXTFIELD_TEXTURE)
     private NoctisNinePatch backgroundPatch;
 
     /**
@@ -88,7 +85,6 @@ public class NTextField extends NComponent
      */
     @Nullable
     @LinkedNinePatch("focusBackground")
-    @ThemeProperty(TEXTFIELD_TEXTURE_FOCUSED)
     private NoctisNinePatch focusBackgroundPatch;
 
     /**
@@ -96,7 +92,6 @@ public class NTextField extends NComponent
      */
     @Nullable
     @LinkedNinePatch("disabledBackground")
-    @ThemeProperty(TEXTFIELD_TEXTURE_DISABLED)
     private NoctisNinePatch disabledBackgroundPatch;
 
     /**
@@ -126,6 +121,48 @@ public class NTextField extends NComponent
      * If the user is typing in the text field
      */
     private boolean focus = false;
+
+    /**
+     * The Noctis Text Field
+     */
+    public NTextField()
+    {
+        this(TEXTFIELD_TEXTURE, TEXTFIELD_TEXTURE_FOCUSED, TEXTFIELD_TEXTURE_DISABLED);
+    }
+    /**
+     * The Noctis Text Field
+     *
+     * @param backgroundTexturePath The theme property containing the path of the background texture
+     */
+    public NTextField(@NotNull String backgroundTexturePath)
+    {
+        this(backgroundTexturePath, "", "");
+    }
+
+    /**
+     * The Noctis Text Field
+     *
+     * @param backgroundTexturePath The theme property containing the path of the background texture
+     * @param focusedTexturePath The theme property containing the path of the background texture when focused
+     */
+    public NTextField(@NotNull String backgroundTexturePath, @NotNull String focusedTexturePath)
+    {
+        this(backgroundTexturePath, focusedTexturePath, "");
+    }
+
+    /**
+     * The Noctis Text Field
+     *
+     * @param backgroundTexturePath The theme property containing the path of the background texture
+     * @param focusedTexturePath The theme property containing the path of the background texture when focused
+     * @param disabledTexturePath The theme property containing the path of the background texture when disabled
+     */
+    public NTextField(@NotNull String backgroundTexturePath, @NotNull String focusedTexturePath, @NotNull String disabledTexturePath)
+    {
+        this.registerNinePatch("backgroundPatch", theme().requireProp(backgroundTexturePath));
+        this.registerNinePatch("focusBackgroundPatch", theme().requireProp(focusedTexturePath));
+        this.registerNinePatch("disabledBackgroundPatch", theme().requireProp(disabledTexturePath));
+    }
 
     @Override
     protected void init()

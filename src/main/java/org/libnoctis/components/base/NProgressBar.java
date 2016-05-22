@@ -26,7 +26,6 @@ import org.libnoctis.ninepatch.LinkedNinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
-import org.libnoctis.theme.ThemeRequireProperty;
 import org.libnoctis.util.Vector2i;
 
 /**
@@ -51,7 +50,6 @@ public class NProgressBar extends NComponent
      */
     @Nullable
     @LinkedNinePatch("backgroundTexture")
-    @ThemeRequireProperty(BAR_TEXTURE_PROPERTY)
     private NoctisNinePatch backgroundPatch;
 
     /**
@@ -65,7 +63,6 @@ public class NProgressBar extends NComponent
      */
     @Nullable
     @LinkedNinePatch("filledTexture")
-    @ThemeRequireProperty(BAR_FILLED_TEXTURE_PROPERTY)
     private NoctisNinePatch fillingPatch;
 
     /**
@@ -96,6 +93,54 @@ public class NProgressBar extends NComponent
      * is 50 and the maximum 100, the bar will be filled at the half of the end.
      */
     private int maximum;
+
+    public NProgressBar()
+    {
+        this(0, 1);
+    }
+
+    /**
+     * The Noctis Progress Bar
+     *
+     * @param value The value of the progress bar. By example, if the value
+     * is 50 and the maximum 100, the bar will be filled at the half of the end.
+     * @param maximum The maximum value of the progress bar. By example, if the value
+     * is 50 and the maximum 100, the bar will be filled at the half of the end.
+     */
+    public NProgressBar(int value, int maximum)
+    {
+        this(value, maximum, BAR_TEXTURE_PROPERTY, BAR_FILLED_TEXTURE_PROPERTY);
+    }
+
+    /**
+     * The Noctis Progress Bar
+     *
+     * @param textureProperty The theme property with the path of the bar background texture
+     * @param filledTextureProperty The theme property with the path of the bar filling texture
+     */
+    public NProgressBar(String textureProperty, String filledTextureProperty)
+    {
+        this(0, 1, textureProperty, filledTextureProperty);
+    }
+
+    /**
+     * The Noctis Progress Bar
+     *
+     * @param value The value of the progress bar. By example, if the value
+     * is 50 and the maximum 100, the bar will be filled at the half of the end.
+     * @param maximum The maximum value of the progress bar. By example, if the value
+     * is 50 and the maximum 100, the bar will be filled at the half of the end.
+     * @param textureProperty The theme property with the path of the bar background texture
+     * @param filledTextureProperty The theme property with the path of the bar filling texture
+     */
+    public NProgressBar(int value, int maximum, String textureProperty, String filledTextureProperty)
+    {
+        this.value = value;
+        this.maximum = maximum;
+
+        this.registerNinePatch("backgroundPatch", theme().requireProp(textureProperty));
+        this.registerNinePatch("filledTextureProperty", theme().requireProp(filledTextureProperty));
+    }
 
     @Override
     public void init()

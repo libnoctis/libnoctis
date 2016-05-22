@@ -28,8 +28,6 @@ import org.libnoctis.ninepatch.LinkedNinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
-import org.libnoctis.theme.ThemeProperty;
-import org.libnoctis.theme.ThemeRequireProperty;
 
 /**
  * The NCheckbox
@@ -84,7 +82,6 @@ public class NCheckbox extends NComponent
      */
     @Nullable
     @LinkedNinePatch("texture")
-    @ThemeRequireProperty(CHECKBOX_TEXTURE)
     private NoctisNinePatch texturePatch;
 
     /**
@@ -92,7 +89,6 @@ public class NCheckbox extends NComponent
      */
     @Nullable
     @LinkedNinePatch("hoverTexture")
-    @ThemeProperty(CHECKBOX_TEXTURE_HOVER)
     private NoctisNinePatch hoverTexturePatch;
 
     /**
@@ -100,7 +96,6 @@ public class NCheckbox extends NComponent
      */
     @Nullable
     @LinkedNinePatch("disabledTexture")
-    @ThemeProperty(CHECKBOX_TEXTURE_DISABLED)
     private NoctisNinePatch disabledTexturePatch;
 
     /**
@@ -108,13 +103,59 @@ public class NCheckbox extends NComponent
      */
     @Nullable
     @LinkedNinePatch("checkTexture")
-    @ThemeRequireProperty(CHECKBOX_TEXTURE_CHECK)
     private NoctisNinePatch checkPatch;
 
     /**
      * If the checkbox is disabled
      */
     private boolean disabled = false;
+
+    /**
+     * The Noctis Checkbox
+     */
+    public NCheckbox()
+    {
+        this(CHECKBOX_TEXTURE, CHECKBOX_TEXTURE_HOVER, CHECKBOX_TEXTURE_DISABLED, CHECKBOX_TEXTURE_CHECK);
+    }
+
+    /**
+     * The Noctis Checkbox
+     *
+     * @param texturePath The theme property containing the texture path
+     * @param checkPath The theme property containing the check texture path
+     */
+    public NCheckbox(@NotNull String texturePath, @NotNull String checkPath)
+    {
+        this(texturePath, "", "", checkPath);
+    }
+
+    /**
+     * The Noctis Checkbox
+     *
+     * @param texturePath The theme property containing the texture path
+     * @param hoverTexturePath The theme property containing the hover texture path
+     * @param checkPath The theme property containing the check texture path
+     */
+    public NCheckbox(@NotNull String texturePath, @NotNull String hoverTexturePath, @NotNull String checkPath)
+    {
+        this(texturePath, hoverTexturePath, "", checkPath);
+    }
+
+    /**
+     * The Noctis Checkbox
+     *
+     * @param texturePath The theme property containing the texture path
+     * @param hoverTexturePath The theme property containing the hover texture path
+     * @param disabledTexturePath The theme property containing the disabled texture path
+     * @param checkPath The theme property containing the check texture path
+     */
+    public NCheckbox(@NotNull String texturePath, @NotNull String hoverTexturePath, @NotNull String disabledTexturePath, @NotNull String checkPath)
+    {
+        this.registerNinePatch("texturePatch", theme().requireProp(texturePath));
+        this.registerNinePatch("hoverTexturePatch", theme().prop(hoverTexturePath));
+        this.registerNinePatch("disabledTexturePatch", theme().prop(disabledTexturePath));
+        this.registerNinePatch("checkPatch", theme().requireProp(checkPath));
+    }
 
     @Override
     protected void init()

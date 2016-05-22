@@ -29,7 +29,6 @@ import org.libnoctis.ninepatch.LinkedNinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
-import org.libnoctis.theme.ThemeProperty;
 import org.libnoctis.theme.ThemeRequireProperty;
 
 
@@ -85,7 +84,6 @@ public class NButton extends NComponent implements NListener
      */
     @Nullable
     @LinkedNinePatch("texture")
-    @ThemeRequireProperty(BUTTON_TEXTURE_PROPERTY)
     private NoctisNinePatch texturePatch;
 
     /**
@@ -99,7 +97,6 @@ public class NButton extends NComponent implements NListener
      */
     @Nullable
     @LinkedNinePatch("hoverTexture")
-    @ThemeRequireProperty(BUTTON_HOVER_TEXTURE_PROPERTY)
     private NoctisNinePatch hoverTexturePatch;
 
     /**
@@ -113,7 +110,6 @@ public class NButton extends NComponent implements NListener
      */
     @Nullable
     @LinkedNinePatch("disabledTexture")
-    @ThemeProperty(BUTTON_DISABLED_TEXTURE_PROPERTY)
     private NoctisNinePatch disabledTexturePatch;
 
     /**
@@ -128,14 +124,62 @@ public class NButton extends NComponent implements NListener
 
     /**
      * The Noctis Button
+     */
+    public NButton()
+    {
+        this("");
+    }
+
+    /**
+     * The Noctis Button
      *
      * @param text The button text
      */
-    public NButton(String text)
+    public NButton(@Nullable String text)
+    {
+        this(text, BUTTON_TEXTURE_PROPERTY, BUTTON_HOVER_TEXTURE_PROPERTY, BUTTON_DISABLED_TEXTURE_PROPERTY);
+    }
+
+    /**
+     * The Noctis Button
+     *
+     * @param textureProperty The theme property containing the texture path
+     * @param hoverTextureProperty The theme property containing the hover texture path
+     */
+    public NButton(@NotNull String textureProperty, @NotNull String hoverTextureProperty)
+    {
+        this("", textureProperty, hoverTextureProperty, "");
+    }
+
+    /**
+     * The Noctis Button
+     *
+     * @param textureProperty The theme property containing the texture path
+     * @param hoverTextureProperty The theme property containing the hover texture path
+     * @param disabledTextureProperty The theme property containing the disabled texture path
+     */
+    public NButton(@NotNull String textureProperty, @NotNull String hoverTextureProperty, @NotNull String disabledTextureProperty)
+    {
+        this("", textureProperty, hoverTextureProperty, disabledTextureProperty);
+    }
+
+    /**
+     * The Noctis Button
+     *
+     * @param text The button text
+     * @param textureProperty The theme property containing the texture path
+     * @param hoverTextureProperty The theme property containing the hover texture path
+     * @param disabledTextureProperty The theme property containing the disabled texture path
+     */
+    public NButton(@Nullable String text, @NotNull String textureProperty, @NotNull String hoverTextureProperty, @NotNull String disabledTextureProperty)
     {
         this.text = text;
 
         this.registerListener(new NButtonMouseListener());
+
+        this.registerNinePatch("texturePatch", theme().requireProp(textureProperty));
+        this.registerNinePatch("hoverTexturePatch", theme().requireProp(hoverTextureProperty));
+        this.registerNinePatch("disabledTexturePatch", theme().prop(disabledTextureProperty));
     }
 
     @Override
