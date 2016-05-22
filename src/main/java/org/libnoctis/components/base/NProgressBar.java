@@ -94,6 +94,18 @@ public class NProgressBar extends NComponent
      */
     private int maximum;
 
+    /**
+     * The theme property with the path of the bar background texture
+     */
+    @NotNull
+    private String textureProperty;
+
+    /**
+     * The theme property with the path of the bar filling texture
+     */
+    @NotNull
+    private String filledTextureProperty;
+
     public NProgressBar()
     {
         this(0, 1);
@@ -118,7 +130,7 @@ public class NProgressBar extends NComponent
      * @param textureProperty The theme property with the path of the bar background texture
      * @param filledTextureProperty The theme property with the path of the bar filling texture
      */
-    public NProgressBar(String textureProperty, String filledTextureProperty)
+    public NProgressBar(@NotNull String textureProperty, @NotNull String filledTextureProperty)
     {
         this(0, 1, textureProperty, filledTextureProperty);
     }
@@ -133,18 +145,20 @@ public class NProgressBar extends NComponent
      * @param textureProperty The theme property with the path of the bar background texture
      * @param filledTextureProperty The theme property with the path of the bar filling texture
      */
-    public NProgressBar(int value, int maximum, String textureProperty, String filledTextureProperty)
+    public NProgressBar(int value, int maximum, @NotNull String textureProperty, @NotNull String filledTextureProperty)
     {
         this.value = value;
         this.maximum = maximum;
-
-        this.registerNinePatch("backgroundPatch", theme().requireProp(textureProperty));
-        this.registerNinePatch("filledTextureProperty", theme().requireProp(filledTextureProperty));
+        this.textureProperty = textureProperty;
+        this.filledTextureProperty = filledTextureProperty;
     }
 
     @Override
     public void init()
     {
+        this.registerNinePatch("backgroundPatch", theme().requireProp(textureProperty));
+        this.registerNinePatch("filledTextureProperty", theme().requireProp(filledTextureProperty));
+
         lastGeneratedTexture = new GlTexture(new BufferedImage(1, 1, BufferedImage.TYPE_3BYTE_BGR));
         updateFill();
     }

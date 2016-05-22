@@ -123,6 +123,24 @@ public class NButton extends NComponent implements NListener
     private boolean disabled = false;
 
     /**
+     * The theme property containing the texture path
+     */
+    @NotNull
+    private String textureProperty;
+
+    /**
+     * The theme property containing the hover texture path
+     */
+    @NotNull
+    private String hoverTextureProperty;
+
+    /**
+     * The theme property containing the disabled texture path
+     */
+    @NotNull
+    private String disabledTextureProperty;
+
+    /**
      * The Noctis Button
      */
     public NButton()
@@ -174,18 +192,21 @@ public class NButton extends NComponent implements NListener
     public NButton(@Nullable String text, @NotNull String textureProperty, @NotNull String hoverTextureProperty, @NotNull String disabledTextureProperty)
     {
         this.text = text;
+        this.textureProperty = textureProperty;
+        this.hoverTextureProperty = hoverTextureProperty;
+        this.disabledTextureProperty = disabledTextureProperty;
 
         this.registerListener(new NButtonMouseListener());
-
-        this.registerNinePatch("texturePatch", theme().requireProp(textureProperty));
-        this.registerNinePatch("hoverTexturePatch", theme().requireProp(hoverTextureProperty));
-        this.registerNinePatch("disabledTexturePatch", theme().prop(disabledTextureProperty));
     }
 
     @Override
     protected void init()
     {
         super.init();
+
+        this.registerNinePatch("texturePatch", theme().requireProp(textureProperty));
+        this.registerNinePatch("hoverTexturePatch", theme().requireProp(hoverTextureProperty));
+        this.registerNinePatch("disabledTexturePatch", theme().prop(disabledTextureProperty));
 
         if (fixed)
         {

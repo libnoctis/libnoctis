@@ -4,7 +4,7 @@ apply plugin: 'idea'
 apply plugin: 'maven-publish'
 
 group = 'org.libnoctis'
-version = '0.0.2'
+version = '0.0.3'
 archivesBaseName = 'libnoctis'
 
 sourceCompatibility = 1.6

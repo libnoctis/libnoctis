@@ -111,6 +111,30 @@ public class NCheckbox extends NComponent
     private boolean disabled = false;
 
     /**
+     * The theme property containing the texture path
+     */
+    @NotNull
+    private String texturePath;
+
+    /**
+     * The theme property containing the hover texture path
+     */
+    @NotNull
+    private String hoverTexturePath;
+
+    /**
+     * The theme property containing the disabled texture path
+     */
+    @NotNull
+    private String disabledTexturePath;
+
+    /**
+     * The theme property containing the check texture path
+     */
+    @NotNull
+    private String checkPath;
+
+    /**
      * The Noctis Checkbox
      */
     public NCheckbox()
@@ -151,16 +175,21 @@ public class NCheckbox extends NComponent
      */
     public NCheckbox(@NotNull String texturePath, @NotNull String hoverTexturePath, @NotNull String disabledTexturePath, @NotNull String checkPath)
     {
-        this.registerNinePatch("texturePatch", theme().requireProp(texturePath));
-        this.registerNinePatch("hoverTexturePatch", theme().prop(hoverTexturePath));
-        this.registerNinePatch("disabledTexturePatch", theme().prop(disabledTexturePath));
-        this.registerNinePatch("checkPatch", theme().requireProp(checkPath));
+        this.texturePath = texturePath;
+        this.hoverTexturePath = hoverTexturePath;
+        this.disabledTexturePath = disabledTexturePath;
+        this.checkPath = checkPath;
     }
 
     @Override
     protected void init()
     {
         super.init();
+
+        this.registerNinePatch("texturePatch", theme().requireProp(texturePath));
+        this.registerNinePatch("hoverTexturePatch", theme().prop(hoverTexturePath));
+        this.registerNinePatch("disabledTexturePatch", theme().prop(disabledTexturePath));
+        this.registerNinePatch("checkPatch", theme().requireProp(checkPath));
 
         this.registerListener(new NCheckboxEventListener());
     }

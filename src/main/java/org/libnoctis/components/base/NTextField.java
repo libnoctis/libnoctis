@@ -123,6 +123,24 @@ public class NTextField extends NComponent
     private boolean focus = false;
 
     /**
+     * The theme property containing the path of the background texture
+     */
+    @NotNull
+    private String backgroundTexturePath;
+
+    /**
+     * The theme property containing the path of the background texture when focused
+     */
+    @NotNull
+    private String focusedTexturePath;
+
+    /**
+     * The theme property containing the path of the background texture when disabled
+     */
+    @NotNull
+    private String disabledTexturePath;
+
+    /**
      * The Noctis Text Field
      */
     public NTextField()
@@ -159,9 +177,9 @@ public class NTextField extends NComponent
      */
     public NTextField(@NotNull String backgroundTexturePath, @NotNull String focusedTexturePath, @NotNull String disabledTexturePath)
     {
-        this.registerNinePatch("backgroundPatch", theme().requireProp(backgroundTexturePath));
-        this.registerNinePatch("focusBackgroundPatch", theme().requireProp(focusedTexturePath));
-        this.registerNinePatch("disabledBackgroundPatch", theme().requireProp(disabledTexturePath));
+        this.backgroundTexturePath = backgroundTexturePath;
+        this.focusedTexturePath = focusedTexturePath;
+        this.disabledTexturePath = disabledTexturePath;
     }
 
     @Override
@@ -173,6 +191,10 @@ public class NTextField extends NComponent
         int yPadding = Integer.parseInt(theme().requireProp("component.textfield.textpadding.y"));
 
         this.textPadding = new Vector2i(xPadding, yPadding);
+
+        this.registerNinePatch("backgroundPatch", theme().requireProp(backgroundTexturePath));
+        this.registerNinePatch("focusBackgroundPatch", theme().requireProp(focusedTexturePath));
+        this.registerNinePatch("disabledBackgroundPatch", theme().requireProp(disabledTexturePath));
 
         this.registerListener(new NTextFieldListener());
     }
