@@ -233,14 +233,6 @@ public class NTextField extends NComponent
     }
 
     /**
-     * @return If the text field is focused (the user is typing in)
-     */
-    public boolean isFocus()
-    {
-        return focus;
-    }
-
-    /**
      * @return The coords of the field where the text should be
      */
     public Vector2i getTextPadding()

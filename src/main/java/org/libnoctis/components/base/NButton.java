@@ -58,10 +58,15 @@ public class NButton extends NComponent implements NListener
      */
     private String text;
 
-    /**
+    /*/**
      * The button font
      */
     // private NFont font;
+
+    /**
+     * An event launched when the button is clicked
+     */
+    private Runnable onClick;
 
     /**
      * If the button has fixed size
@@ -244,6 +249,16 @@ public class NButton extends NComponent implements NListener
     }
 
     /**
+     * Define an action that will be executed when the user click the button
+     *
+     * @param onClick The on click action to define
+     */
+    public void setOnClick(Runnable onClick)
+    {
+        this.onClick = onClick;
+    }
+
+    /**
      * @return The button text
      */
     public String getText()
@@ -283,6 +298,9 @@ public class NButton extends NComponent implements NListener
         private void pressed(MousePressedEvent event)
         {
             clicked = isHovered();
+
+            if (clicked && onClick != null)
+                onClick.run();
         }
 
         @NoctisEvent
