@@ -80,5 +80,5 @@ public abstract class NLayout
      * @return {@code true} if this component can be added with the given
      *         constraints, {@code false} otherwise.
      */
-    abstract boolean areValidConstraints(LayoutConstraints properties, NComponent component);
+    public abstract boolean areValidConstraints(LayoutConstraints properties, NComponent component);
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import org.libnoctis.components.NComponent;
 import org.libnoctis.components.NContainer;
 import org.libnoctis.util.Vector2i;
@@ -203,7 +202,7 @@ public class GridLayout extends NLayout
      * {@inheritDoc}
      */
     @Override
-    boolean areValidConstraints(LayoutConstraints properties, NComponent component)
+    public boolean areValidConstraints(LayoutConstraints properties, NComponent component)
     {
         return properties instanceof GridLayoutConstraints;
     }

@@ -145,19 +145,46 @@ public abstract class NComponent
         return properties;
     }
 
+    private String getCallerClassName()
+    {
+        StackTraceElement[] stElements = Thread.currentThread().getStackTrace();
+
+        for (int i = 1; i < stElements.length; i++)
+        {
+            StackTraceElement ste = stElements[i];
+
+            if (!ste.getClassName().equals(NComponent.class.getName()) && ste.getClassName().indexOf("java.lang.Thread") != 0)
+            {
+                return ste.getClassName();
+            }
+        }
+
+        return null;
+    }
+
     protected void registerNinePatch(String field, String pathInTheme)
     {
         if (pathInTheme == null)
             return;
 
+        Class cl;
+        try
+        {
+            cl = Class.forName(getCallerClassName());
+        }
+        catch (ClassNotFoundException e)
+        {
+            throw new IllegalStateException("Can't find the caller class of this method (" + getCallerClassName() + ")");
+        }
+
         Field theField;
         try
         {
-            theField = getClass().getDeclaredField(field);
+            theField = cl.getDeclaredField(field);
         }
         catch (NoSuchFieldException e)
         {
-            throw new IllegalArgumentException("Can't find the field '" + field + " in the component " + getClass().getName());
+            throw new IllegalArgumentException("Can't find the field '" + field + "' in the component " + cl.getName());
         }
 
         LinkedNinePatch annotation = theField.getAnnotation(LinkedNinePatch.class);
@@ -167,11 +194,11 @@ public abstract class NComponent
         Field texture;
         try
         {
-            texture = getClass().getDeclaredField(annotation.value());
+            texture = cl.getDeclaredField(annotation.value());
         }
         catch (NoSuchFieldException e)
         {
-            throw new IllegalArgumentException("Can't find the field '" + annotation.value() + "' in the component " + getClass().getName() + " given in its LinkedNinePatch annotation");
+            throw new IllegalArgumentException("Can't find the field '" + annotation.value() + "' in the component " + cl.getName() + " given in its LinkedNinePatch annotation");
         }
 
         if (pathInTheme.endsWith(".9.png"))
@@ -411,10 +438,18 @@ public abstract class NComponent
             @Override
             public void run()
             {
-                for (Field field : NComponent.this.getClass().getDeclaredFields())
+                Class cl = NComponent.this.getClass();
+
+                while (cl != null)
                 {
-                    fillProperty(field);
+                    for (Field field : cl.getDeclaredFields())
+                    {
+                        fillProperty(field);
+                    }
+
+                    cl = cl.getSuperclass();
                 }
+
 
                 init();
             }

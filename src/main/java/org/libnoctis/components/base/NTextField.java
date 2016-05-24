@@ -194,7 +194,7 @@ public class NTextField extends NComponent
 
         this.registerNinePatch("backgroundPatch", theme().requireProp(backgroundTexturePath));
         this.registerNinePatch("focusBackgroundPatch", theme().requireProp(focusedTexturePath));
-        this.registerNinePatch("disabledBackgroundPatch", theme().requireProp(disabledTexturePath));
+        this.registerNinePatch("disabledBackgroundPatch", theme().prop(disabledTexturePath));
 
         this.registerListener(new NTextFieldListener());
     }
