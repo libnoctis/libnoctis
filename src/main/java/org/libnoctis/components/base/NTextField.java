@@ -18,7 +18,7 @@
  */
 package org.libnoctis.components.base;
 
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,11 +29,11 @@ import org.libnoctis.input.keyboard.Key;
 import org.libnoctis.input.keyboard.KeyPressedEvent;
 import org.libnoctis.input.keyboard.KeyReleasedEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
+import org.libnoctis.ninepatch.LinkedNinePatch;
+import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
 import org.libnoctis.util.Dimension;
-import org.libnoctis.util.NoctisNinePatch;
-import org.libnoctis.util.NoctisNinePatchCache;
 import org.libnoctis.util.Vector2i;
 
 /**
@@ -50,9 +50,10 @@ import org.libnoctis.util.Vector2i;
  */
 public class NTextField extends NComponent
 {
-    public static final String TEXTFIELD_SECTION = COMPONENTS_SECTION + ".textfield";
-    public static final String TEXTFIELD_TEXTURE = TEXTFIELD_SECTION + ".texture";
-    public static final String TEXTFIELD_TEXTURE_HOVER = TEXTFIELD_SECTION + ".texture.hover";
+    public static final String TEXTFIELD_SECTION          = COMPONENTS_SECTION + ".textfield";
+    public static final String TEXTFIELD_TEXTURE          = TEXTFIELD_SECTION + ".texture";
+    public static final String TEXTFIELD_TEXTURE_FOCUSED  = TEXTFIELD_TEXTURE + ".focused";
+    public static final String TEXTFIELD_TEXTURE_DISABLED = TEXTFIELD_TEXTURE + ".disabled";
 
     /**
      * The current text field text
@@ -75,28 +76,43 @@ public class NTextField extends NComponent
     private boolean capsLock = false;
 
     /**
-     * The background nine patch, null if #background is not
+     * The background texture as a nine patch
      */
     @Nullable
+    @LinkedNinePatch("background")
     private NoctisNinePatch backgroundPatch;
 
     /**
-     * The background when focused, as a nine patch.
+     * The background texture when focused, as a nine patch.
      */
     @Nullable
+    @LinkedNinePatch("focusBackground")
     private NoctisNinePatch focusBackgroundPatch;
 
     /**
-     * The background nine patch, null if #backgroundPatch is not
+     * The background texture when disabled, as a nine patch.
+     */
+    @Nullable
+    @LinkedNinePatch("disabledBackground")
+    private NoctisNinePatch disabledBackgroundPatch;
+
+    /**
+     * The background texture
      */
     @NotNull
     private GlTexture background;
 
     /**
-     * The background when focused
+     * The background texture when focused
      */
     @Nullable
     private GlTexture focusBackground;
+
+    /**
+     * The background texture when disabled
+     */
+    @Nullable
+    private GlTexture disabledBackground;
 
     /**
      * The coords of the field where is the text
@@ -104,99 +120,87 @@ public class NTextField extends NComponent
     private Vector2i textPadding;
 
     /**
-     * Focus sur le text field (en cours d'ecriture)
+     * If the user is typing in the text field
      */
     private boolean focus = false;
     
+    /**
+     * The theme property containing the path of the background texture
+     */
+    @NotNull
+    private String backgroundTexturePath;
+
+    /**
+     * The theme property containing the path of the background texture when focused
+     */
+    @NotNull
+    private String focusedTexturePath;
+
+    /**
+     * The theme property containing the path of the background texture when disabled
+     */
+    @NotNull
+    private String disabledTexturePath;
+
+    /**
+     * The Noctis Text Field
+     */
     public NTextField()
     {
+        this(TEXTFIELD_TEXTURE, TEXTFIELD_TEXTURE_FOCUSED, TEXTFIELD_TEXTURE_DISABLED);
         setPreferredSize(new Dimension(200, 18));
         setMinimumSize(new Dimension(200, 18));
+    }
+    /**
+     * The Noctis Text Field
+     *
+     * @param backgroundTexturePath The theme property containing the path of the background texture
+     */
+    public NTextField(@NotNull String backgroundTexturePath)
+    {
+        this(backgroundTexturePath, "", "");
+    }
+
+    /**
+     * The Noctis Text Field
+     *
+     * @param backgroundTexturePath The theme property containing the path of the background texture
+     * @param focusedTexturePath The theme property containing the path of the background texture when focused
+     */
+    public NTextField(@NotNull String backgroundTexturePath, @NotNull String focusedTexturePath)
+    {
+        this(backgroundTexturePath, focusedTexturePath, "");
+    }
+
+    /**
+     * The Noctis Text Field
+     *
+     * @param backgroundTexturePath The theme property containing the path of the background texture
+     * @param focusedTexturePath The theme property containing the path of the background texture when focused
+     * @param disabledTexturePath The theme property containing the path of the background texture when disabled
+     */
+    public NTextField(@NotNull String backgroundTexturePath, @NotNull String focusedTexturePath, @NotNull String disabledTexturePath)
+    {
+        this.backgroundTexturePath = backgroundTexturePath;
+        this.focusedTexturePath = focusedTexturePath;
+        this.disabledTexturePath = disabledTexturePath;
     }
 
     @Override
     protected void init()
     {
         super.init();
-        
-        String background = theme().requireProp(TEXTFIELD_TEXTURE);
-        String backgroundFocused = theme().prop(TEXTFIELD_TEXTURE_HOVER);
-
-        if (background.endsWith(".9.png"))
-            this.backgroundPatch = NoctisNinePatchCache.fromPath(theme(), background);
-        else
-            this.background = theme().requireTexture(background);
-
-        if (backgroundFocused != null)
-            if (backgroundFocused.endsWith(".9.png"))
-                this.focusBackgroundPatch = NoctisNinePatchCache.fromPath(theme(), backgroundFocused);
-            else
-                this.focusBackground = theme().requireTexture(backgroundFocused);
 
         int xPadding = Integer.parseInt(theme().requireProp("component.textfield.textpadding.x"));
         int yPadding = Integer.parseInt(theme().requireProp("component.textfield.textpadding.y"));
 
         this.textPadding = new Vector2i(xPadding, yPadding);
 
+        this.registerNinePatch("backgroundPatch", theme().requireProp(backgroundTexturePath));
+        this.registerNinePatch("focusBackgroundPatch", theme().requireProp(focusedTexturePath));
+        this.registerNinePatch("disabledBackgroundPatch", theme().prop(disabledTexturePath));
+
         this.registerListener(new NTextFieldListener());
-
-        updateNinePatches();
-    }
-
-    public class NTextFieldListener implements NListener
-    {
-        @NoctisEvent
-        private void keyPress(KeyPressedEvent event)
-        {
-            if (!focus)
-                return;
-
-            if (event.getKey().isCharacter())
-            {
-                setText(getText().substring(0, cursorPos) + ((currentShift != null || capsLock) && event.getKey().hasUpperCharacter() ? event.getKey().getUpperCharacter() : event.getKey().getCharacter()) + getText().substring(cursorPos, getText().length()));
-                cursorPos++;
-            }
-            else if (event.getKey() == Key.KEY_RIGHT)
-                setCursorPos(getCursorPos() + 1);
-            else if (event.getKey() == Key.KEY_LEFT && cursorPos != 0)
-                setCursorPos(getCursorPos() - 1);
-            else if (event.getKey() == Key.KEY_BACK && cursorPos != 0)
-            {
-                setText(getText().substring(0, cursorPos - 1) + getText().substring(cursorPos, getText().length()));
-                cursorPos++;
-            }
-            else if (event.getKey() == Key.KEY_LSHIFT && event.getKey() == Key.KEY_RSHIFT)
-                currentShift = event.getKey();
-            else if (event.getKey() == Key.KEY_CAPITAL)
-                capsLock = !capsLock;
-        }
-
-        @NoctisEvent
-        private void mousePress(MousePressedEvent event)
-        {
-            Rectangle rectangle = new Rectangle(getX() + textPadding.getX(), getY() + textPadding.getY(), getWidth() - textPadding.getX(), getHeight() - textPadding.getY());
-            focus = rectangle.contains(event.getPos().getX(), event.getPos().getY());
-        }
-
-        @NoctisEvent
-        private void keyRelease(KeyReleasedEvent event)
-        {
-            if (event.getKey() == currentShift)
-                currentShift = null;
-        }
-    }
-
-    private void updateNinePatches()
-    {
-        if (backgroundPatch == null)
-        {
-            return;
-        }
-
-        Vector2i dimensions = new Vector2i(this.getWidth(), this.getHeight());
-
-        background = backgroundPatch.generateFor(dimensions);
-        focusBackground = focusBackgroundPatch.generateFor(dimensions);
     }
 
     @Override
@@ -205,28 +209,10 @@ public class NTextField extends NComponent
         super.paintComponent(drawer);
 
         // Drawing background (or focused background)
-        GlTexture texture = focus && focusBackground != null ? focusBackground : background;
-
-        drawer.drawTexture(getX(), getY(), this.getWidth(), this.getHeight(), texture);
+        drawer.drawTexture(getX(), getY(), this.getWidth(), this.getHeight(), focus && focusBackground != null ? focusBackground : background);
 
         // Drawing the text
         drawer.drawString(this.getText() + /* The caret */ (focus ? "_" : ""), getX() + this.textPadding.getX(), getY() + this.textPadding.getY());
-    }
-
-    @Override
-    public void setWidth(int width)
-    {
-        super.setWidth(width);
-
-        updateNinePatches();
-    }
-
-    @Override
-    public void setHeight(int height)
-    {
-        super.setHeight(height);
-
-        updateNinePatches();
     }
 
     /**
@@ -245,7 +231,8 @@ public class NTextField extends NComponent
     public void setText(String text)
     {
         this.text = text;
-        repaint();
+
+        invalidate();
     }
 
     /**
@@ -309,14 +296,6 @@ public class NTextField extends NComponent
     }
 
     /**
-     * @return If the text field is focused (the user is typing in)
-     */
-    public boolean isFocus()
-    {
-        return focus;
-    }
-
-    /**
      * @return The coords of the field where the text should be
      */
     public Vector2i getTextPadding()
@@ -330,5 +309,57 @@ public class NTextField extends NComponent
     public boolean isFocused()
     {
         return focus;
+    }
+
+    private class NTextFieldListener implements NListener
+    {
+        @NoctisEvent
+        private void keyPress(KeyPressedEvent event)
+        {
+            if (!focus)
+                return;
+
+            if (event.getKey().isCharacter())
+            {
+                String newText = getText().substring(0, cursorPos) +
+                                 ((currentShift != null || capsLock) && event.getKey().hasUpperCharacter() ? event.getKey().getUpperCharacter() : event.getKey().getCharacter()) +
+                                 getText().substring(cursorPos, getText().length());
+
+                Rectangle2D bounds = getDrawer().getFont().getStringBounds(newText, 0, 0);
+
+                if (bounds.getWidth() > getWidth() - getTextPadding().getX() * 2 )
+                    return;
+
+                setText(newText);
+                setCursorPos(getCursorPos() + 1);
+            }
+            else if (event.getKey() == Key.KEY_RIGHT)
+                setCursorPos(getCursorPos() + 1);
+            else if (event.getKey() == Key.KEY_LEFT && cursorPos != 0)
+                setCursorPos(getCursorPos() - 1);
+            else if (event.getKey() == Key.KEY_BACK && cursorPos != 0)
+            {
+                setText(getText().substring(0, cursorPos - 1) + getText().substring(cursorPos, getText().length()));
+                setCursorPos(getCursorPos() - 1);
+            }
+            else if (event.getKey() == Key.KEY_LSHIFT && event.getKey() == Key.KEY_RSHIFT)
+                currentShift = event.getKey();
+            else if (event.getKey() == Key.KEY_CAPITAL)
+                capsLock = !capsLock;
+        }
+
+        @NoctisEvent
+        private void mousePress(MousePressedEvent event)
+        {
+            focus = isHovered();
+            invalidate();
+        }
+
+        @NoctisEvent
+        private void keyRelease(KeyReleasedEvent event)
+        {
+            if (event.getKey() == currentShift)
+                currentShift = null;
+        }
     }
 }

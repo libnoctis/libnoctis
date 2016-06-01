@@ -1,0 +1,37 @@
+package org.libnoctis.theme;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * The Theme Property Annotation
+ *
+ * <p>
+ *     This annotation marks a field as automatically filled
+ *     from a theme property (the property name is given as value).
+ *
+ *     (Works only in the classes extending NComponent)
+ *
+ *     Also you can use it on a
+ *     {@link org.libnoctis.ninepatch.LinkedNinePatch},
+ *     and it will do the same as
+ *     {@link org.libnoctis.components.NComponent#registerNinePatch(String, String)}
+ * </p>
+ *
+ * @author Litarvan
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface ThemeProperty
+{
+    /**
+     * The property to get, from the current theme
+     *
+     * @return The read property
+     */
+    String value();
+}

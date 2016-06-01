@@ -18,14 +18,25 @@
  */
 package org.libnoctis.components;
 
+import java.awt.image.BufferedImage;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.libnoctis.input.EventManager;
 import org.libnoctis.input.NEvent;
 import org.libnoctis.input.NListener;
+import org.libnoctis.input.NoctisEvent;
+import org.libnoctis.input.mouse.MouseMoveEvent;
+import org.libnoctis.ninepatch.LinkedNinePatch;
+import org.libnoctis.ninepatch.NoctisNinePatch;
+import org.libnoctis.ninepatch.NoctisNinePatchCache;
 import org.libnoctis.render.Drawer;
+import org.libnoctis.render.gl.GlTexture;
 import org.libnoctis.theme.NoctisTheme;
+import org.libnoctis.theme.ThemeProperty;
+import org.libnoctis.theme.ThemeRequireProperty;
 import org.libnoctis.util.Dimension;
 import org.libnoctis.util.Vector2i;
 
@@ -39,13 +50,18 @@ import org.libnoctis.util.Vector2i;
  * color, etc...
  * </p>
  *
- * @author Litarvan
+ * @author Litarvan & Wytrem
  * @version 1.0.0
  * @since 1.0.0
  */
 public abstract class NComponent
 {
     public static final String COMPONENTS_SECTION = "component";
+
+    /**
+     * Display list id, used for rendering.
+     */
+    public int displayList = -1;
 
     /**
      * This component width, in pixels.
@@ -70,7 +86,7 @@ public abstract class NComponent
     /**
      * The component layout property, depending of the current layout.
      */
-    private Object layoutConstraints;
+    private Object property;
 
     /**
      * The parent container (that contains this component)
@@ -88,50 +104,50 @@ public abstract class NComponent
     private Map<String, Object> properties;
 
     /**
-     * Display list id, used for rendering.
-     */
-    public int displayList = -1;
-
-    /**
      * This component parent frame.
      */
     private NFrame frame;
 
+    /**
+     * If the mouse is over this component
+     */
     private boolean isHovered;
 
     /**
-     * This component preferred size. Used by the layout system.
+     * This component preferred size
      */
     private Dimension preferredSize;
 
     /**
-     * This component minimum size. Used by the layout system.
+     * The nine patches linked to textures, automatically managed
      */
-    private Dimension minimumSize;
-    
-    /**
-     * This component preferred size. Used by the layout system.
-     */
-    private Dimension maximumSize;
-    
-    private static final Object TREE_LOCK = new Object();
+    private HashMap<Field, Field> linkedPatches = new HashMap<Field, Field>();
 
+    private Dimension minimumSize;
+
+    private Dimension maximumSize;
+
+    /**
+     * The Noctis Component
+     */
     public NComponent()
     {
         manager = new EventManager();
         properties = new HashMap<String, Object>();
-    }
 
+        this.registerListener(new NComponentListener());
+    }
+    
+    static final Object TREE_LOCK = new Object();
+    
     public Object getTreeLock()
     {
         return TREE_LOCK;
     }
 
-    public void setHovered(boolean isHovered)
-    {
-        this.isHovered = isHovered;
-    }
-
+    /**
+     * @return If the mouse is over this component
+     */
     public boolean isHovered()
     {
         return isHovered;
@@ -140,6 +156,129 @@ public abstract class NComponent
     public Map<String, Object> getProperties()
     {
         return properties;
+    }
+
+    private String getCallerClassName()
+    {
+        StackTraceElement[] stElements = Thread.currentThread().getStackTrace();
+
+        for (int i = 1; i < stElements.length; i++)
+        {
+            StackTraceElement ste = stElements[i];
+
+            if (!ste.getClassName().equals(NComponent.class.getName()) && ste.getClassName().indexOf("java.lang.Thread") != 0)
+            {
+                return ste.getClassName();
+            }
+        }
+
+        return null;
+    }
+
+    protected void registerNinePatch(String field, String pathInTheme)
+    {
+        if (pathInTheme == null)
+            return;
+
+        Class<?> cl;
+        try
+        {
+            cl = Class.forName(getCallerClassName());
+        }
+        catch (ClassNotFoundException e)
+        {
+            throw new IllegalStateException("Can't find the caller class of this method (" + getCallerClassName() + ")");
+        }
+
+        Field theField;
+        try
+        {
+            theField = cl.getDeclaredField(field);
+        }
+        catch (NoSuchFieldException e)
+        {
+            throw new IllegalArgumentException("Can't find the field '" + field + "' in the component " + cl.getName());
+        }
+
+        LinkedNinePatch annotation = theField.getAnnotation(LinkedNinePatch.class);
+        if (annotation == null)
+            throw new IllegalArgumentException("The field '" + field + " in the component " + getClass().getName() + " hasn't the LinkedNinePatch annotation");
+
+        Field texture;
+        try
+        {
+            texture = cl.getDeclaredField(annotation.value());
+        }
+        catch (NoSuchFieldException e)
+        {
+            throw new IllegalArgumentException("Can't find the field '" + annotation.value() + "' in the component " + cl.getName() + " given in its LinkedNinePatch annotation");
+        }
+
+        if (pathInTheme.endsWith(".9.png"))
+        {
+            this.linkedPatches.put(theField, texture);
+
+            theField.setAccessible(true);
+            {
+                try
+                {
+                    theField.set(this, NoctisNinePatchCache.fromPath(theme(), pathInTheme));
+                }
+                catch (IllegalAccessException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            theField.setAccessible(false);
+
+            updatePatch(theField, texture);
+        }
+        else
+            try
+            {
+                texture.setAccessible(true);
+                {
+                    texture.set(this, theme().requireTexture(pathInTheme));
+                }
+                texture.setAccessible(false);
+            }
+            catch (IllegalAccessException ignored)
+            {
+                // Can't happen
+            }
+    }
+
+    private void updatePatch(Field patch, Field texture)
+    {
+        try
+        {
+            NoctisNinePatch ninePatch;
+
+            patch.setAccessible(true);
+            {
+                ninePatch = (NoctisNinePatch) patch.get(this);
+            }
+            patch.setAccessible(false);
+
+            texture.setAccessible(true);
+            {
+                if (texture.getType() == GlTexture.class)
+                    texture.set(this, ninePatch.generateFor(this.getWidth(), this.getHeight()));
+                else if (texture.getType() == BufferedImage.class)
+                    texture.set(this, ninePatch.raw(this.getWidth(), this.getHeight()));
+            }
+            texture.setAccessible(false);
+        }
+        catch (IllegalAccessException ignored)
+        {
+            // Can't happen
+        }
+    }
+
+    private void updatePatches()
+    {
+        for (Entry<Field, Field> entry : linkedPatches.entrySet())
+            updatePatch(entry.getKey(), entry.getValue());
     }
 
     /**
@@ -187,7 +326,10 @@ public abstract class NComponent
         if (drawer != null)
         {
             if (drawer.shouldPaintEveryFrame())
+            {
                 paintComponent(drawer);
+            }
+
             render(drawer);
         }
     }
@@ -238,7 +380,9 @@ public abstract class NComponent
     protected final void repaint(Drawer drawer)
     {
         drawer.prePaint(this);
-        paintComponent(drawer);
+        {
+            paintComponent(drawer);
+        }
         drawer.postPaint(this);
     }
 
@@ -254,11 +398,19 @@ public abstract class NComponent
             @Override
             public void run()
             {
+                onRepaint();
                 repaint(getDrawer());
             }
         });
 
         repaintChildren();
+    }
+
+    /**
+     * Event called just befoire repainting
+     */
+    protected void onRepaint()
+    {
     }
 
     /**
@@ -297,6 +449,18 @@ public abstract class NComponent
             @Override
             public void run()
             {
+                Class<?> cl = NComponent.this.getClass();
+
+                while (cl != null)
+                {
+                    for (Field field : cl.getDeclaredFields())
+                    {
+                        fillProperty(field);
+                    }
+
+                    cl = cl.getSuperclass();
+                }
+
                 init();
             }
         });
@@ -306,6 +470,89 @@ public abstract class NComponent
         onComponentAdded(parent);
     }
 
+    private String loadValueFromField(Field field)
+    {
+        String value = null;
+
+        ThemeProperty annotation;
+        if ((annotation = field.getAnnotation(ThemeProperty.class)) != null)
+        {
+            value = theme().prop(annotation.value());
+        }
+
+        ThemeRequireProperty requireAnnotation;
+        if ((requireAnnotation = field.getAnnotation(ThemeRequireProperty.class)) != null)
+        {
+            value = theme().requireProp(requireAnnotation.value());
+        }
+
+        return value;
+    }
+
+    private void fillProperty(Field field)
+    {
+        String value = loadValueFromField(field);
+
+        if (value == null)
+            return;
+
+        field.setAccessible(true);
+        {
+            try
+            {
+                if (field.getType().equals(boolean.class))
+                {
+                    field.set(this, Boolean.parseBoolean(value));
+                }
+                else if (field.getType().equals(int.class))
+                {
+                    field.set(this, Integer.parseInt(value));
+                }
+                else if (field.getType().equals(byte.class))
+                {
+                    field.set(this, Byte.parseByte(value));
+                }
+                else if (field.getType().equals(float.class))
+                {
+                    field.set(this, Float.parseFloat(value));
+                }
+                else if (field.getType().equals(double.class))
+                {
+                    field.set(this, Double.parseDouble(value));
+                }
+                else if (field.getType().equals(short.class))
+                {
+                    field.set(this, Short.parseShort(value));
+                }
+                else if (field.getType().equals(long.class))
+                {
+                    field.set(this, Long.parseLong(value));
+                }
+                else if (field.getType().equals(NoctisNinePatch.class))
+                {
+                    registerNinePatch(field.getName(), value);
+                }
+                else if (field.getType().equals(GlTexture.class))
+                {
+                    field.set(this, theme().requireTexture(value));
+                }
+                else if (field.getType().equals(BufferedImage.class))
+                {
+                    field.set(this, theme().requireImage(value));
+                }
+                else
+                {
+                    field.set(this, value);
+                }
+            }
+            catch (IllegalAccessException ignored)
+            {
+                // Can't happen
+            }
+        }
+        field.setAccessible(false);
+    }
+
     /**
      * Executed when this component is added to a container
      *
@@ -313,24 +560,39 @@ public abstract class NComponent
      */
     protected void onComponentAdded(NContainer parent)
     {
-
     }
 
+    /**
+     * @return The component X position
+     */
     public int getX()
     {
         return x;
     }
 
-    public int getY()
-    {
-        return y;
-    }
-
+    /**
+     * Set the component X position
+     *
+     * @param x The new X position of the component
+     */
     public void setX(int x)
     {
         this.x = x;
     }
 
+    /**
+     * @return The component Y position
+     */
+    public int getY()
+    {
+        return y;
+    }
+
+    /**
+     * Set the component Y position
+     *
+     * @param y The new Y position of the component
+     */
     public void setY(int y)
     {
         this.y = y;
@@ -354,6 +616,8 @@ public abstract class NComponent
     public void setWidth(int width)
     {
         this.width = width;
+
+        updatePatches();
         invalidate();
     }
 
@@ -375,6 +639,8 @@ public abstract class NComponent
     public void setHeight(int height)
     {
         this.height = height;
+
+        updatePatches();
         invalidate();
     }
 
@@ -384,6 +650,8 @@ public abstract class NComponent
      */
     public void invalidate()
     {
+        // TODO : implement
+
         repaint();
     }
 
@@ -393,7 +661,7 @@ public abstract class NComponent
      */
     public Object getLayoutConstraints()
     {
-        return layoutConstraints;
+        return property;
     }
 
     /**
@@ -404,7 +672,7 @@ public abstract class NComponent
      */
     public void setLayoutProperty(Object property)
     {
-        this.layoutConstraints = property;
+        this.property = property;
 
         repaint();
     }
@@ -446,8 +714,7 @@ public abstract class NComponent
     /**
      * Set the component size
      *
-     * @param width The new width of the component
-     * @param height The new height of the component
+     * @param dimensions The new dimensions=
      */
     public void setSize(Dimension dimensions)
     {
@@ -457,7 +724,7 @@ public abstract class NComponent
 
     /**
      * Schedule the given task to be executed in the render Thread.
-     * 
+     *
      * @param runnable The task to be executed in the render Thread.
      */
     protected void schedulRenderTask(Runnable runnable)
@@ -467,7 +734,7 @@ public abstract class NComponent
 
     /**
      * Gets the frame that contains this component.
-     * 
+     *
      * @return The frame that contains this component.
      */
     public NFrame getFrame()
@@ -494,65 +761,54 @@ public abstract class NComponent
         manager.callEvent(event);
     }
 
-    /**
-     * Defines the component preferred size.
-     * 
-     * @param preferredSize The new preferred size for this component.
-     */
-    public void setPreferredSize(Dimension preferredSize)
-    {
-        this.preferredSize = preferredSize;
-    }
-
-    /**
-     * @return This component preferred size. Used by the layout system.
-     */
     public Dimension getPreferredSize()
     {
         return preferredSize;
     }
 
-    /**
-     * Defines the component minimum size.
-     * 
-     * @param minSize The new minimum size for this component.
-     */
-    public void setMinimumSize(Dimension minSize)
+    public void setPreferredSize(Dimension preferredSize)
     {
-        this.minimumSize = minSize;
+        this.preferredSize = preferredSize;
+        parent.invalidate();
     }
 
-    /**
-     * @return This component minimum size. Used by the layout system.
-     */
     public Dimension getMinimumSize()
     {
         return minimumSize;
     }
-    
-    /**
-     * Defines the component maximum size.
-     * 
-     * @param maxSize The new maximum size for this component.
-     */
-    public void setMaximumSize(Dimension maxSize)
+
+    public void setMinimumSize(Dimension minimumSize)
     {
-        this.maximumSize = maxSize;
+        this.minimumSize = minimumSize;
     }
 
-    /**
-     * @return This component maximum size. Used by the layout system.
-     */
     public Dimension getMaximumSize()
     {
         return maximumSize;
     }
-    
+
+    public void setMaximumSize(Dimension maximumSize)
+    {
+        this.maximumSize = maximumSize;
+    }
+
+    /**
+     * Used to update the hover state
+     */
+    private class NComponentListener implements NListener
+    {
+        @NoctisEvent
+        private void move(MouseMoveEvent event)
+        {
+            isHovered = event.getPos().getX() > getX() && event.getPos().getX() < getX() + getWidth() &&
+
+                    event.getPos().getY() > getY() && event.getPos().getY() < getY() + getHeight();
+        }
+    }
+
     public void setBounds(int x, int y, int w, int h)
     {
-        setX(x);
-        setY(y);
-        setWidth(w);
-        setHeight(h);
+        setPosition(x, y);
+        setSize(w, h);
     }
 }

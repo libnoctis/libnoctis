@@ -18,16 +18,13 @@
  */
 package org.libnoctis.render.gl;
 
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
-
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.Iterator;
-
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.libnoctis.components.NFrame;
 import org.lwjgl.opengl.Display;
+
+
+import static org.lwjgl.opengl.GL11.*;
 
 
 /**
@@ -47,7 +44,7 @@ public class NoctisFrameThread extends Thread
     /**
      * Ordered collection of tasks that should be executed is this Thread.
      */
-    private Deque<Runnable> runnables = new ArrayDeque<Runnable>();
+    private CopyOnWriteArrayList<Runnable> runnables = new CopyOnWriteArrayList<Runnable>();
 
     /**
      * The frame rendered by this Thread.
@@ -72,6 +69,7 @@ public class NoctisFrameThread extends Thread
 
         while (isRunning)
         {
+            // Temporary, needed because a bug will throw else.
             callRunnables();
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -116,7 +114,7 @@ public class NoctisFrameThread extends Thread
     {
         synchronized (runnables)
         {
-            runnables.addLast(runnable);
+            runnables.add(runnable);
         }
     }
 
@@ -129,9 +127,14 @@ public class NoctisFrameThread extends Thread
         {
             for (Iterator<Runnable> iterator = runnables.iterator(); iterator.hasNext();)
             {
-                iterator.next().run();
-                iterator.remove();
+                Runnable runnable = iterator.next();
+                runnable.run();
+
+                runnables.remove(runnable);
             }
+
+            if (runnables.size() > 0)
+                callRunnables();
         }
     }
 

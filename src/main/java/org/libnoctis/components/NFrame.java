@@ -18,24 +18,9 @@
  */
 package org.libnoctis.components;
 
-
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_PROJECTION;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glLoadIdentity;
-import static org.lwjgl.opengl.GL11.glMatrixMode;
-import static org.lwjgl.opengl.GL11.glOrtho;
-
-
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.File;
-
 import java.io.IOException;
 import org.libnoctis.Libnoctis;
 import org.libnoctis.input.keyboard.Key;
@@ -61,8 +46,14 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
 
+import static org.lwjgl.opengl.GL11.*;
+
 /**
- * Base class for Noctis frames.
+ * The NFrame
+ *
+ * <p>
+ *     A Libnoctis frame. The start point from using Libnoctis.
+ * </p>
  *
  * @author Wytrem
  * @version 1.0.0
