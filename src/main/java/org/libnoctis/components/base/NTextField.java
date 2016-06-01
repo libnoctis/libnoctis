@@ -31,6 +31,7 @@ import org.libnoctis.input.keyboard.KeyReleasedEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
+import org.libnoctis.util.Dimension;
 import org.libnoctis.util.NoctisNinePatch;
 import org.libnoctis.util.NoctisNinePatchCache;
 import org.libnoctis.util.Vector2i;
@@ -106,12 +107,18 @@ public class NTextField extends NComponent
      * Focus sur le text field (en cours d'ecriture)
      */
     private boolean focus = false;
+    
+    public NTextField()
+    {
+        setPreferredSize(new Dimension(200, 18));
+        setMinimumSize(new Dimension(200, 18));
+    }
 
     @Override
     protected void init()
     {
         super.init();
-
+        
         String background = theme().requireProp(TEXTFIELD_TEXTURE);
         String backgroundFocused = theme().prop(TEXTFIELD_TEXTURE_HOVER);
 

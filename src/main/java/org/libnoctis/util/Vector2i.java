@@ -38,12 +38,12 @@ public class Vector2i
     /**
      * The x position
      */
-    private int x;
+    protected int x;
 
     /**
      * The y position
      */
-    private int y;
+    protected int y;
 
     public Vector2i()
     {

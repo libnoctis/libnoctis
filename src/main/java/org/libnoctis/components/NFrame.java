@@ -181,6 +181,12 @@ public class NFrame extends NContainer
             getFrameThread().setRunning(false);
         }
     }
+    
+    public void pack()
+    {
+        if (getLayout() != null)
+            setSize(getLayout().preferredLayoutSize(this));
+    }
 
     @Override
     public Drawer getDrawer()

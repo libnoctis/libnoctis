@@ -3,15 +3,15 @@
  *
  * This file is part of Libnoctis.
  *
- * Libnoctis is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Libnoctis is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Libnoctis is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * Libnoctis is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
@@ -24,18 +24,19 @@ import java.util.Map;
 import org.libnoctis.input.EventManager;
 import org.libnoctis.input.NEvent;
 import org.libnoctis.input.NListener;
-import org.libnoctis.layout.LayoutConstraints;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.theme.NoctisTheme;
+import org.libnoctis.util.Dimension;
 import org.libnoctis.util.Vector2i;
+
 
 /**
  * A Noctis Component
  *
  * <p>
- *     The Noctis Component represents a graphic object, by example a button is a
- *     component. It contains all the commons components things, its size, its
- *     color, etc...
+ * The Noctis Component represents a graphic object, by example a button is a
+ * component. It contains all the commons components things, its size, its
+ * color, etc...
  * </p>
  *
  * @author Litarvan
@@ -45,7 +46,7 @@ import org.libnoctis.util.Vector2i;
 public abstract class NComponent
 {
     public static final String COMPONENTS_SECTION = "component";
-    
+
     /**
      * This component width, in pixels.
      */
@@ -69,7 +70,7 @@ public abstract class NComponent
     /**
      * The component layout property, depending of the current layout.
      */
-    private LayoutConstraints property;
+    private Object layoutConstraints;
 
     /**
      * The parent container (that contains this component)
@@ -97,13 +98,33 @@ public abstract class NComponent
     private NFrame frame;
 
     private boolean isHovered;
+
+    /**
+     * This component preferred size. Used by the layout system.
+     */
+    private Dimension preferredSize;
+
+    /**
+     * This component minimum size. Used by the layout system.
+     */
+    private Dimension minimumSize;
     
-    private Vector2i preferredSize;
+    /**
+     * This component preferred size. Used by the layout system.
+     */
+    private Dimension maximumSize;
+    
+    private static final Object TREE_LOCK = new Object();
 
     public NComponent()
     {
         manager = new EventManager();
         properties = new HashMap<String, Object>();
+    }
+
+    public Object getTreeLock()
+    {
+        return TREE_LOCK;
     }
 
     public void setHovered(boolean isHovered)
@@ -363,28 +384,27 @@ public abstract class NComponent
      */
     public void invalidate()
     {
-        // TODO : implement
-
         repaint();
     }
 
     /**
-     * @return The component layout property, corresponding to the current layout
+     * @return The component layout property, corresponding to the current
+     *         layout
      */
-    public LayoutConstraints getLayoutConstraints()
+    public Object getLayoutConstraints()
     {
-        return property;
+        return layoutConstraints;
     }
 
     /**
-     * Set the component layout property (object to make the current layout generate
-     * the property and the size of the component)
+     * Set the component layout property (object to make the current layout
+     * generate the property and the size of the component)
      *
      * @param property The property, depending to the current layout
      */
-    public void setLayoutProperty(LayoutConstraints property)
+    public void setLayoutProperty(Object property)
     {
-        this.property = property;
+        this.layoutConstraints = property;
 
         repaint();
     }
@@ -429,10 +449,10 @@ public abstract class NComponent
      * @param width The new width of the component
      * @param height The new height of the component
      */
-    public void setSize(Vector2i dimensions)
+    public void setSize(Dimension dimensions)
     {
-        this.setWidth(dimensions.getX());
-        this.setHeight(dimensions.getY());
+        this.setWidth(dimensions.getWidth());
+        this.setHeight(dimensions.getHeight());
     }
 
     /**
@@ -461,7 +481,7 @@ public abstract class NComponent
      */
     protected void init()
     {
-        
+
     }
 
     /**
@@ -473,15 +493,66 @@ public abstract class NComponent
     {
         manager.callEvent(event);
     }
-    
-    public void setPreferredSize(Vector2i preferredSize)
+
+    /**
+     * Defines the component preferred size.
+     * 
+     * @param preferredSize The new preferred size for this component.
+     */
+    public void setPreferredSize(Dimension preferredSize)
     {
         this.preferredSize = preferredSize;
-        parent.invalidate();
     }
 
-    public Vector2i getPreferredSize()
+    /**
+     * @return This component preferred size. Used by the layout system.
+     */
+    public Dimension getPreferredSize()
     {
         return preferredSize;
+    }
+
+    /**
+     * Defines the component minimum size.
+     * 
+     * @param minSize The new minimum size for this component.
+     */
+    public void setMinimumSize(Dimension minSize)
+    {
+        this.minimumSize = minSize;
+    }
+
+    /**
+     * @return This component minimum size. Used by the layout system.
+     */
+    public Dimension getMinimumSize()
+    {
+        return minimumSize;
+    }
+    
+    /**
+     * Defines the component maximum size.
+     * 
+     * @param maxSize The new maximum size for this component.
+     */
+    public void setMaximumSize(Dimension maxSize)
+    {
+        this.maximumSize = maxSize;
+    }
+
+    /**
+     * @return This component maximum size. Used by the layout system.
+     */
+    public Dimension getMaximumSize()
+    {
+        return maximumSize;
+    }
+    
+    public void setBounds(int x, int y, int w, int h)
+    {
+        setX(x);
+        setY(y);
+        setWidth(w);
+        setHeight(h);
     }
 }

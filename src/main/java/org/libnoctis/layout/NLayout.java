@@ -20,6 +20,7 @@ package org.libnoctis.layout;
 
 import org.libnoctis.components.NComponent;
 import org.libnoctis.components.NContainer;
+import org.libnoctis.util.Dimension;
 
 
 /**
@@ -65,20 +66,45 @@ public abstract class NLayout
     }
 
     /**
-     * Update the position and the size of the given elements
+     * Calculates the preferred size dimensions for the specified container,
+     * given the components it contains.
+     * 
+     * @param parent The container to be laid out.
+     * @see #minimumLayoutSize
+     */
+    public Dimension preferredLayoutSize(NContainer parent)
+    {
+        return parent.getPreferredSize();
+    }
+
+    /**
+     * Calculates the minimum size dimensions for the specified container, given
+     * the components it contains.
+     * 
+     * @param parent The component to be laid out.
+     * @see #preferredLayoutSize
+     */
+    public Dimension minimumLayoutSize(NContainer parent)
+    {
+        return parent.getMinimumSize();
+    }
+
+    /**
+     * Lays out this component : updates position and size of its children. This
+     * should take {@link NContainer#getInsets()} in consideration.
      *
-     * @param components The components to update the position and the size
+     * @param parent The container to be laid out.
      */
     public abstract void layoutContainer(NContainer parent);
 
     /**
-     * Checks if the given {@link LayoutConstraints} object is applicable for this
-     * layout to the given component.
+     * Checks if the given {@link LayoutConstraints} object is applicable for
+     * this layout to the given component.
      * 
      * @param properties The constraints to check.
      * @param component The component that holds the passed constraints.
      * @return {@code true} if this component can be added with the given
      *         constraints, {@code false} otherwise.
      */
-    abstract boolean areValidConstraints(LayoutConstraints properties, NComponent component);
+    abstract boolean areValidConstraints(Object constraints, NComponent component);
 }
