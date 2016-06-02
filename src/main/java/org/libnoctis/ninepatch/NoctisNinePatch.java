@@ -18,13 +18,14 @@
  */
 package org.libnoctis.ninepatch;
 
-import com.android.ninepatch.GraphicsUtilities;
-import com.android.ninepatch.NinePatch;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+
 import org.libnoctis.render.gl.GlTexture;
 import org.libnoctis.util.Vector2i;
+
+import com.android.ninepatch.GraphicsUtilities;
+import com.android.ninepatch.NinePatch;
 
 /**
  * The Noctis Nine Patch
@@ -90,7 +91,7 @@ public class NoctisNinePatch extends NinePatch
         int height = dimensions.getY();
 
         BufferedImage image = GraphicsUtilities.createCompatibleImage(width, height);
-        this.draw((Graphics2D) image.getGraphics(), 0, 0, width, height);
+        this.draw(image.createGraphics(), 0, 0, width, height);
 
         return image;
     }

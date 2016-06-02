@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import org.libnoctis.components.NComponent;
 import org.libnoctis.components.NContainer;
-import org.libnoctis.util.Vector2i;
+import org.libnoctis.util.Dimension;
 
 
 public class GridLayout extends NLayout
@@ -115,6 +115,9 @@ public class GridLayout extends NLayout
         return hgap;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void layoutContainer(NContainer parent)
     {
@@ -124,6 +127,11 @@ public class GridLayout extends NLayout
         if (children.size() > rows * columns)
         {
             throw new IllegalArgumentException("Too many children (" + children.size() + ") for a " + rows + "x" + columns + " grid.");
+        }
+        
+        if (!minimumLayoutSize(parent).fit(parent.getWidth(), parent.getHeight()))
+        {
+            return;
         }
 
         // Compute elements that has constraints first
@@ -148,14 +156,14 @@ public class GridLayout extends NLayout
 
         // Recalculate free cells
         fillFreeCells();
-
+        
         /*
          * A cell size in pixels.
          */
-        Vector2i cellSize = new Vector2i((parent.getWidth() - (columns - 1) * hgap) / columns, (parent.getHeight() - (rows - 1) * vgap) / rows);
+        Dimension cellSize = new Dimension((parent.getWidth() - (columns - 1) * hgap - parent.getInsets().left - parent.getInsets().right) / columns, (parent.getHeight() - (rows - 1) * vgap - parent.getInsets().top - parent.getInsets().bottom) / rows);
 
         // Used for 
-        Vector2i temp = new Vector2i();
+        Dimension temp = new Dimension();
 
         for (int i = 0; i < children.size(); i++)
         {
@@ -169,13 +177,13 @@ public class GridLayout extends NLayout
             }
 
             // Apply preferred size
-            Vector2i.min(cellSize, child.getPreferredSize(), temp);
+            Dimension.min(cellSize, child.getPreferredSize(), temp);
 
             // Set pos and size
-            child.setX(constraints.getX() * (cellSize.getX() + hgap));
-            child.setY(constraints.getY() * (cellSize.getY() + vgap));
-            child.setWidth(temp.getX());
-            child.setHeight(temp.getY());
+            child.setX(parent.getInsets().left + constraints.getX() * (cellSize.getWidth() + hgap));
+            child.setY(parent.getInsets().top + constraints.getY() * (cellSize.getHeight() + vgap));
+            child.setWidth(temp.getWidth());
+            child.setHeight(temp.getHeight());
 
             // This cell is not longer empty
             freeCells.remove(constraints);
@@ -202,7 +210,7 @@ public class GridLayout extends NLayout
      * {@inheritDoc}
      */
     @Override
-    public boolean areValidConstraints(LayoutConstraints properties, NComponent component)
+    boolean areValidConstraints(Object properties, NComponent component)
     {
         return properties instanceof GridLayoutConstraints;
     }

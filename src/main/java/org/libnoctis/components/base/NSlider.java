@@ -18,6 +18,7 @@
  */
 package org.libnoctis.components.base;
 
+import java.awt.image.BufferedImage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.libnoctis.components.NComponent;
@@ -89,16 +90,21 @@ public class NSlider extends NComponent
     private int maximum;
 
     /**
+     * The theme property with the path of the slide texture
+     */
+    @NotNull
+    private String slideProperty;
+
+    /**
      * The theme property with the path of the slider texture
      */
     @NotNull
     private String sliderProperty;
 
     /**
-     * The theme property with the path of the slide texture
+     * The dimensions of the slider
      */
-    @NotNull
-    private String slideProperty;
+    private Vector2i sliderDimensions;
 
     /**
      * The Noctis Slider
@@ -156,7 +162,12 @@ public class NSlider extends NComponent
         super.init();
 
         this.registerNinePatch("slidePatch", theme().requireProp(slideProperty));
-        this.registerNinePatch("sliderPatch", theme().requireProp(sliderProperty));
+
+        String sliderProp = theme().requireProp(sliderProperty);
+        this.registerNinePatch("sliderPatch", sliderProp);
+
+        BufferedImage slider = theme().requireImage(sliderProp);
+        this.sliderDimensions = new Vector2i(slider.getWidth(), slider.getHeight());
 
         this.registerListener(new NSliderListener());
     }
@@ -200,6 +211,7 @@ public class NSlider extends NComponent
         super.paintComponent(drawer);
 
         drawer.drawTexture(this.getX(), this.getY(), this.getWidth(), this.getHeight(), slideTexture);
+        drawer.drawTexture(this.getX() + (this.getWidth() / this.getMaximum()) * value, this.getY(), sliderDimensions.getX(), sliderDimensions.getY(), sliderTexture);
     }
 
     public int getValue()

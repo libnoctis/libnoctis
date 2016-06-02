@@ -3,15 +3,15 @@
  *
  * This file is part of Libnoctis.
  *
- * Libnoctis is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Libnoctis is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Libnoctis is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * Libnoctis is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
@@ -23,12 +23,12 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.libnoctis.input.EventManager;
 import org.libnoctis.input.NEvent;
 import org.libnoctis.input.NListener;
 import org.libnoctis.input.NoctisEvent;
 import org.libnoctis.input.mouse.MouseMoveEvent;
-import org.libnoctis.layout.LayoutConstraints;
 import org.libnoctis.ninepatch.LinkedNinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatchCache;
@@ -37,15 +37,17 @@ import org.libnoctis.render.gl.GlTexture;
 import org.libnoctis.theme.NoctisTheme;
 import org.libnoctis.theme.ThemeProperty;
 import org.libnoctis.theme.ThemeRequireProperty;
+import org.libnoctis.util.Dimension;
 import org.libnoctis.util.Vector2i;
+
 
 /**
  * A Noctis Component
  *
  * <p>
- *     The Noctis Component represents a graphic object, by example a button is a
- *     component. It contains all the commons components things, its size, its
- *     color, etc...
+ * The Noctis Component represents a graphic object, by example a button is a
+ * component. It contains all the commons components things, its size, its
+ * color, etc...
  * </p>
  *
  * @author Litarvan & Wytrem
@@ -84,7 +86,7 @@ public abstract class NComponent
     /**
      * The component layout property, depending of the current layout.
      */
-    private LayoutConstraints property;
+    private Object property;
 
     /**
      * The parent container (that contains this component)
@@ -114,12 +116,16 @@ public abstract class NComponent
     /**
      * This component preferred size
      */
-    private Vector2i preferredSize;
+    private Dimension preferredSize;
 
     /**
      * The nine patches linked to textures, automatically managed
      */
     private HashMap<Field, Field> linkedPatches = new HashMap<Field, Field>();
+
+    private Dimension minimumSize;
+
+    private Dimension maximumSize;
 
     /**
      * The Noctis Component
@@ -130,6 +136,13 @@ public abstract class NComponent
         properties = new HashMap<String, Object>();
 
         this.registerListener(new NComponentListener());
+    }
+    
+    static final Object TREE_LOCK = new Object();
+    
+    public Object getTreeLock()
+    {
+        return TREE_LOCK;
     }
 
     /**
@@ -167,7 +180,7 @@ public abstract class NComponent
         if (pathInTheme == null)
             return;
 
-        Class cl;
+        Class<?> cl;
         try
         {
             cl = Class.forName(getCallerClassName());
@@ -381,8 +394,7 @@ public abstract class NComponent
         if (getFrame() == null)
             return;
 
-        schedulRenderTask(new Runnable()
-        {
+        schedulRenderTask(new Runnable() {
             @Override
             public void run()
             {
@@ -433,12 +445,11 @@ public abstract class NComponent
             }
         }
 
-        schedulRenderTask(new Runnable()
-        {
+        schedulRenderTask(new Runnable() {
             @Override
             public void run()
             {
-                Class cl = NComponent.this.getClass();
+                Class<?> cl = NComponent.this.getClass();
 
                 while (cl != null)
                 {
@@ -449,7 +460,6 @@ public abstract class NComponent
 
                     cl = cl.getSuperclass();
                 }
-
 
                 init();
             }
@@ -646,20 +656,21 @@ public abstract class NComponent
     }
 
     /**
-     * @return The component layout property, corresponding to the current layout
+     * @return The component layout property, corresponding to the current
+     *         layout
      */
-    public LayoutConstraints getLayoutConstraints()
+    public Object getLayoutConstraints()
     {
         return property;
     }
 
     /**
-     * Set the component layout property (object to make the current layout generate
-     * the property and the size of the component)
+     * Set the component layout property (object to make the current layout
+     * generate the property and the size of the component)
      *
      * @param property The property, depending to the current layout
      */
-    public void setLayoutProperty(LayoutConstraints property)
+    public void setLayoutProperty(Object property)
     {
         this.property = property;
 
@@ -691,7 +702,7 @@ public abstract class NComponent
     /**
      * Set the component size
      *
-     * @param width  The new width of the component
+     * @param width The new width of the component
      * @param height The new height of the component
      */
     public void setSize(int width, int height)
@@ -705,10 +716,10 @@ public abstract class NComponent
      *
      * @param dimensions The new dimensions=
      */
-    public void setSize(Vector2i dimensions)
+    public void setSize(Dimension dimensions)
     {
-        this.setWidth(dimensions.getX());
-        this.setHeight(dimensions.getY());
+        this.setWidth(dimensions.getWidth());
+        this.setHeight(dimensions.getHeight());
     }
 
     /**
@@ -750,15 +761,35 @@ public abstract class NComponent
         manager.callEvent(event);
     }
 
-    public Vector2i getPreferredSize()
+    public Dimension getPreferredSize()
     {
         return preferredSize;
     }
 
-    public void setPreferredSize(Vector2i preferredSize)
+    public void setPreferredSize(Dimension preferredSize)
     {
         this.preferredSize = preferredSize;
         parent.invalidate();
+    }
+
+    public Dimension getMinimumSize()
+    {
+        return minimumSize;
+    }
+
+    public void setMinimumSize(Dimension minimumSize)
+    {
+        this.minimumSize = minimumSize;
+    }
+
+    public Dimension getMaximumSize()
+    {
+        return maximumSize;
+    }
+
+    public void setMaximumSize(Dimension maximumSize)
+    {
+        this.maximumSize = maximumSize;
     }
 
     /**
@@ -769,11 +800,15 @@ public abstract class NComponent
         @NoctisEvent
         private void move(MouseMoveEvent event)
         {
-            isHovered = event.getPos().getX() > getX() &&
-                        event.getPos().getX() < getX() + getWidth() &&
+            isHovered = event.getPos().getX() > getX() && event.getPos().getX() < getX() + getWidth() &&
 
-                        event.getPos().getY() > getY() &&
-                        event.getPos().getY() < getY() + getHeight();
+                    event.getPos().getY() > getY() && event.getPos().getY() < getY() + getHeight();
         }
+    }
+
+    public void setBounds(int x, int y, int w, int h)
+    {
+        setPosition(x, y);
+        setSize(w, h);
     }
 }

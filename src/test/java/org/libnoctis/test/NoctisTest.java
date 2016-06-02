@@ -4,41 +4,28 @@ import java.io.File;
 import java.io.IOException;
 
 import org.libnoctis.components.NFrame;
-import org.libnoctis.components.base.NButton;
 import org.libnoctis.components.base.NTextField;
 import org.libnoctis.input.NListener;
-import org.libnoctis.layout.GridLayout;
-import org.libnoctis.layout.GridLayoutConstraints;
+import org.libnoctis.layout.BorderLayout;
 import org.libnoctis.theme.ThemeLoadingException;
 import org.lwjgl.LWJGLUtil;
 
 
 public class NoctisTest extends NFrame implements NListener
 {
-
-    private NButton button = new NButton("Yolo !");
-    private NButton button2 = new NButton("MDR !");
-    private NButton button1 = new NButton("LOL !");
-
-    private NTextField field = new NTextField();
-
     public NoctisTest(String title)
     {
         super(title);
 
         this.setWidth(750);
         this.setHeight(750);
-        
-        setLayout(new GridLayout(2, 2, 10, 10));
+        setLayout(new BorderLayout());
 
-        this.add(button);
+        NTextField field = new NTextField();
+        field.setLayoutProperty(BorderLayout.CENTER);
         
-        this.add(button1);
+        add(field);
         
-        field.setLayoutProperty(new GridLayoutConstraints(0, 1));
-        this.add(field);
-        this.add(button2);
-
         this.registerListener(this);
     }
 

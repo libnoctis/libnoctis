@@ -106,6 +106,7 @@ public class GlTexture
 
         glTexParameteri(TARGET, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(TARGET, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        
         bindNone();
     }
 

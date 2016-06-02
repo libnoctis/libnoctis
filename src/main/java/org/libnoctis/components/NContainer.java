@@ -3,24 +3,27 @@
  *
  * This file is part of Libnoctis.
  *
- * Libnoctis is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Libnoctis is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Libnoctis is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * Libnoctis is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.libnoctis.components;
 
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
 import org.libnoctis.input.NEvent;
 import org.libnoctis.layout.NLayout;
 import org.libnoctis.render.Drawer;
@@ -50,7 +53,39 @@ public abstract class NContainer extends NComponent
     private NLayout layout;
 
     /**
-     * @return The components in this container
+     * The container insets.
+     */
+    @NotNull
+    private Insets insets;
+    
+    public NContainer()
+    {
+        super();
+        
+        insets = new Insets(0, 0, 0, 0);
+    }
+
+    /**
+     * @return This container insets.
+     */
+    public Insets getInsets()
+    {
+        return insets;
+    }
+
+    /**
+     * Defines this container insets.
+     * 
+     * @param insets The new insets.
+     */
+    public void setInsets(Insets insets)
+    {
+        this.insets = insets;
+        invalidate();
+    }
+
+    /**
+     * @return The children components of this container.
      */
     public List<NComponent> getChildren()
     {
@@ -180,6 +215,20 @@ public abstract class NContainer extends NComponent
         this.layout = layout;
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void invalidate()
+    {
+        if (layout != null)
+        {
+            layout.layoutContainer(this);
+        }
+
+        super.invalidate();
+    }
+
     @Override
     public void dispatchEvent(NEvent event)
     {

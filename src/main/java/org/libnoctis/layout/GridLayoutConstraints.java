@@ -1,6 +1,6 @@
 package org.libnoctis.layout;
 
-public class GridLayoutConstraints extends LayoutConstraints
+public class GridLayoutConstraints
 {
     /**
      * The X position in the grid, or column index.

@@ -19,6 +19,7 @@
 package org.libnoctis.components.base;
 
 import java.awt.geom.Rectangle2D;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.libnoctis.components.NComponent;
@@ -32,6 +33,7 @@ import org.libnoctis.ninepatch.LinkedNinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
+import org.libnoctis.util.Dimension;
 import org.libnoctis.util.Vector2i;
 
 /**
@@ -121,7 +123,7 @@ public class NTextField extends NComponent
      * If the user is typing in the text field
      */
     private boolean focus = false;
-
+    
     /**
      * The theme property containing the path of the background texture
      */
@@ -146,6 +148,8 @@ public class NTextField extends NComponent
     public NTextField()
     {
         this(TEXTFIELD_TEXTURE, TEXTFIELD_TEXTURE_FOCUSED, TEXTFIELD_TEXTURE_DISABLED);
+        setPreferredSize(new Dimension(200, 18));
+        setMinimumSize(new Dimension(200, 18));
     }
     /**
      * The Noctis Text Field
