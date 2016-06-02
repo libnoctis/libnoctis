@@ -27,8 +27,8 @@ package org.libnoctis.util;
  * </p>
  *
  * @author Litarvan
- * @version 1.0.0
- * @since 1.0.0
+ * @version 0.1.0
+ * @since 0.0.1
  */
 public class Vector4i extends Vector2i
 {

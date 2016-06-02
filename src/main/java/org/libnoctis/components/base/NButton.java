@@ -41,8 +41,8 @@ import org.libnoctis.theme.ThemeRequireProperty;
  * </p>
  *
  * @author Litarvan
- * @version 1.0.0
- * @since 1.0.0
+ * @version 0.1.0
+ * @since 0.0.1
  */
 public class NButton extends NComponent implements NListener
 {
@@ -364,7 +364,7 @@ public class NButton extends NComponent implements NListener
         {
             clicked = isHovered();
 
-            if (clicked && onClick != null)
+            if (clicked && onClick != null && !isDisabled())
                 onClick.run();
         }
 

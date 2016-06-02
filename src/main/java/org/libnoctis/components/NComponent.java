@@ -49,8 +49,8 @@ import org.libnoctis.util.Vector2i;
  * </p>
  *
  * @author Litarvan & Wytrem
- * @version 1.0.0
- * @since 1.0.0
+ * @version 0.1.0
+ * @since 0.0.1
  */
 public abstract class NComponent
 {
@@ -225,7 +225,7 @@ public abstract class NComponent
             {
                 texture.setAccessible(true);
                 {
-                    texture.set(this, theme().requireTexture(pathInTheme));
+                    texture.set(this, texture.getType() == BufferedImage.class ? theme().requireImage(pathInTheme) : theme().requireTexture(pathInTheme));
                 }
                 texture.setAccessible(false);
             }
@@ -537,7 +537,7 @@ public abstract class NComponent
             }
             catch (IllegalAccessException ignored)
             {
-                // Can't happen
+                ignored.printStackTrace();
             }
         }
         field.setAccessible(false);

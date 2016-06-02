@@ -26,25 +26,35 @@ package org.libnoctis.input.mouse;
  * </p>
  *
  * @author Litarvan
- * @version 1.0.0
- * @since 1.0.0
+ * @version 0.1.0
+ * @since 0.0.1
  */
 public enum MouseButton
 {
-     /**
-      * The left mouse button
-      */
-     LEFT,
+    /**
+     * The left mouse button
+     */
+    LEFT,
 
-     /**
-      * The right mouse button
-      */
-     RIGHT,
+    /**
+     * The right mouse button
+     */
+    RIGHT,
 
-     /**
-      * The mouse wheel button
-      */
-     CENTER;
+    /**
+     * The mouse wheel button
+     */
+    CENTER,
+
+    /**
+     * The first little button on the side of the mouse
+     */
+    ACTION_FIRST,
+
+    /**
+     * The second little button on the side of the mouse (behind the first one)
+     */
+    ACTION_SECOND;
 
     /**
      * Get the MouseButton of the given id

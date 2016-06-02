@@ -31,9 +31,9 @@ import org.libnoctis.components.NContainer;
  * </p>
  *
  * @author Litarvan
- * @version 1.0.0
+ * @version 0.1.0
  * @see LayoutConstraints
- * @since 1.0.0
+ * @since 0.0.1
  */
 public abstract class NLayout
 {

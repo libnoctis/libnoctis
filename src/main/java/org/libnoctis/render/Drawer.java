@@ -20,7 +20,6 @@ package org.libnoctis.render;
 
 
 import java.awt.geom.Rectangle2D;
-
 import org.libnoctis.components.NComponent;
 import org.libnoctis.render.gl.GlFont;
 import org.libnoctis.render.gl.GlTexture;
@@ -35,8 +34,8 @@ import org.libnoctis.render.gl.TextureRegion;
  * </p>
  *
  * @author Wytrem & Litarvan
- * @version 1.0.0
- * @since 1.0.0
+ * @version 0.1.0
+ * @since 0.0.1
  */
 public abstract class Drawer
 {

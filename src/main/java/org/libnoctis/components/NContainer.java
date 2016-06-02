@@ -34,8 +34,8 @@ import org.libnoctis.render.Drawer;
  * </p>
  *
  * @author Litarvan & Wytrem
- * @version 1.0.0
- * @since 1.0.0
+ * @version 0.1.0
+ * @since 0.0.1
  */
 public abstract class NContainer extends NComponent
 {
@@ -151,9 +151,14 @@ public abstract class NContainer extends NComponent
     @Override
     protected void renderChildren(Drawer drawer)
     {
-        for (Iterator<NComponent> iterator = components.iterator(); iterator.hasNext();)
+        if (components.size() < 1)
+            return;
+
+        NComponent[] comp = components.toArray(new NComponent[components.size()]);
+
+        for (NComponent component : comp)
         {
-            iterator.next().render();
+            component.render();
         }
     }
 
@@ -179,10 +184,12 @@ public abstract class NContainer extends NComponent
     public void dispatchEvent(NEvent event)
     {
         super.dispatchEvent(event);
-        
-        for (Iterator<NComponent> iterator = components.iterator(); iterator.hasNext();)
+
+        NComponent[] array = components.toArray(new NComponent[components.size()]);
+
+        for (NComponent component : array)
         {
-            iterator.next().dispatchEvent(event);
+            component.dispatchEvent(event);
         }
     }
 }
