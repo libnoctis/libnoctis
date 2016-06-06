@@ -28,6 +28,7 @@ import org.libnoctis.input.mouse.MouseReleasedEvent;
 import org.libnoctis.ninepatch.LinkedNinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
+import org.libnoctis.render.gl.GlFont;
 import org.libnoctis.render.gl.GlTexture;
 import org.libnoctis.theme.ThemeRequireProperty;
 import org.libnoctis.util.Dimension;
@@ -142,6 +143,12 @@ public class NButton extends NComponent implements NListener
      */
     @NotNull
     private String disabledTextureProperty;
+
+    /**
+     * The font used to draw the text
+     */
+    @Nullable
+    private GlFont font;
 
     /**
      * The Noctis Button
@@ -352,6 +359,25 @@ public class NButton extends NComponent implements NListener
         repaint();
     }
 
+    /**
+     * @return The font used by this button to draw its text
+     */
+    @Nullable
+    public GlFont getFont()
+    {
+        return font;
+    }
+
+    /**
+     * Set the font using to draw the button text
+     *
+     * @param font The new font to use (if null, default font will be used)
+     */
+    public void setFont(@Nullable GlFont font)
+    {
+        this.font = font;
+    }
+
     @Override
     protected void paintComponent(Drawer drawer)
     {
@@ -363,7 +389,19 @@ public class NButton extends NComponent implements NListener
         }
 
         drawer.drawTexture(getX(), getY(), this.getWidth(), this.getHeight(), disabled ? disabledTexture : (isHovered() ? hoverTexture : texture));
+
+        GlFont oldFont = null;
+
+        if (font != null)
+        {
+            oldFont = drawer.getFont();
+            drawer.setFont(font);
+        }
+
         drawer.drawCenteredString(text, getX() + getWidth() / 2, getY() + getHeight() / 2);
+
+        if (oldFont != null)
+           drawer.setFont(oldFont);
     }
 
     private class NButtonMouseListener implements NListener
