@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import javax.imageio.ImageIO;
+import org.libnoctis.util.Dimension;
 import org.lwjgl.BufferUtils;
 
 
@@ -48,6 +49,8 @@ public class GlTexture
      */
     private int textureId;
 
+    private Dimension dimensions;
+
     /**
      * An OpenGL Texture.
      *
@@ -66,7 +69,9 @@ public class GlTexture
      */
     public GlTexture(BufferedImage image)
     {
+        dimensions = new Dimension(image.getWidth(), image.getHeight());
         textureId = glGenTextures();
+
         upload(image);
     }
 
@@ -140,6 +145,14 @@ public class GlTexture
     public void release()
     {
         glDeleteTextures(textureId);
+    }
+
+    /**
+     * @return The texture size
+     */
+    public Dimension getDimensions()
+    {
+        return dimensions;
     }
 
     @Override

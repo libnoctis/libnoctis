@@ -177,6 +177,9 @@ public class NProgressBar extends NComponent
 
     private void updateFill()
     {
+        if (filledTexture == null)
+            return;
+        
         Vector2i dimensions = new Vector2i(getFillingWidth(), this.getHeight());
 
         if (this.lastGeneratedDimensions != null && dimensions.getX() == this.lastGeneratedDimensions.getX() && dimensions.getY() == this.lastGeneratedDimensions.getY())

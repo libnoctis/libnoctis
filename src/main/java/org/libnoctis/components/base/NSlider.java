@@ -18,19 +18,19 @@
  */
 package org.libnoctis.components.base;
 
-import java.awt.image.BufferedImage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.libnoctis.components.NComponent;
 import org.libnoctis.input.NListener;
 import org.libnoctis.input.NoctisEvent;
-import org.libnoctis.input.mouse.MouseMoveEvent;
+import org.libnoctis.input.mouse.MouseDraggedEvent;
 import org.libnoctis.input.mouse.MousePressedEvent;
 import org.libnoctis.input.mouse.MouseReleasedEvent;
 import org.libnoctis.ninepatch.LinkedNinePatch;
 import org.libnoctis.ninepatch.NoctisNinePatch;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.render.gl.GlTexture;
+import org.libnoctis.theme.ThemeRequireProperty;
 import org.libnoctis.util.Vector2i;
 import org.lwjgl.input.Mouse;
 
@@ -50,6 +50,7 @@ public class NSlider extends NComponent
     public static final String SLIDER_PROPERTY_GROUP = "component.slider";
     public static final String SLIDER_SLIDE_TEXTURE_PROPERTY = SLIDER_PROPERTY_GROUP + ".texture.slide";
     public static final String SLIDER_SLIDER_TEXTURE_PROPERTY = SLIDER_PROPERTY_GROUP + ".texture.slider";
+    public static final String SLIDER_DIVIDER_PROPERTY = SLIDER_PROPERTY_GROUP + ".divider";
 
     /**
      * The slide (background) texture, as a nine patch
@@ -102,9 +103,10 @@ public class NSlider extends NComponent
     private String sliderProperty;
 
     /**
-     * The dimensions of the slider
+     * How much the slide should be littler than the slider
      */
-    private Vector2i sliderDimensions;
+    @ThemeRequireProperty(SLIDER_DIVIDER_PROPERTY)
+    private int slideDivider;
 
     /**
      * The Noctis Slider
@@ -162,12 +164,7 @@ public class NSlider extends NComponent
         super.init();
 
         this.registerNinePatch("slidePatch", theme().requireProp(slideProperty));
-
-        String sliderProp = theme().requireProp(sliderProperty);
-        this.registerNinePatch("sliderPatch", sliderProp);
-
-        BufferedImage slider = theme().requireImage(sliderProp);
-        this.sliderDimensions = new Vector2i(slider.getWidth(), slider.getHeight());
+        this.registerNinePatch("sliderPatch", theme().requireProp(sliderProperty));
 
         this.registerListener(new NSliderListener());
     }
@@ -179,6 +176,9 @@ public class NSlider extends NComponent
         @NoctisEvent
         private void press(MousePressedEvent event)
         {
+            if (!isHovered())
+                return;
+
             doUpdate = true;
 
             update(new Vector2i(event.getPos().getX() - getX(), event.getPos().getY() - getY()));
@@ -191,7 +191,7 @@ public class NSlider extends NComponent
         }
 
         @NoctisEvent
-        private void move(MouseMoveEvent event)
+        private void drag(MouseDraggedEvent event)
         {
             if (doUpdate)
                 update(new Vector2i(event.getPos().getX() - getX(), event.getPos().getY() - getY()));
@@ -201,8 +201,12 @@ public class NSlider extends NComponent
     private void update(Vector2i position)
     {
         int tickSize = this.getWidth() / this.maximum;
+        int value = Math.round((float) position.getX() / (float) tickSize);
 
-        this.value = Math.round((float) position.getX() / (float) tickSize);
+        if (value >= 0 && value <= this.maximum)
+            this.value = value;
+
+        invalidate();
     }
 
     @Override
@@ -211,8 +215,19 @@ public class NSlider extends NComponent
         super.paintComponent(drawer);
 
         drawer.drawTexture(this.getX(), this.getY(), this.getWidth(), this.getHeight(), slideTexture);
-        drawer.drawTexture(this.getX() + (this.getWidth() / this.getMaximum()) * value, this.getY(), sliderDimensions.getX(), sliderDimensions.getY(), sliderTexture);
+        drawer.drawTexture(this.getX() + (this.getWidth() / this.getMaximum()) * value, this.getY() - sliderTexture.getDimensions().getHeight() / 4, sliderTexture.getDimensions().getWidth() / 2, sliderTexture.getDimensions().getHeight() / 2, sliderTexture);
     }
+
+    /*
+    int sliderHeight = this.getHeight();
+        int sliderWidth = (int) (((float) sliderHeight / (float) sliderTexture.getDimensions().getHeight()) * (float) sliderTexture.getDimensions().getWidth());
+
+        System.out.println("Slider, size : " + sliderWidth + "x" + sliderHeight + " at " + (this.getX() + (this.getWidth() / this.getMaximum()) * value - sliderHeight / 2) + "; " + this.getY());
+        System.out.println("")
+
+        drawer.drawTexture(this.getX(), this.getY(), this.getWidth(), this.getHeight() / slideDivider, slideTexture);
+        drawer.drawTexture(this.getX() + (this.getWidth() / this.getMaximum()) * value - sliderHeight / 2, this.getY(), sliderWidth, sliderHeight, sliderTexture);
+     */
 
     public int getValue()
     {
@@ -224,7 +239,6 @@ public class NSlider extends NComponent
         this.value = value;
 
         update(new Vector2i(Mouse.getX() - getX(), Mouse.getY() - getY()));
-        invalidate();
     }
 
     public int getMaximum()
@@ -237,6 +251,5 @@ public class NSlider extends NComponent
         this.maximum = maximum;
 
         update(new Vector2i(Mouse.getX() - getX(), Mouse.getY() - getY()));
-        invalidate();
     }
 }

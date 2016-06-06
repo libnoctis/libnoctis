@@ -23,7 +23,6 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.libnoctis.input.EventManager;
 import org.libnoctis.input.NEvent;
 import org.libnoctis.input.NListener;
@@ -769,7 +768,9 @@ public abstract class NComponent
     public void setPreferredSize(Dimension preferredSize)
     {
         this.preferredSize = preferredSize;
-        parent.invalidate();
+
+        if (parent != null)
+            parent.invalidate();
     }
 
     public Dimension getMinimumSize()
