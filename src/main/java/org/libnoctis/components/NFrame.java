@@ -135,6 +135,7 @@ public class NFrame extends NContainer
 
             displayUpdateTitle();
             displayUpdateDisplayMode();
+            displayUpdateResizable();
             displayCreate();
 
             System.out.print("[Libnoctis] Creating I/O         \r");
@@ -438,13 +439,20 @@ public class NFrame extends NContainer
 
     public void resize()
     {
+        int width = Display.getWidth();
+        int height = Display.getHeight();
+        
+        System.out.println("old = " + getWidth() + ", " + getHeight());
+        System.out.println("new = " + width + ", " + height);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glOrtho(0, getWidth(), getHeight(), 0, 1, -1);
+        glOrtho(0, width, height, 0, 1, -1);
         glMatrixMode(GL_MODELVIEW);
         glEnable(GL_TEXTURE_2D);
         // Enable alpha blending
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        setWidth(width);
+        setHeight(height);
     }
 }

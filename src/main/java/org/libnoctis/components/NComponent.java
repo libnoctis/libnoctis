@@ -444,6 +444,8 @@ public abstract class NComponent
                 parent2 = parent2.getParent();
             }
         }
+        
+        onComponentAdded(parent);
 
         schedulRenderTask(new Runnable() {
             @Override
@@ -466,8 +468,6 @@ public abstract class NComponent
         });
 
         repaint();
-
-        onComponentAdded(parent);
     }
 
     private String loadValueFromField(Field field)
@@ -650,8 +650,6 @@ public abstract class NComponent
      */
     public void invalidate()
     {
-        // TODO : implement
-
         repaint();
     }
 
@@ -769,7 +767,11 @@ public abstract class NComponent
     public void setPreferredSize(Dimension preferredSize)
     {
         this.preferredSize = preferredSize;
-        parent.invalidate();
+        
+        if (parent != null)
+        {
+            parent.invalidate();
+        }
     }
 
     public Dimension getMinimumSize()
@@ -810,5 +812,17 @@ public abstract class NComponent
     {
         setPosition(x, y);
         setSize(w, h);
+    }
+
+    public boolean isVisible()
+    {
+        // TODO : implement/comment
+        return true;
+    }
+
+    public int getBaseline(int width, int height)
+    {
+        // TODO : implement/comment
+        return -1;
     }
 }

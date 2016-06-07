@@ -3,24 +3,21 @@
  *
  * This file is part of Libnoctis.
  *
- * Libnoctis is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Libnoctis is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
  *
- * Libnoctis is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * Libnoctis is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.libnoctis.render.gl;
 
-
-import com.android.ninepatch.GraphicsUtilities;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -32,16 +29,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.libnoctis.render.Color;
 import org.libnoctis.render.Drawer;
 import org.libnoctis.util.Pair;
 import org.libnoctis.util.Vector2i;
+
+import com.android.ninepatch.GraphicsUtilities;
 
 
 /**
  * A Noctis Font
  * <p>
- * The Noctis Font object, very ugly as from now because
- * we haven't got time so, don't jugde please.
+ * The Noctis Font object, very ugly as from now because we haven't got time so,
+ * don't jugde please.
  * </p>
  *
  * @author Wytrem
@@ -235,7 +235,7 @@ public class GlFont
         charGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         charGraphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         charGraphics.setFont(font);
-        charGraphics.setColor(Color.WHITE);
+        charGraphics.setColor(java.awt.Color.WHITE);
 
         charGraphics.drawString(str, (int) (boundsWidth * 0.5f), fontMetrics.getMaxAscent());
         charGraphics.dispose();
@@ -409,13 +409,59 @@ public class GlFont
 
         drawer.pushMatrix();
 
+        Color color = drawer.getColor();
+
         lastTranslateX = 0;
 
         for (int i = 0; i < charArray.length; i++)
         {
             char ch = charArray[i];
+
+            if (i != charArray.length - 1)
+            {
+                if (ch == '§')
+                {
+                    if (i == 0 || charArray[i - 1] != '\\')
+                    {
+                        // Parse color code.
+                        String colorString = str.substring(i + 1);
+
+                        int skippedChars = 0;
+                        if (colorString.startsWith("("))
+                        {
+                            colorString = colorString.substring(1, colorString.indexOf(')'));
+                            skippedChars = colorString.length() + 2;
+                        }
+                        else
+                        {
+                            skippedChars = 1;
+                            colorString = colorString.substring(0, 1);
+                        }
+
+                        Color newColor = Color.valueOf(colorString);
+
+                        if (newColor != null)
+                        {
+                            drawer.setColor(newColor);
+                        }
+
+                        i += skippedChars;
+                        continue;
+                    }
+                }
+                else if (ch == '\\')
+                {
+                    if (charArray[i + 1] == '§')
+                    {
+                        continue;
+                    }
+                }
+            }
+
             drawChar(ch, pos, x, y, i, drawer);
         }
+
+        drawer.setColor(color);
 
         lastTranslateX = 0;
 
@@ -450,6 +496,40 @@ public class GlFont
                     {
                         Glyph glyph = glyphs.get(ch);
                         pos.add(-glyph.xPrevAdvance, 0);
+                    }
+                }
+
+                if (j != line.length - 1)
+                {
+                    if (ch == '§')
+                    {
+                        if (j == 0 || line[j - 1] != '\\')
+                        {
+                            // Parse color code.
+                            String colorString = str.substring(j + 1);
+
+                            int skippedChars = 0;
+                            if (colorString.startsWith("("))
+                            {
+                                colorString = colorString.substring(1, colorString.indexOf(')'));
+                                skippedChars = colorString.length() + 2;
+                            }
+                            else
+                            {
+                                skippedChars = 1;
+                                colorString = colorString.substring(0, 1);
+                            }
+
+                            j += skippedChars;
+                            continue;
+                        }
+                    }
+                    else if (ch == '\\')
+                    {
+                        if (line[j + 1] == '§')
+                        {
+                            continue;
+                        }
                     }
                 }
 
@@ -491,6 +571,40 @@ public class GlFont
                         pos.add(-glyph.xPrevAdvance, 0);
                     }
                 }
+                
+                if (j != line.length - 1)
+                {
+                    if (ch == '§')
+                    {
+                        if (j == 0 || line[j - 1] != '\\')
+                        {
+                            // Parse color code.
+                            String colorString = str.substring(j + 1);
+
+                            int skippedChars = 0;
+                            if (colorString.startsWith("("))
+                            {
+                                colorString = colorString.substring(1, colorString.indexOf(')'));
+                                skippedChars = colorString.length() + 2;
+                            }
+                            else
+                            {
+                                skippedChars = 1;
+                                colorString = colorString.substring(0, 1);
+                            }
+
+                            j += skippedChars;
+                            continue;
+                        }
+                    }
+                    else if (ch == '\\')
+                    {
+                        if (line[j + 1] == '§')
+                        {
+                            continue;
+                        }
+                    }
+                }
 
                 addCharSize(ch, pos, x, y);
 
@@ -503,7 +617,7 @@ public class GlFont
 
         return new Rectangle2D.Float(x, y, width, height);
     }
-    
+
     public int getFontSize()
     {
         return fontSize;
@@ -623,7 +737,7 @@ public class GlFont
     {
         return new GlFont(chars, font);
     }
-    
+
     public void release()
     {
         fontTexture.release();

@@ -28,12 +28,13 @@ import org.libnoctis.input.NEvent;
 import org.libnoctis.layout.NLayout;
 import org.libnoctis.render.Drawer;
 
+
 /**
  * The Noctis Container
  *
  * <p>
- *     The Noctis Container is a component that can contains other components.
- *     For example, NPanel is a NContainer.
+ * The Noctis Container is a component that can contains other components. For
+ * example, NPanel is a NContainer.
  * </p>
  *
  * @author Litarvan & Wytrem
@@ -57,11 +58,11 @@ public abstract class NContainer extends NComponent
      */
     @NotNull
     private Insets insets;
-    
+
     public NContainer()
     {
         super();
-        
+
         insets = new Insets(0, 0, 0, 0);
     }
 
@@ -95,7 +96,7 @@ public abstract class NContainer extends NComponent
     /**
      * @return The number of component in this container
      */
-    public int numberOfComponents()
+    public int getComponentCount()
     {
         return components.size();
     }
@@ -120,10 +121,12 @@ public abstract class NContainer extends NComponent
     public NContainer add(NComponent component) throws RuntimeException
     {
         this.components.add(component);
-        component.onAdded(this);
 
         if (layout != null)
             layout.layoutContainer(this);
+
+        // This needs the real size of the component, so it's done after layout.
+        component.onAdded(this);
 
         repaint();
 
@@ -136,7 +139,7 @@ public abstract class NContainer extends NComponent
      * @param index The index of the component to find
      * @return The component with the given index
      */
-    public NComponent get(int index)
+    public NComponent getComponent(int index)
     {
         return components.get(index);
     }
@@ -209,7 +212,7 @@ public abstract class NContainer extends NComponent
     {
         this.layout = layout;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -220,13 +223,13 @@ public abstract class NContainer extends NComponent
         {
             layout.layoutContainer(this);
         }
-        
+
         super.invalidate();
     }
 
     @Override
     public void dispatchEvent(NEvent event)
-    {   
+    {
         super.dispatchEvent(event);
 
         for (Iterator<NComponent> iterator = components.iterator(); iterator.hasNext();)

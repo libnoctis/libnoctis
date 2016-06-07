@@ -32,11 +32,12 @@ public class BorderLayout extends NLayout
     @Override
     public void layoutContainer(NContainer parent)
     {
-        if (!minimumLayoutSize(parent).fit(parent.getWidth(), parent.getHeight()))
+        Dimension min = minimumLayoutSize(parent);
+        if (parent.getWidth() < min.width || parent.getHeight() < min.height)
         {
             return;
         }
-        
+
         synchronized (parent.getTreeLock())
         {
             List<NComponent> children = parent.getChildren();

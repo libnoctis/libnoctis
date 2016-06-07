@@ -4,9 +4,10 @@ import java.io.File;
 import java.io.IOException;
 
 import org.libnoctis.components.NFrame;
+import org.libnoctis.components.base.NButton;
 import org.libnoctis.components.base.NTextField;
 import org.libnoctis.input.NListener;
-import org.libnoctis.layout.BorderLayout;
+import org.libnoctis.layout.FlowLayout;
 import org.libnoctis.theme.ThemeLoadingException;
 import org.lwjgl.LWJGLUtil;
 
@@ -16,16 +17,17 @@ public class NoctisTest extends NFrame implements NListener
     public NoctisTest(String title)
     {
         super(title);
-
+        setResizable(true);
         this.setWidth(750);
         this.setHeight(750);
-        setLayout(new BorderLayout());
+        setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
         NTextField field = new NTextField();
-        field.setLayoutProperty(BorderLayout.CENTER);
-        
+
         add(field);
-        
+        for (int i = 0; i < 20; i++)
+            add(new NButton("Button §(aaacfeff)azeaze"));
+
         this.registerListener(this);
     }
 

@@ -56,6 +56,11 @@ public class DirectDrawer extends Drawer
      * The current drawing color
      */
     private Color currentColor;
+    
+    public DirectDrawer()
+    {
+        currentColor = Color.WHITE;
+    }
 
     @Override
     public void setColor(Color color)

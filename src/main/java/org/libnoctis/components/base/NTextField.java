@@ -148,8 +148,6 @@ public class NTextField extends NComponent
     public NTextField()
     {
         this(TEXTFIELD_TEXTURE, TEXTFIELD_TEXTURE_FOCUSED, TEXTFIELD_TEXTURE_DISABLED);
-        setPreferredSize(new Dimension(200, 18));
-        setMinimumSize(new Dimension(200, 18));
     }
     /**
      * The Noctis Text Field
@@ -184,6 +182,8 @@ public class NTextField extends NComponent
         this.backgroundTexturePath = backgroundTexturePath;
         this.focusedTexturePath = focusedTexturePath;
         this.disabledTexturePath = disabledTexturePath;
+        setPreferredSize(new Dimension(200, 18));
+        setMinimumSize(new Dimension(200, 18));
     }
 
     @Override
