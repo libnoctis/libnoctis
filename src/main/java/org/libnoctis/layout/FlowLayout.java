@@ -400,7 +400,7 @@ public class FlowLayout extends NLayout
     }
 
     @Override
-    boolean areValidConstraints(Object constraints, NComponent component)
+    public boolean isValidConstraint(Object constraints, NComponent component)
     {
         // We don't care.
         return true;

@@ -31,8 +31,8 @@ import static org.lwjgl.opengl.GL11.*;
  * A frame render Thread.
  * 
  * @author Wytrem
- * @version 1.0.0
- * @since 1.0.0
+ * @version 0.1.0
+ * @since 0.0.1
  */
 public class NoctisFrameThread extends Thread
 {

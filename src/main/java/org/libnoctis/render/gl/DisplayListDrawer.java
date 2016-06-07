@@ -18,14 +18,10 @@
  */
 package org.libnoctis.render.gl;
 
-import static org.lwjgl.opengl.GL11.GL_COMPILE;
-import static org.lwjgl.opengl.GL11.glCallList;
-import static org.lwjgl.opengl.GL11.glDeleteLists;
-import static org.lwjgl.opengl.GL11.glEndList;
-import static org.lwjgl.opengl.GL11.glGenLists;
-import static org.lwjgl.opengl.GL11.glNewList;
-
 import org.libnoctis.components.NComponent;
+
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * The Display List Drawer
@@ -36,8 +32,8 @@ import org.libnoctis.components.NComponent;
  * </p>
  *
  * @author Wytrem
- * @version 1.0.0
- * @since 1.0.0
+ * @version 0.1.0
+ * @since 0.0.1
  */
 public class DisplayListDrawer extends DirectDrawer
 {

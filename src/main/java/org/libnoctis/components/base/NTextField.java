@@ -45,8 +45,8 @@ import org.libnoctis.util.Vector2i;
  * </p>
  *
  * @author Litarvan
- * @version 1.0.0
- * @since 1.0.0
+ * @version 0.1.0
+ * @since 0.0.1
  */
 public class NTextField extends NComponent
 {
@@ -197,7 +197,7 @@ public class NTextField extends NComponent
         this.textPadding = new Vector2i(xPadding, yPadding);
 
         this.registerNinePatch("backgroundPatch", theme().requireProp(backgroundTexturePath));
-        this.registerNinePatch("focusBackgroundPatch", theme().requireProp(focusedTexturePath));
+        this.registerNinePatch("focusBackgroundPatch", theme().prop(focusedTexturePath));
         this.registerNinePatch("disabledBackgroundPatch", theme().prop(disabledTexturePath));
 
         this.registerListener(new NTextFieldListener());

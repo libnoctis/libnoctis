@@ -16,30 +16,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Libnoctis. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.libnoctis.input;
+package org.libnoctis.layout;
 
 /**
- * The Noctis Event
+ * The Layout Property
  *
  * <p>
- *     An event of Libnoctis
+ *     A property of a layout to make him determine a component
+ *     position and size.
  * </p>
  *
- * @see EventManager
- * @see NoctisEvent
- *
- * @author Wytrem
+ * @author Litarvan
  * @version 0.1.0
  * @since 0.0.1
  */
-public abstract class NEvent
+public abstract class LayoutConstraints
 {
-    /**
-     * @return If the event should be passed to the superclasses of
-     *         this current event
-     */
-    public boolean shouldPassForSuperclassEvent()
-    {
-        return true;
-    }
 }

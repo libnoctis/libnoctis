@@ -39,59 +39,18 @@ import com.android.ninepatch.GraphicsUtilities;
 
 /**
  * A Noctis Font
+ *
  * <p>
  * The Noctis Font object, very ugly as from now because we haven't got time so,
  * don't jugde please.
  * </p>
  *
  * @author Wytrem
- * @version 1.0.0
- * @since 1.0.0
+ * @version 0.1.0
+ * @since 0.0.1
  */
 public class GlFont
 {
-    /**
-     * A character display informations.
-     */
-    private class Glyph
-    {
-        /**
-         * Character's sprite width in pixels.
-         */
-        private int width;
-
-        /**
-         * Character's sprite height in pixels.
-         */
-        private int height;
-
-        /**
-         * How many pixels far we should render from the basic char pos. This
-         * does not affect the next character position.
-         */
-        private int xPrevAdvance;
-
-        /**
-         * How many pixels far on x axis we should render the next character.
-         */
-        private int xAdvance;
-
-        /**
-         * How many pixels far from base character pos we should render this
-         * character.
-         */
-        private int yPrevAdvance;
-
-        /**
-         * Character sprite.
-         */
-        private TextureRegion icon;
-
-        public Glyph()
-        {
-        }
-    }
-
     /**
      * Font size, in pixels.
      */
@@ -130,7 +89,7 @@ public class GlFont
 
     private void buildTexture(List<Character> alphabet)
     {
-        glyphs = new HashMap<Character, GlFont.Glyph>();
+        glyphs = new HashMap<Character, Glyph>();
         int amountOfChars = alphabet.size();
         fontSize = font.getSize();
 
@@ -163,8 +122,8 @@ public class GlFont
                 BufferedImage charImage = pair.getValue();
                 Glyph glyph = pair.getKey();
 
-                w = glyph.width;
-                h = glyph.height;
+                w = glyph.getWidth();
+                h = glyph.getHeight();
 
                 if (x > textureWidth - w)
                 {
@@ -175,7 +134,7 @@ public class GlFont
 
                 graphics.drawImage(charImage, x, y, null);
 
-                glyph.icon = iconBuilder.build(x, y, w, h);
+                glyph.setIcon(iconBuilder.build(x, y, w, h));
 
                 glyphs.put(ch, glyph);
 
@@ -204,6 +163,7 @@ public class GlFont
      * @param fontMetrics The global font metrics.
      * @param spriteSheetGraphics The sprite sheet graphics that will be used to
      *        render the character sprite to the sheet.
+     *
      * @return The character display informations and its texture.
      */
     private Pair<Glyph, BufferedImage> buildChar(char ch, FontMetrics fontMetrics, Graphics2D spriteSheetGraphics)
@@ -244,11 +204,11 @@ public class GlFont
 
         charImage = minimizeImage(charImage, defaultBounds, temp, false, true);
 
-        glyph.yPrevAdvance = 0;
-        glyph.xAdvance = (int) Math.floor(bounds.getWidth() - 1);
-        glyph.xPrevAdvance = -Math.max(0, (int) (defaultBounds.getX() - temp.getX()) - glyph.xAdvance) + 1;
-        glyph.width = charImage.getWidth();
-        glyph.height = charImage.getHeight();
+        glyph.setyPrevAdvance(0);
+        glyph.setxAdvance((int) Math.floor(bounds.getWidth() - 1));
+        glyph.setxPrevAdvance(-Math.max(0, (int) (defaultBounds.getX() - temp.getX()) - glyph.getxAdvance()) + 1);
+        glyph.setWidth(charImage.getWidth());
+        glyph.setHeight(charImage.getHeight());
 
         return Pair.of(glyph, charImage);
     }
@@ -267,6 +227,7 @@ public class GlFont
      * @param defaultBoundsYTest {@code true} if the little texture's height has
      *        to be greater than {@code defaultBounds} height, {@code false}
      *        otherwise.
+     *
      * @return The cropped image.
      */
     private BufferedImage minimizeImage(BufferedImage big, Rectangle2D defaultBounds, Vector2i pos, boolean defaultBoundsXTest, boolean defaultBoundsYTest)
@@ -380,6 +341,7 @@ public class GlFont
      * Sums the elements of the given array.
      * 
      * @param array The array to be computed.
+     *
      * @return The sum value of the array elements.
      */
     private static int sum(int[] array)
@@ -495,7 +457,7 @@ public class GlFont
                     if (shouldTryRendering(ch))
                     {
                         Glyph glyph = glyphs.get(ch);
-                        pos.add(-glyph.xPrevAdvance, 0);
+                        pos.add(-glyph.getxPrevAdvance(), 0);
                     }
                 }
 
@@ -568,10 +530,10 @@ public class GlFont
                     if (shouldTryRendering(ch))
                     {
                         Glyph glyph = glyphs.get(ch);
-                        pos.add(-glyph.xPrevAdvance, 0);
+                        pos.add(-glyph.getxPrevAdvance(), 0);
                     }
                 }
-                
+
                 if (j != line.length - 1)
                 {
                     if (ch == '§')
@@ -628,15 +590,17 @@ public class GlFont
         if (shouldTryRendering(ch))
         {
             Glyph glyph = glyphs.get(ch);
+            if (glyph == null)
+                return;
 
             // We don't want to apply glyph.xPrevAdvance for the first character of a line.
             if (pos.getX() == origX)
             {
                 drawer.translate(-lastTranslateX, 0);
-                drawer.translate(lastTranslateX = -glyph.xPrevAdvance, 0);
+                drawer.translate(lastTranslateX = -glyph.getxPrevAdvance(), 0);
             }
 
-            drawer.drawTexture(pos.getX() + glyph.xPrevAdvance, pos.getY() + glyph.yPrevAdvance, glyph.width, glyph.height, fontTexture, glyph.icon);
+            drawer.drawTexture(pos.getX() + glyph.getxPrevAdvance(), pos.getY() + glyph.getyPrevAdvance(), glyph.getWidth(), glyph.getHeight(), fontTexture, glyph.getIcon());
         }
 
         addCharSize(ch, pos, origX, origY);
@@ -671,7 +635,7 @@ public class GlFont
         else if (glyphs.containsKey(ch))
         {
             Glyph glyph = glyphs.get(ch);
-            vector.add(glyph.xAdvance, 0);
+            vector.add(glyph.getxAdvance(), 0);
         }
     }
 
@@ -679,6 +643,7 @@ public class GlFont
      * Create the same font with an other size
      *
      * @param size The size of the new font
+     *
      * @return The generated font
      */
     public GlFont derive(float size)
@@ -719,6 +684,7 @@ public class GlFont
      * Create a Noctis font from an AWT font
      *
      * @param font The AWT font to use to create the Noctis font
+     *
      * @return The created Noctis font
      */
     static GlFont fromAwt(Font font)
@@ -731,6 +697,7 @@ public class GlFont
      *
      * @param font The AWT font to use to create the Noctis font
      * @param chars The characters to load to the font
+     *
      * @return The created Noctis font
      */
     static GlFont fromAwt(Font font, List<Character> chars)

@@ -4,7 +4,6 @@ import java.awt.Insets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
 import org.libnoctis.components.NComponent;
 import org.libnoctis.components.NContainer;
 import org.libnoctis.util.Dimension;
@@ -235,8 +234,8 @@ public class BorderLayout extends NLayout
     }
 
     @Override
-    boolean areValidConstraints(Object constraints, NComponent component)
+    public boolean isValidConstraint(Object constraint, NComponent component)
     {
-        return constraints instanceof String && VALID_CONSTRAINTS.contains((String) constraints);
+        return constraint instanceof String && VALID_CONSTRAINTS.contains(constraint);
     }
 }

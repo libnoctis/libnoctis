@@ -56,8 +56,8 @@ import static org.lwjgl.opengl.GL11.*;
  * </p>
  *
  * @author Wytrem
- * @version 1.0.0
- * @since 1.0.0
+ * @version 0.1.0
+ * @since 0.0.1
  */
 public class NFrame extends NContainer
 {
@@ -313,6 +313,13 @@ public class NFrame extends NContainer
     public final void requestClose()
     {
         System.exit(0);
+    }
+
+    /**
+     * Called just before closing
+     */
+    protected void onClose()
+    {
     }
 
     /**

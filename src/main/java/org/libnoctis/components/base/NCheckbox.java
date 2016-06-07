@@ -37,8 +37,8 @@ import org.libnoctis.render.gl.GlTexture;
  * </p>
  *
  * @author Litarvan
- * @version 1.0.0
- * @since 1.0.0
+ * @version 0.1.0
+ * @since 0.0.1
  */
 public class NCheckbox extends NComponent
 {

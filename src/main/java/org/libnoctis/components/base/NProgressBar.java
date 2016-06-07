@@ -36,8 +36,8 @@ import org.libnoctis.util.Vector2i;
  * </p>
  *
  * @author Litarvan
- * @version 1.0.0
- * @since 1.0.0
+ * @version 0.1.0
+ * @since 0.0.1
  */
 public class NProgressBar extends NComponent
 {
@@ -106,6 +106,9 @@ public class NProgressBar extends NComponent
     @NotNull
     private String filledTextureProperty;
 
+    /**
+     * The Noctis Progress Bar
+     */
     public NProgressBar()
     {
         this(0, 1);
@@ -157,7 +160,7 @@ public class NProgressBar extends NComponent
     public void init()
     {
         this.registerNinePatch("backgroundPatch", theme().requireProp(textureProperty));
-        this.registerNinePatch("filledTextureProperty", theme().requireProp(filledTextureProperty));
+        this.registerNinePatch("fillingPatch", theme().requireProp(filledTextureProperty));
 
         lastGeneratedTexture = new GlTexture(new BufferedImage(1, 1, BufferedImage.TYPE_3BYTE_BGR));
         updateFill();
@@ -174,6 +177,9 @@ public class NProgressBar extends NComponent
 
     private void updateFill()
     {
+        if (filledTexture == null)
+            return;
+        
         Vector2i dimensions = new Vector2i(getFillingWidth(), this.getHeight());
 
         if (this.lastGeneratedDimensions != null && dimensions.getX() == this.lastGeneratedDimensions.getX() && dimensions.getY() == this.lastGeneratedDimensions.getY())

@@ -33,18 +33,18 @@ import javax.imageio.ImageIO;
  * </p>
  *
  * @author Litarvan
- * @version 1.0.0
- * @since 1.0.0
+ * @version 0.1.0
+ * @since 0.0.1
  */
 public final class Libnoctis
 {
     /**
      * The Libnoctis current version
      */
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "0.0.5";
 
     @SuppressWarnings("unused")
-    private static void deleteAndResize(File[] files, int diviser) throws IOException
+    private static void deletePatch(File[] files, int diviser) throws IOException
     {
         for (File file : files)
         {
@@ -68,7 +68,7 @@ public final class Libnoctis
     }
 
     @SuppressWarnings("unused")
-    private static void multiplyNinePatch(File[] files, File ninePatch) throws IOException
+    private static void applyPatch(File[] files, File ninePatch) throws IOException
     {
         for (File file : files)
         {

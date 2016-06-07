@@ -210,8 +210,8 @@ public class GridLayout extends NLayout
      * {@inheritDoc}
      */
     @Override
-    boolean areValidConstraints(Object properties, NComponent component)
+    public boolean isValidConstraint(Object constraint, NComponent component)
     {
-        return properties instanceof GridLayoutConstraints;
+        return constraint instanceof GridLayoutConstraints;
     }
 }

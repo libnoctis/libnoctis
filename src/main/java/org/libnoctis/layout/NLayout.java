@@ -32,9 +32,9 @@ import org.libnoctis.util.Dimension;
  * </p>
  *
  * @author Litarvan
- * @version 1.0.0
+ * @version 0.1.0
  * @see LayoutConstraints
- * @since 1.0.0
+ * @since 0.0.1
  */
 public abstract class NLayout
 {
@@ -101,10 +101,10 @@ public abstract class NLayout
      * Checks if the given {@link LayoutConstraints} object is applicable for
      * this layout to the given component.
      * 
-     * @param properties The constraints to check.
+     * @param constraint The constraints to check.
      * @param component The component that holds the passed constraints.
      * @return {@code true} if this component can be added with the given
      *         constraints, {@code false} otherwise.
      */
-    abstract boolean areValidConstraints(Object constraints, NComponent component);
+    public abstract boolean isValidConstraint(Object constraint, NComponent component);
 }
