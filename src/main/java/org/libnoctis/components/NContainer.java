@@ -122,11 +122,10 @@ public abstract class NContainer extends NComponent
     {
         this.components.add(component);
 
+        component.onAdded(this);
+
         if (layout != null)
             layout.layoutContainer(this);
-
-        // This needs the real size of the component, so it's done after layout.
-        component.onAdded(this);
 
         repaint();
 
