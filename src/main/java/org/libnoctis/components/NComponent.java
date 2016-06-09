@@ -427,8 +427,6 @@ public abstract class NComponent
      */
     final void onAdded(NContainer parent)
     {
-        this.parent = parent;
-
         NContainer parent2 = parent;
 
         while (parent2 != null)
@@ -745,7 +743,11 @@ public abstract class NComponent
      */
     protected void init()
     {
+    }
 
+    void setParent(NContainer parent)
+    {
+        this.parent = parent;
     }
 
     /**

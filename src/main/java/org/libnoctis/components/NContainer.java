@@ -122,10 +122,12 @@ public abstract class NContainer extends NComponent
     {
         this.components.add(component);
 
-        component.onAdded(this);
+        component.setParent(this);
 
         if (layout != null)
             layout.layoutContainer(this);
+
+        component.onAdded(this);
 
         repaint();
 
