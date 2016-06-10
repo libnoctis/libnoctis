@@ -195,10 +195,16 @@ public abstract class NContainer extends NComponent
 
         NComponent[] comp = components.toArray(new NComponent[components.size()]);
 
-        for (NComponent component : comp)
+        drawer.pushMatrix();
         {
-            component.render();
+            drawer.translate(getX(), getY());
+
+            for (NComponent component : comp)
+            {
+                component.render();
+            }
         }
+        drawer.popMatrix();
     }
 
     /**
